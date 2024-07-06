@@ -11,10 +11,14 @@
   <properties>
     <!-- https://maven.apache.org/general.html#encoding-warning -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>18</maven.compiler.source>
-    <maven.compiler.target>18</maven.compiler.target>
+    <java.version>22</java.version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.tweetyproject</groupId>
+      <artifactId>tweety-full</artifactId>
+      <version>1.25</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -28,7 +32,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.6.0</version>
+
         <executions>
           <!-- Attach the shade goal into the package phase -->
           <execution>
