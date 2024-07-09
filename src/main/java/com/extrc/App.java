@@ -7,6 +7,7 @@ import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 
 import com.extrc.models.BaseRankModel;
 import com.extrc.models.Explanation;
+import com.extrc.models.RationalClosure;
 
 /**
  * Hello world!
@@ -21,8 +22,6 @@ public class App {
         dKb.add(parser.parseFormula("b=>f"),
                 parser.parseFormula("b=>w"),
                 parser.parseFormula("p=>!f"));
-        Explanation exp = new Explanation("base rank");
-        BaseRankModel baseRank = new BaseRankModel(dKb, cKb, exp);
-        System.out.println(baseRank.rank().toString());
+        new RationalClosure(dKb, parser.parseFormula("p=>!f"), cKb);
     }
 }
