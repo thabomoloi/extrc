@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.models_draft;
 
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
 import org.tweetyproject.logics.pl.sat.Sat4jSolver;

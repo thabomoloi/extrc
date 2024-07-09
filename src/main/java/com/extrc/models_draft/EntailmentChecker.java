@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.models_draft;
 
 import java.util.ArrayList;
 

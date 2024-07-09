@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.tweetyproject.logics.pl.parser.PlParser;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 
-import com.extrc.models.BaseRankModel;
-import com.extrc.models.Explanation;
-import com.extrc.models.RationalClosure;
+import com.extrc.models_draft.BaseRankModel;
+import com.extrc.models_draft.Explanation;
+import com.extrc.models_draft.RationalClosure;
 
 /**
  * Hello world!
