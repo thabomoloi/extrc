@@ -1,29 +1,24 @@
-package com.extrc.services;
+package com.extrc.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.extrc.models.Rank;
-
-public class RankServiceImpl implements RankService {
+public class RankList {
   private final List<Rank> ranks;
 
-  public RankServiceImpl() {
+  public RankList() {
     this.ranks = new ArrayList<>();
   }
 
-  @Override
   public void addRank(Rank rank) {
     this.ranks.add(rank);
   }
 
-  @Override
   public void addRank(Rank... ranks) {
     this.ranks.addAll(Arrays.asList(ranks));
   }
 
-  @Override
   public Rank getRank(int rankNumber) {
     for (Rank rank : this.ranks) {
       if (rank.getRankNumber() == rankNumber) {
@@ -33,16 +28,23 @@ public class RankServiceImpl implements RankService {
     return null;
   }
 
-  @Override
   public List<Rank> listRanks() {
     return new ArrayList<>(this.ranks);
   }
 
-  @Override
-  public Rank popFirstRank() {
+  public Rank pop() {
     if (!this.ranks.isEmpty()) {
       return this.ranks.remove(0);
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    for (Rank rank : ranks) {
+      builder.append(rank).append("\n");
+    }
+    return builder.toString();
   }
 }
