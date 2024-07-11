@@ -1,22 +1,23 @@
 package com.extrc.services;
 
-import com.extrc.models.RankList;
-
-import org.tweetyproject.logics.pl.parser.PlParser;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-public class RationalClosureServiceImpl {
-  PlBeliefSet knowledgeBase;
-  PlParser parser;
-  PlFormula queryFormula;
+import com.extrc.models.RankList;
 
-  public RationalClosureServiceImpl(PlBeliefSet kb, PlFormula formula) {
-    this.knowledgeBase = kb;
-    this.parser = new PlParser();
-    this.queryFormula = formula;
-    RankList rankedKb = (new BaseRankServiceImpl(this.knowledgeBase)).computeBaseRank();
-    System.out.println("==== Base Ranking ====");
-    System.out.println(rankedKb);
+public class RationalClosureServiceImpl {
+  private final PlFormula queryFormula;
+  private final KnowledgeBaseService knowledgeBaseService;
+  private final EntailmentService entailmentService;
+  private final RankList rankedKb;
+
+  public RationalClosureServiceImpl(PlBeliefSet knowledgeBase, PlFormula queryFormula) {
+    this.queryFormula = queryFormula;
+    this.knowledgeBaseService = new KnowledgeBaseServiceImpl(knowledgeBase);
+    this.entailmentService = new EntailmentServiceImpl(knowledgeBaseService);
+    this.rankedKb = (new BaseRankServiceImpl(this.knowledgeBaseService)).computeBaseRank();
+    this.entailmentService.computeEntailment(this.rankedKb, this.queryFormula);
+    System.out.println(entailmentService.getEntailment());
+
   }
 }

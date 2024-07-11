@@ -26,6 +26,7 @@ public class Entailment {
   public RankList getBaseRanks() {
     return rankList;
   }
+
   public RankList getRemovedRanks() {
     RankList removedRanks = new RankList();
     List<Rank> allRanks = rankList.listRanks();
@@ -37,5 +38,15 @@ public class Entailment {
 
   public RankList getRemainingRanks() {
     return remainingRanks;
+  }
+
+  @Override
+  public String toString() {
+    return "Entailment{" +
+        "entailed=" + entailed +
+        ", numberOfRemovedRanks=" + numberOfRemovedRanks +
+        ", rankList=" + rankList +
+        ", remainingRanks=" + remainingRanks +
+        '}';
   }
 }

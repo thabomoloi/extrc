@@ -13,8 +13,8 @@ public class BaseRankServiceImpl {
   private final PlBeliefSet classicalFormulas;
   private final PlBeliefSet defeasibleFormulas;
 
-  public BaseRankServiceImpl(PlBeliefSet knowledgeBase) {
-    this.knowledgeBaseService = new KnowledgeBaseServiceImpl(knowledgeBase);
+  public BaseRankServiceImpl(KnowledgeBaseService knowledgeBaseService) {
+    this.knowledgeBaseService = knowledgeBaseService;
     this.rankedKb = new RankList();
     this.classicalFormulas = this.knowledgeBaseService.getClassicalFormulas();
     this.defeasibleFormulas = this.knowledgeBaseService.getDefeasibleFormulas();
