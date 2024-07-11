@@ -48,7 +48,7 @@ public class BaseRankServiceImpl {
 
     if (!rankFormulas.isEmpty()) {
       int newRankNumber = rankedKb.size();
-      rankedKb.addRank(new Rank(newRankNumber, rankFormulas));
+      rankedKb.addRank(new Rank(newRankNumber, ReasonerService.dematerialise(rankFormulas)));
       // explanation.show("Rank " + rSize + ": " + rank.toString());
     }
 
