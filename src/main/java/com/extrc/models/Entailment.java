@@ -23,6 +23,9 @@ public class Entailment {
     return numberOfRemovedRanks;
   }
 
+  public RankList getBaseRanks() {
+    return rankList;
+  }
   public RankList getRemovedRanks() {
     RankList removedRanks = new RankList();
     List<Rank> allRanks = rankList.listRanks();
