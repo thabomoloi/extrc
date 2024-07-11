@@ -3,14 +3,14 @@ package com.extrc.models;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class RankList {
+public class Ranking {
   private final Queue<Rank> ranks;
 
-  public RankList() {
+  public Ranking() {
     this.ranks = new LinkedList<>();
   }
 
-  public RankList(RankList rankList) {
+  public Ranking(Ranking rankList) {
     this.ranks = new LinkedList<Rank>();
     for (Rank rank : rankList.ranks) {
       this.ranks.add(new Rank(rank));
