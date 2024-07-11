@@ -1,10 +1,15 @@
 package com.extrc.models;
 
+import org.tweetyproject.logics.pl.reasoner.SatReasoner;
+import org.tweetyproject.logics.pl.sat.Sat4jSolver;
+import org.tweetyproject.logics.pl.sat.SatSolver;
 import org.tweetyproject.logics.pl.syntax.Implication;
+import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 public abstract class Kb {
+
   public enum KnowledgeBaseType {
     /**
      * Represents a knowledge base that has both classical and defeasible
@@ -21,6 +26,13 @@ public abstract class Kb {
 
   protected KnowledgeBaseType knowledgeBaseType;
   protected PlBeliefSet formulas;
+
+  private static final SatReasoner reasoner;
+
+  static {
+    SatSolver.setDefaultSolver(new Sat4jSolver());
+    reasoner = new SatReasoner();
+  }
 
   public Kb() {
     this.knowledgeBaseType = KnowledgeBaseType.DEFAULT;
@@ -92,6 +104,22 @@ public abstract class Kb {
     }
   }
 
+  public boolean contains(PlFormula formula) {
+    return this.formulas.contains(formula);
+  }
+
+  public boolean isEmpty() {
+    return this.formulas.isEmpty();
+  }
+
+  public int size() {
+    return this.formulas.size();
+  }
+
+  public boolean equals(Kb kb) {
+    return this.knowledgeBaseType == kb.knowledgeBaseType && this.formulas.equals(kb.formulas);
+  }
+
   public abstract Kb materialise();
 
   public abstract Kb dematerialise();
@@ -124,6 +152,30 @@ public abstract class Kb {
       dematerialisedFormulas.add(dematerialise(formula));
     }
     return dematerialisedFormulas;
+  }
+
+  public static final ClassicalKnowledgeBase getAntecedants(ClassicalKnowledgeBase kb) {
+    ClassicalKnowledgeBase antecedants = new ClassicalKnowledgeBase();
+    for (PlFormula formula : kb.formulas) {
+      antecedants.add(((Implication) formula).getFormulas().getFirst());
+    }
+    return antecedants;
+  }
+
+  public static final boolean isExceptional(ClassicalKnowledgeBase kb, PlFormula formula) {
+    return reasoner.query(kb.formulas, new Negation(formula));
+  }
+
+  public static final ClassicalKnowledgeBase getExceptionals(ClassicalKnowledgeBase antecedants,
+      ClassicalKnowledgeBase knowledgeBase) {
+    ClassicalKnowledgeBase exceptionals = new ClassicalKnowledgeBase();
+
+    for (PlFormula antencedant : antecedants.formulas) {
+      if (Kb.isExceptional(knowledgeBase, antencedant)) {
+        exceptionals.add(antencedant);
+      }
+    }
+    return exceptionals;
   }
 
   @Override

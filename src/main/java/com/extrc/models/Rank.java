@@ -2,16 +2,26 @@ package com.extrc.models;
 
 public class Rank {
   private int rankNumber;
-  private KnowledgeBase knowledgeBase;
+  private Kb knowledgeBase;
 
-  public Rank(int rankNumber, KnowledgeBase knowledgeBase) {
+  public Rank(int rankNumber, Kb knowledgeBase) {
     this.rankNumber = rankNumber;
     this.knowledgeBase = knowledgeBase;
   }
 
   public Rank(Rank rank) {
     this.rankNumber = rank.rankNumber;
-    this.knowledgeBase = new KnowledgeBase(rank.knowledgeBase);
+    switch (this.knowledgeBase.knowledgeBaseType) {
+      case CLASSICAL:
+        this.knowledgeBase = new ClassicalKnowledgeBase((ClassicalKnowledgeBase) rank.knowledgeBase);
+        break;
+      case DEFEASIBLE:
+        this.knowledgeBase = new DefeasibleKnowledgeBase((DefeasibleKnowledgeBase) rank.knowledgeBase);
+        break;
+      default:
+        this.knowledgeBase = new KnowledgeBase((KnowledgeBase) rank.knowledgeBase);
+        break;
+    }
   }
 
   public int getRankNumber() {
@@ -22,11 +32,11 @@ public class Rank {
     this.rankNumber = rankNumber;
   }
 
-  public KnowledgeBase getKnowledgeBase() {
+  public Kb getKnowledgeBase() {
     return this.knowledgeBase;
   }
 
-  public void setKnowledgeBase(KnowledgeBase knowledgeBase) {
+  public void setKnowledgeBase(Kb knowledgeBase) {
     this.knowledgeBase = knowledgeBase;
   }
 

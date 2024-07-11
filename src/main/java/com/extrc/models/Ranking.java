@@ -38,7 +38,7 @@ public class Ranking {
     return this.ranks.size();
   }
 
-  public KnowledgeBase getKnowlegeBase() {
+  public Kb getKnowlegeBase() {
     KnowledgeBase knowledgeBase = new KnowledgeBase();
     for (Rank rank : this.ranks) {
       knowledgeBase.addAll(rank.getKnowledgeBase().getFormulas());
