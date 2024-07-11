@@ -39,6 +39,10 @@ public class RankList {
     return null;
   }
 
+  public int size() {
+    return this.ranks.size();
+  }
+
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
