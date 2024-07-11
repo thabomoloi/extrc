@@ -1,6 +1,7 @@
 package com.extrc.models;
 
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
+import org.tweetyproject.logics.pl.reasoner.SimplePlReasoner;
 import org.tweetyproject.logics.pl.sat.Sat4jSolver;
 import org.tweetyproject.logics.pl.sat.SatSolver;
 import org.tweetyproject.logics.pl.syntax.Implication;
@@ -28,10 +29,12 @@ public abstract class Kb {
   protected PlBeliefSet formulas;
 
   private static final SatReasoner reasoner;
+  private static final SimplePlReasoner classicalReasoner;
 
   static {
     SatSolver.setDefaultSolver(new Sat4jSolver());
     reasoner = new SatReasoner();
+    classicalReasoner = new SimplePlReasoner();
   }
 
   public Kb() {
@@ -120,18 +123,26 @@ public abstract class Kb {
     return this.knowledgeBaseType == kb.knowledgeBaseType && this.formulas.equals(kb.formulas);
   }
 
+  public boolean removeAll(PlBeliefSet formulas) {
+    return this.formulas.removeAll(formulas);
+  }
+
+  public boolean removeAll(Kb kb) {
+    return this.formulas.removeAll(kb.formulas);
+  }
+
   public abstract Kb materialise();
 
   public abstract Kb dematerialise();
 
-  protected static final PlFormula materialise(PlFormula formula) {
+  public static final PlFormula materialise(PlFormula formula) {
     if (formula instanceof DefeasibleImplication) {
       return new Implication(((DefeasibleImplication) formula).getFormulas());
     }
     return formula;
   }
 
-  protected static final PlBeliefSet materialise(PlBeliefSet formulas) {
+  public static final PlBeliefSet materialise(PlBeliefSet formulas) {
     PlBeliefSet materialisedFormulas = new PlBeliefSet();
     for (PlFormula formula : formulas) {
       materialisedFormulas.add(materialise(formula));
@@ -139,14 +150,14 @@ public abstract class Kb {
     return materialisedFormulas;
   }
 
-  protected static final PlFormula dematerialise(PlFormula formula) {
+  public static final PlFormula dematerialise(PlFormula formula) {
     if ((formula instanceof Implication)) {
       return new DefeasibleImplication(((Implication) formula).getFormulas());
     }
     return formula;
   }
 
-  protected static final PlBeliefSet dematerialise(PlBeliefSet formulas) {
+  public static final PlBeliefSet dematerialise(PlBeliefSet formulas) {
     PlBeliefSet dematerialisedFormulas = new PlBeliefSet();
     for (PlFormula formula : formulas) {
       dematerialisedFormulas.add(dematerialise(formula));
@@ -178,9 +189,13 @@ public abstract class Kb {
     return exceptionals;
   }
 
+  public static final boolean isEntailed(ClassicalKnowledgeBase kb, PlFormula formula) {
+    return classicalReasoner.query(kb.formulas, formula);
+  }
+
   @Override
   public String toString() {
-    return "K = " + this.formulas.toString();
+    return this.formulas.toString();
   }
 
 }

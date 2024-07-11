@@ -52,6 +52,6 @@ public class Ranking {
     for (Rank rank : ranks) {
       builder.append(rank).append("\n");
     }
-    return builder.toString();
+    return builder.toString().trim();
   }
 }
