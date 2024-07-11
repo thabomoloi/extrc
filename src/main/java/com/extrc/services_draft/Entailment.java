@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.services_draft;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class Entailment {
 
   public RankList getRemovedRanks() {
     RankList removedRanks = new RankList();
-    List<Rank> allRanks = rankList.listRanks();
+    List<RankDraft> allRanks = rankList.listRanks();
     for (int i = 0; i < numberOfRemovedRanks; i++) {
       removedRanks.addRank(allRanks.get(i));
     }

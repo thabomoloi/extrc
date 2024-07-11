@@ -1,9 +1,7 @@
-package com.extrc.services;
+package com.extrc.services_draft;
 
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
-
-import com.extrc.models.RankList;
 
 public class RationalClosureServiceImpl {
   private final PlFormula queryFormula;

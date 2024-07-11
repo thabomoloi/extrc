@@ -1,14 +1,10 @@
-package com.extrc.services;
+package com.extrc.services_draft;
 
 import org.tweetyproject.logics.pl.reasoner.SimplePlReasoner;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
-
-import com.extrc.models.Entailment;
-import com.extrc.models.Rank;
-import com.extrc.models.RankList;
 
 public class EntailmentServiceImpl implements EntailmentService {
   private final KnowledgeBaseService knowledgeBaseService;
@@ -42,7 +38,7 @@ public class EntailmentServiceImpl implements EntailmentService {
 
   public void computeEntailment(RankList rankedKb, PlFormula queryFormula) {
     RankList baseRanks = new RankList();
-    for (Rank rank : rankedKb.listRanks()) {
+    for (RankDraft rank : rankedKb.listRanks()) {
       baseRanks.addRank(rank);
     }
 
@@ -57,7 +53,7 @@ public class EntailmentServiceImpl implements EntailmentService {
       System.out.println(
           "We are checking whether or not " + negationOfAntecedent + " is entailed by: " + allRankFormulas.toString());
       if (classicalReasoner.query(allRankFormulas, negationOfAntecedent)) {
-        Rank rank = rankedKb.pop();
+        RankDraft rank = rankedKb.pop();
         System.out.println("It is! so we remove " + rank);
         allRankFormulas.removeAll(rank.getFormulas());
       } else {
