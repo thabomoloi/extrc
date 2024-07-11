@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
+
 public class RankList {
   private final List<Rank> ranks;
 
@@ -41,6 +43,14 @@ public class RankList {
 
   public int size() {
     return this.ranks.size();
+  }
+
+  public PlBeliefSet getAllFormulas() {
+    PlBeliefSet combined = new PlBeliefSet();
+    for (Rank rank : this.ranks) {
+      combined.addAll(rank.getFormulas());
+    }
+    return combined;
   }
 
   @Override
