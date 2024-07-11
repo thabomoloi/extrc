@@ -1,14 +1,17 @@
 package com.extrc.models;
 
-import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
-
 public class Rank {
   private int rankNumber;
-  private PlBeliefSet formulas;
+  private KnowledgeBase knowledgeBase;
 
-  public Rank(int rankNumber, PlBeliefSet formulas) {
+  public Rank(int rankNumber, KnowledgeBase knowledgeBase) {
     this.rankNumber = rankNumber;
-    this.formulas = formulas;
+    this.knowledgeBase = knowledgeBase;
+  }
+
+  public Rank(Rank rank) {
+    this.rankNumber = rank.rankNumber;
+    this.knowledgeBase = new KnowledgeBase(rank.knowledgeBase);
   }
 
   public int getRankNumber() {
@@ -19,19 +22,19 @@ public class Rank {
     this.rankNumber = rankNumber;
   }
 
-  public PlBeliefSet getFormulas() {
-    return this.formulas;
+  public KnowledgeBase getKnowledgeBase() {
+    return this.knowledgeBase;
   }
 
-  public void setFormulas(PlBeliefSet formulas) {
-    this.formulas = formulas;
+  public void setKnowledgeBase(KnowledgeBase knowledgeBase) {
+    this.knowledgeBase = knowledgeBase;
   }
 
   @Override
   public String toString() {
     if (this.rankNumber == Integer.MAX_VALUE) {
-      return "Rank ∞: " + this.formulas.toString();
+      return "Rank ∞: " + this.knowledgeBase;
     }
-    return "Rank " + this.rankNumber + ": " + this.formulas.toString();
+    return "Rank " + this.rankNumber + ": " + this.knowledgeBase;
   }
 }
