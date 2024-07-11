@@ -23,8 +23,23 @@ public abstract class Kb {
   protected PlBeliefSet formulas;
 
   public Kb() {
-    knowledgeBaseType = KnowledgeBaseType.DEFAULT;
-    formulas = new PlBeliefSet();
+    this.knowledgeBaseType = KnowledgeBaseType.DEFAULT;
+    this.formulas = new PlBeliefSet();
+  }
+
+  public Kb(KnowledgeBaseType knowledgeBaseType) {
+    this.knowledgeBaseType = knowledgeBaseType;
+    this.formulas = new PlBeliefSet();
+  }
+
+  public Kb(PlBeliefSet formulas, KnowledgeBaseType knowledgeBaseType) {
+    this.knowledgeBaseType = knowledgeBaseType;
+    this.formulas = formulas;
+  }
+
+  public Kb(Kb knowledgeBase) {
+    this.knowledgeBaseType = knowledgeBase.knowledgeBaseType;
+    this.formulas = new PlBeliefSet(knowledgeBase.formulas);
   }
 
   public KnowledgeBaseType getKnowledgeBaseType() {
@@ -35,11 +50,47 @@ public abstract class Kb {
     return formulas;
   }
 
-  public abstract PlBeliefSet setFormulas(PlBeliefSet formulas);
+  public void setFormulas(PlBeliefSet formulas) {
+    switch (knowledgeBaseType) {
+      case CLASSICAL:
+        this.formulas = Kb.materialise(formulas);
+        break;
+      case DEFEASIBLE:
+        this.formulas = Kb.dematerialise(formulas);
+        break;
+      default:
+        this.formulas = formulas;
+        break;
+    }
+  }
 
-  public abstract void add(PlFormula formula);
+  public void add(PlFormula formula) {
+    switch (knowledgeBaseType) {
+      case CLASSICAL:
+        this.formulas.add(Kb.materialise(formula));
+        break;
+      case DEFEASIBLE:
+        this.formulas.add(Kb.dematerialise(formula));
+        break;
+      default:
+        this.formulas.add(formula);
+        break;
+    }
+  }
 
-  public abstract void addAll(PlBeliefSet formula);
+  public void addAll(PlBeliefSet formulas) {
+    switch (knowledgeBaseType) {
+      case CLASSICAL:
+        this.formulas.addAll(Kb.materialise(formulas));
+        break;
+      case DEFEASIBLE:
+        this.formulas.addAll(Kb.dematerialise(formulas));
+        break;
+      default:
+        this.formulas.addAll(formulas);
+        break;
+    }
+  }
 
   public abstract Kb materialise();
 
