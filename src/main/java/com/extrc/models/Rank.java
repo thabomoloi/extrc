@@ -11,7 +11,7 @@ public class Rank {
 
   public Rank(Rank rank) {
     this.rankNumber = rank.rankNumber;
-    switch (this.knowledgeBase.knowledgeBaseType) {
+    switch (rank.knowledgeBase.getKnowledgeBaseType()) {
       case CLASSICAL:
         this.knowledgeBase = new ClassicalKnowledgeBase((ClassicalKnowledgeBase) rank.knowledgeBase);
         break;

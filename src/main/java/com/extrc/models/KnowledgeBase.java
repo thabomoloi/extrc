@@ -10,7 +10,7 @@ public final class KnowledgeBase extends Kb {
   }
 
   public KnowledgeBase(PlBeliefSet formulas) {
-    super(KnowledgeBaseType.DEFAULT);
+    super(formulas, KnowledgeBaseType.DEFAULT);
   }
 
   public KnowledgeBase(KnowledgeBase knowledgeBase) {
@@ -30,7 +30,7 @@ public final class KnowledgeBase extends Kb {
   public DefeasibleKnowledgeBase getDefeasibleKb() {
     PlBeliefSet defeasibleFormulas = new PlBeliefSet();
     for (PlFormula formula : this.formulas) {
-      if (!(formula instanceof DefeasibleImplication)) {
+      if (formula instanceof DefeasibleImplication) {
         defeasibleFormulas.add(formula);
       }
     }

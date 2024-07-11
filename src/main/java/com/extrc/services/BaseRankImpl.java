@@ -40,6 +40,7 @@ public final class BaseRankImpl implements IBaseRank {
   }
 
   private Ranking computeBaseRank(ClassicalKnowledgeBase current) {
+
     ClassicalKnowledgeBase previous = current;
     current = new ClassicalKnowledgeBase();
 
@@ -70,9 +71,13 @@ public final class BaseRankImpl implements IBaseRank {
       return computeBaseRank(current);
     }
 
-    ranking.add(new Rank(Integer.MAX_VALUE, formulas));
+    ranking.add(new Rank(Integer.MAX_VALUE, this.classicalKb));
 
     return ranking;
+  }
+
+  public static Ranking rank(KnowledgeBase knowledgeBase) {
+    return (new BaseRankImpl(knowledgeBase)).computeBaseRank();
   }
 
 }
