@@ -8,9 +8,21 @@ public class KnowledgeBase {
   private PlBeliefSet classicalFormulas;
   private PlBeliefSet defeasibleFormulas;
 
+  public KnowledgeBase() {
+    this.formulas = new PlBeliefSet();
+    this.classicalFormulas = new PlBeliefSet();
+    this.defeasibleFormulas = new PlBeliefSet();
+  }
+
   public KnowledgeBase(PlBeliefSet formulas) {
     this.formulas = formulas;
     this.setSeparateFormulas();
+  }
+
+  public KnowledgeBase(KnowledgeBase knowledgeBase) {
+    this.formulas = new PlBeliefSet(knowledgeBase.formulas);
+    this.classicalFormulas = new PlBeliefSet(knowledgeBase.classicalFormulas);
+    this.defeasibleFormulas = new PlBeliefSet(knowledgeBase.defeasibleFormulas);
   }
 
   public PlBeliefSet getFormulas() {
@@ -20,6 +32,21 @@ public class KnowledgeBase {
   public void setFormulas(PlBeliefSet formulas) {
     this.formulas = formulas;
     this.setSeparateFormulas();
+  }
+
+  public void add(PlFormula formula) {
+    this.formulas.add(formula);
+    if (formula instanceof DefeasibleImplication) {
+      this.defeasibleFormulas.add(formula);
+    } else {
+      this.classicalFormulas.add(formula);
+    }
+  }
+
+  public void addAll(PlBeliefSet formulas) {
+    for (PlFormula formula : formulas) {
+      this.add(formula);
+    }
   }
 
   public PlBeliefSet getClassicalFormulas() {
