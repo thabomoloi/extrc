@@ -3,11 +3,13 @@ package com.extrc;
 import java.io.IOException;
 
 import org.tweetyproject.logics.pl.parser.PlParser;
+import org.tweetyproject.logics.pl.syntax.Implication;
+import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
+import org.tweetyproject.logics.pl.syntax.Proposition;
 
-import com.extrc.models_draft.BaseRankModel;
-import com.extrc.models_draft.Explanation;
-import com.extrc.models_draft.RationalClosure;
+import com.extrc.models.DefeasibleImplication;
+import com.extrc.services.RationalClosureServiceImpl;
 
 /**
  * Hello world!
@@ -15,13 +17,17 @@ import com.extrc.models_draft.RationalClosure;
  */
 public class App {
     public static void main(String[] args) throws IOException {
-        PlParser parser = new PlParser();
-        PlBeliefSet cKb = new PlBeliefSet();
-        cKb.add(parser.parseFormula("p => b"));
-        PlBeliefSet dKb = new PlBeliefSet();
-        dKb.add(parser.parseFormula("b=>f"),
-                parser.parseFormula("b=>w"),
-                parser.parseFormula("p=>!f"));
-        new RationalClosure(dKb, parser.parseFormula("p=>!f"), cKb);
+        PlBeliefSet kb = new PlBeliefSet();
+        Proposition p = new Proposition("p");
+        Proposition b = new Proposition("b");
+        Proposition w = new Proposition("w");
+        Proposition f = new Proposition("f");
+
+        kb.add(new Implication(p, b));
+        kb.add(new DefeasibleImplication(b, w));
+        kb.add(new DefeasibleImplication(b, f));
+        kb.add(new DefeasibleImplication(p, new Negation(f)));
+        System.out.println("K " + kb);
+        new RationalClosureServiceImpl(kb, new DefeasibleImplication(p, f));
     }
 }
