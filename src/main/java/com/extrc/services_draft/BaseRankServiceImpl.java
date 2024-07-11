@@ -1,11 +1,8 @@
-package com.extrc.services;
+package com.extrc.services_draft;
 
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
-
-import com.extrc.models.Rank;
-import com.extrc.models.RankList;
 
 public class BaseRankServiceImpl {
   private final KnowledgeBaseService knowledgeBaseService;
@@ -48,7 +45,7 @@ public class BaseRankServiceImpl {
 
     if (!rankFormulas.isEmpty()) {
       int newRankNumber = rankedKb.size();
-      rankedKb.addRank(new Rank(newRankNumber, ReasonerService.dematerialise(rankFormulas)));
+      rankedKb.addRank(new RankDraft(newRankNumber, ReasonerService.dematerialise(rankFormulas)));
       // explanation.show("Rank " + rSize + ": " + rank.toString());
     }
 
@@ -56,7 +53,7 @@ public class BaseRankServiceImpl {
       return computeBaseRank(current);
     }
 
-    rankedKb.addRank(new Rank(Integer.MAX_VALUE, classicalFormulas));
+    rankedKb.addRank(new RankDraft(Integer.MAX_VALUE, classicalFormulas));
 
     return rankedKb;
   }

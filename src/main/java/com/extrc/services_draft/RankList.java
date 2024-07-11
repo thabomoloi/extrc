@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.services_draft;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,22 +7,22 @@ import java.util.List;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 
 public class RankList {
-  private final List<Rank> ranks;
+  private final List<RankDraft> ranks;
 
   public RankList() {
     this.ranks = new ArrayList<>();
   }
 
-  public void addRank(Rank rank) {
+  public void addRank(RankDraft rank) {
     this.ranks.add(rank);
   }
 
-  public void addRank(Rank... ranks) {
+  public void addRank(RankDraft... ranks) {
     this.ranks.addAll(Arrays.asList(ranks));
   }
 
-  public Rank getRank(int rankNumber) {
-    for (Rank rank : this.ranks) {
+  public RankDraft getRank(int rankNumber) {
+    for (RankDraft rank : this.ranks) {
       if (rank.getRankNumber() == rankNumber) {
         return rank;
       }
@@ -30,11 +30,11 @@ public class RankList {
     return null;
   }
 
-  public List<Rank> listRanks() {
+  public List<RankDraft> listRanks() {
     return new ArrayList<>(this.ranks);
   }
 
-  public Rank pop() {
+  public RankDraft pop() {
     if (!this.ranks.isEmpty()) {
       return this.ranks.remove(0);
     }
@@ -47,7 +47,7 @@ public class RankList {
 
   public PlBeliefSet getAllFormulas() {
     PlBeliefSet combined = new PlBeliefSet();
-    for (Rank rank : this.ranks) {
+    for (RankDraft rank : this.ranks) {
       combined.addAll(rank.getFormulas());
     }
     return combined;
@@ -56,7 +56,7 @@ public class RankList {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    for (Rank rank : ranks) {
+    for (RankDraft rank : ranks) {
       builder.append(rank).append("\n");
     }
     return builder.toString();

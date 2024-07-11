@@ -1,9 +1,6 @@
-package com.extrc.services;
+package com.extrc.services_draft;
 
 import org.tweetyproject.logics.pl.syntax.PlFormula;
-
-import com.extrc.models.Entailment;
-import com.extrc.models.RankList;
 
 public interface EntailmentService {
   KnowledgeBaseService getKnowledgeBaseService();
