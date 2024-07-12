@@ -14,16 +14,18 @@ import com.extrc.models.Ranking;
 public class RationalClosureImpl implements IDefeasibleEntailment {
   private final KnowledgeBase knowledgeBase;
   private final PlFormula queryFormula;
+  private final ExplanationsImpl explanationsImpl;
 
-  public RationalClosureImpl(KnowledgeBase knowledgeBase, PlFormula queryFormula) {
+  public RationalClosureImpl(KnowledgeBase knowledgeBase, PlFormula queryFormula, ExplanationsImpl explanationsImpl) {
     this.knowledgeBase = knowledgeBase;
     this.queryFormula = queryFormula;
+    this.explanationsImpl = explanationsImpl;
   }
 
   @Override
   public EntailmentResult getEntailmentResult() {
 
-    Ranking baseRanking = BaseRankImpl.rank(this.knowledgeBase);
+    Ranking baseRanking = BaseRankImpl.rank(this.knowledgeBase, this.explanationsImpl);
 
     Ranking baseRankingCopy = new Ranking(baseRanking);
     Ranking removedRanking = new Ranking();
@@ -43,8 +45,9 @@ public class RationalClosureImpl implements IDefeasibleEntailment {
 
   }
 
-  public static final EntailmentResult query(KnowledgeBase knowledgeBase, PlFormula formula) {
-    return new RationalClosureImpl(knowledgeBase, formula).getEntailmentResult();
+  public static final EntailmentResult query(KnowledgeBase knowledgeBase, PlFormula formula,
+      ExplanationsImpl explanation) {
+    return new RationalClosureImpl(knowledgeBase, formula, explanation).getEntailmentResult();
   }
 
 }
