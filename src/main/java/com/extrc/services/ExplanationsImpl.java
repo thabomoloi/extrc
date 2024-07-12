@@ -42,7 +42,7 @@ public class ExplanationsImpl implements IExplanations {
       if (explanation != null) {
         builder.append(explanation.getTitle()).append(":\n===========================\n");
         for (String step : explanation.getSteps()) {
-          builder.append("-> ").append(step).append("\n");
+          builder.append(step).append("\n");
         }
         builder.append("\n");
       }

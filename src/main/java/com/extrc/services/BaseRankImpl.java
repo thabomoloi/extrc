@@ -50,9 +50,8 @@ public final class BaseRankImpl implements IBaseRank {
   @Override
   public Ranking computeBaseRank() {
     this.ranking = new Ranking();
-    explanationImpl.addExplanationStep(explanationTitle, "K is first separated classical formulas "
-        + this.classicalKb.toString() + ", and defeasible formulas " + this.defeasibleKb.toString() + "\n");
-    return computeBaseRank(this.defeasibleKb.materialise());
+    ClassicalKnowledgeBase kb = this.defeasibleKb.materialise();
+    return computeBaseRank(kb);
   }
 
   private Ranking computeBaseRank(ClassicalKnowledgeBase current) {
