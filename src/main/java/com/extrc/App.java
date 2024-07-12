@@ -1,5 +1,8 @@
 package com.extrc;
 
+import org.jruby.RubyInstanceConfig;
+import org.jruby.embed.LocalContextScope;
+import org.jruby.embed.ScriptingContainer;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
@@ -27,16 +30,14 @@ public class App {
         kb.add(new DefeasibleImplication(p, new Negation(f)));
 
         System.out.println(RationalClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, f)));
-        // new RationalClosureServiceImpl(kb, new DefeasibleImplication(p, f));
 
-        // KnowledgeBase K = new KnowledgeBase(kb);
-        // Rank r1 = new Rank(0, K);
+        // Create scripting container with optimization configuration
+        // ScriptingContainer container = new
+        // ScriptingContainer(LocalContextScope.SINGLETHREAD);
+        // container.setCompileMode(RubyInstanceConfig.CompileMode.JIT);
+        // container.setJitThreshold(50); // Lower threshold for JIT compilation
 
-        // Rank r2 = new Rank(r1);
-
-        // System.out.println("R2 = R1 ? " + (r1 == r2));
-        // System.out.println("R2(K) = R1(K) ? " + (r1.knowledgeBase ==
-        // r2.knowledgeBase));
-
+        // // Execute Ruby script
+        // container.runScriptlet(App.class.getResourceAsStream("/main.rb"), "main.rb");
     }
 }
