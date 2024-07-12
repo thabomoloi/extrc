@@ -8,5 +8,9 @@ public interface IBaseRank {
 
   public void setKnowledgeBase(KnowledgeBase knowledgeBase);
 
+  public ExplanationsImpl getExplanations();
+
+  public void setExplanations(ExplanationsImpl explanationImpl);
+
   public Ranking computeBaseRank();
 }

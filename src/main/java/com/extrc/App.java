@@ -10,6 +10,7 @@ import org.tweetyproject.logics.pl.syntax.Proposition;
 
 import com.extrc.models.DefeasibleImplication;
 import com.extrc.models.KnowledgeBase;
+import com.extrc.services.ExplanationsImpl;
 import com.extrc.services.RationalClosureImpl;
 
 /**
@@ -29,8 +30,12 @@ public class App {
         kb.add(new DefeasibleImplication(b, f));
         kb.add(new DefeasibleImplication(p, new Negation(f)));
 
-        System.out.println(RationalClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, f)));
+        ExplanationsImpl explanationImpl = new ExplanationsImpl();
 
+        System.out.println(
+                RationalClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, f), explanationImpl));
+
+        System.out.println(explanationImpl);
         // Create scripting container with optimization configuration
         // ScriptingContainer container = new
         // ScriptingContainer(LocalContextScope.SINGLETHREAD);
