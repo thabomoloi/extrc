@@ -32,8 +32,7 @@ public class App {
 
         ExplanationsImpl explanationImpl = new ExplanationsImpl();
 
-        System.out.println(
-                RationalClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, f), explanationImpl));
+        RationalClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, f), explanationImpl);
 
         System.out.println(explanationImpl);
         // Create scripting container with optimization configuration
