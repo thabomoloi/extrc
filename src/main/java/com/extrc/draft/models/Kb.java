@@ -9,6 +9,8 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
+import com.extrc.common.structures.DefeasibleImplication;
+
 public abstract class Kb {
 
   public enum KnowledgeBaseType {
