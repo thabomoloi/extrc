@@ -5,10 +5,9 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.Proposition;
 
-import com.extrc.draft.models.DefeasibleImplication;
-import com.extrc.draft.models.KnowledgeBase;
-import com.extrc.draft.services.ExplanationsImpl;
-import com.extrc.draft.services.LexicographicClosureImpl;
+import com.extrc.common.structures.DefeasibleImplication;
+import com.extrc.common.structures.KnowledgeBase;
+import com.extrc.reasoning.ranking.BaseRank;
 
 /**
  * Hello world!
@@ -16,7 +15,7 @@ import com.extrc.draft.services.LexicographicClosureImpl;
  */
 public class App {
     public static void main(String[] args) throws Exception {
-        PlBeliefSet kb = new PlBeliefSet();
+        KnowledgeBase kb = new KnowledgeBase();
         Proposition sp = new Proposition("sp");
         Proposition p = new Proposition("p");
         Proposition b = new Proposition("b");
@@ -32,10 +31,14 @@ public class App {
         kb.add(new DefeasibleImplication(sp, f));
         kb.add(new DefeasibleImplication(p, new Negation(f)));
 
-        ExplanationsImpl explanationImpl = new ExplanationsImpl();
+        // ExplanationsImpl explanationImpl = new ExplanationsImpl();
 
-        System.out.println(LexicographicClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, w),
-                explanationImpl));
+        kb.addAll(kb);
+        // System.out.println(LexicographicClosureImpl.query(new KnowledgeBase(kb), new
+        // DefeasibleImplication(p, w),
+        // explanationImpl));
+        BaseRank baseRank = new BaseRank(kb);
+        System.out.println(baseRank.construct());
         // Create scripting container with optimization configuration
         // ScriptingContainer container = new
         // ScriptingContainer(LocalContextScope.SINGLETHREAD);

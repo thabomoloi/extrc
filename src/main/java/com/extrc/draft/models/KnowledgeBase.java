@@ -3,6 +3,8 @@ package com.extrc.draft.models;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
+import com.extrc.common.structures.DefeasibleImplication;
+
 public final class KnowledgeBase extends Kb {
 
   public KnowledgeBase() {

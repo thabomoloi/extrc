@@ -1,4 +1,4 @@
-package com.extrc.draft.models;
+package com.extrc.common.structures;
 
 import java.util.HashSet;
 import java.util.Set;

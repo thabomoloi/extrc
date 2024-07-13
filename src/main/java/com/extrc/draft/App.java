@@ -5,7 +5,7 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.Proposition;
 
-import com.extrc.draft.models.DefeasibleImplication;
+import com.extrc.common.structures.DefeasibleImplication;
 import com.extrc.draft.models.KnowledgeBase;
 import com.extrc.draft.services.ExplanationsImpl;
 import com.extrc.draft.services.LexicographicClosureImpl;

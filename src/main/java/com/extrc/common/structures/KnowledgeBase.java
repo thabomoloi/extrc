@@ -6,8 +6,6 @@ import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import com.extrc.draft.models.DefeasibleImplication;
-
 public class KnowledgeBase extends PlBeliefSet {
   public KnowledgeBase() {
     super();
@@ -53,6 +51,14 @@ public class KnowledgeBase extends PlBeliefSet {
       result.add(KnowledgeBase.dematerialise(f));
     }
     return result;
+  }
+
+  public KnowledgeBase antecedants() {
+    KnowledgeBase antecedants = new KnowledgeBase();
+    for (PlFormula f : this) {
+      antecedants.add(((Implication) f).getFormulas().getFirst());
+    }
+    return antecedants;
   }
 
   public static final PlFormula dematerialise(PlFormula formula) {
