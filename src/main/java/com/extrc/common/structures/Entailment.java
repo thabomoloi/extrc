@@ -1,4 +1,4 @@
-package com.extrc.reasoning.models;
+package com.extrc.common.structures;
 
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
