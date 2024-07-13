@@ -30,6 +30,10 @@ public class Ranking {
     return null;
   }
 
+  public Rank peek() {
+    return this.ranks.peek();
+  }
+
   public Rank discard() {
     return this.ranks.poll();
   }

@@ -1,8 +1,5 @@
 package com.extrc;
 
-import org.jruby.RubyInstanceConfig;
-import org.jruby.embed.LocalContextScope;
-import org.jruby.embed.ScriptingContainer;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
@@ -11,7 +8,7 @@ import org.tweetyproject.logics.pl.syntax.Proposition;
 import com.extrc.models.DefeasibleImplication;
 import com.extrc.models.KnowledgeBase;
 import com.extrc.services.ExplanationsImpl;
-import com.extrc.services.RationalClosureImpl;
+import com.extrc.services.LexicographicClosureImpl;
 
 /**
  * Hello world!
@@ -20,21 +17,25 @@ import com.extrc.services.RationalClosureImpl;
 public class App {
     public static void main(String[] args) throws Exception {
         PlBeliefSet kb = new PlBeliefSet();
+        Proposition sp = new Proposition("sp");
         Proposition p = new Proposition("p");
         Proposition b = new Proposition("b");
         Proposition w = new Proposition("w");
         Proposition f = new Proposition("f");
+        Proposition c = new Proposition("c");
 
+        kb.add(new Implication(sp, p));
         kb.add(new Implication(p, b));
         kb.add(new DefeasibleImplication(b, w));
         kb.add(new DefeasibleImplication(b, f));
+        kb.add(new DefeasibleImplication(b, c));
+        kb.add(new DefeasibleImplication(sp, f));
         kb.add(new DefeasibleImplication(p, new Negation(f)));
 
         ExplanationsImpl explanationImpl = new ExplanationsImpl();
 
-        RationalClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, f), explanationImpl);
-
-        System.out.println(explanationImpl);
+        System.out.println(LexicographicClosureImpl.query(new KnowledgeBase(kb), new DefeasibleImplication(p, w),
+                explanationImpl));
         // Create scripting container with optimization configuration
         // ScriptingContainer container = new
         // ScriptingContainer(LocalContextScope.SINGLETHREAD);
