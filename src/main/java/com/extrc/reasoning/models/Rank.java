@@ -1,4 +1,4 @@
-package com.extrc.reasoning;
+package com.extrc.reasoning.models;
 
 import java.util.Collection;
 
