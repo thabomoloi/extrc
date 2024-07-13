@@ -40,6 +40,14 @@ public class Rank {
     this.knowledgeBase = knowledgeBase;
   }
 
+  public int size() {
+    return this.knowledgeBase.size();
+  }
+
+  public boolean isEmpty() {
+    return this.knowledgeBase.isEmpty();
+  }
+
   @Override
   public String toString() {
     if (this.rankNumber == Integer.MAX_VALUE) {

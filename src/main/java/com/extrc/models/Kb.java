@@ -127,6 +127,10 @@ public abstract class Kb {
     return this.formulas.removeAll(formulas);
   }
 
+  public boolean remove(PlFormula formula) {
+    return this.formulas.remove(formula);
+  }
+
   public boolean removeAll(Kb kb) {
     return this.formulas.removeAll(kb.formulas);
   }
