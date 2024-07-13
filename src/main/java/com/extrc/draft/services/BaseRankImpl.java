@@ -1,15 +1,15 @@
-package com.extrc.services;
+package com.extrc.draft.services;
 
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import com.extrc.models.ClassicalKnowledgeBase;
-import com.extrc.models.DefeasibleKnowledgeBase;
-import com.extrc.models.Explanation;
-import com.extrc.models.Kb;
-import com.extrc.models.KnowledgeBase;
-import com.extrc.models.Rank;
-import com.extrc.models.Ranking;
+import com.extrc.draft.models.ClassicalKnowledgeBase;
+import com.extrc.draft.models.DefeasibleKnowledgeBase;
+import com.extrc.draft.models.Explanation;
+import com.extrc.draft.models.Kb;
+import com.extrc.draft.models.KnowledgeBase;
+import com.extrc.draft.models.Rank;
+import com.extrc.draft.models.Ranking;
 
 public final class BaseRankImpl implements IBaseRank {
   private KnowledgeBase knowledgeBase;

@@ -1,15 +1,15 @@
-package com.extrc.services;
+package com.extrc.draft.services;
 
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import com.extrc.models.ClassicalKnowledgeBase;
-import com.extrc.models.EntailmentResult;
-import com.extrc.models.Kb;
-import com.extrc.models.KnowledgeBase;
-import com.extrc.models.Rank;
-import com.extrc.models.Ranking;
+import com.extrc.draft.models.ClassicalKnowledgeBase;
+import com.extrc.draft.models.EntailmentResult;
+import com.extrc.draft.models.Kb;
+import com.extrc.draft.models.KnowledgeBase;
+import com.extrc.draft.models.Rank;
+import com.extrc.draft.models.Ranking;
 
 public class RationalClosureImpl implements IDefeasibleEntailment {
   private final KnowledgeBase knowledgeBase;

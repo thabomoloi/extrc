@@ -1,4 +1,4 @@
-package com.extrc;
+package com.extrc.draft;
 
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
