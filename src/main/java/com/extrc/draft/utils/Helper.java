@@ -1,9 +1,9 @@
-package com.extrc.utils;
+package com.extrc.draft.utils;
 
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import com.extrc.models.DefeasibleImplication;
+import com.extrc.draft.models.DefeasibleImplication;
 
 public final class Helper {
   public static PlBeliefSet getClassicalFormulas(PlBeliefSet knowledgeBase) {

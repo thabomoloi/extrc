@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.draft.models;
 
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
 import org.tweetyproject.logics.pl.reasoner.SimplePlReasoner;

@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.draft.models;
 
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;

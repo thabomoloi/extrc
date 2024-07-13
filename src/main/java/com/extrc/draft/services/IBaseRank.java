@@ -1,7 +1,7 @@
-package com.extrc.services;
+package com.extrc.draft.services;
 
-import com.extrc.models.KnowledgeBase;
-import com.extrc.models.Ranking;
+import com.extrc.draft.models.KnowledgeBase;
+import com.extrc.draft.models.Ranking;
 
 public interface IBaseRank {
   public KnowledgeBase getKnowledgeBase();

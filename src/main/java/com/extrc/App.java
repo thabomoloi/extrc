@@ -5,10 +5,10 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.Proposition;
 
-import com.extrc.models.DefeasibleImplication;
-import com.extrc.models.KnowledgeBase;
-import com.extrc.services.ExplanationsImpl;
-import com.extrc.services.LexicographicClosureImpl;
+import com.extrc.draft.models.DefeasibleImplication;
+import com.extrc.draft.models.KnowledgeBase;
+import com.extrc.draft.services.ExplanationsImpl;
+import com.extrc.draft.services.LexicographicClosureImpl;
 
 /**
  * Hello world!

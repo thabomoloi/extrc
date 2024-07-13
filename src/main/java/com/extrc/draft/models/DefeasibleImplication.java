@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.draft.models;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +12,7 @@ import org.tweetyproject.logics.pl.syntax.PlSignature;
 import org.tweetyproject.logics.pl.syntax.Proposition;
 import org.tweetyproject.logics.pl.syntax.Tautology;
 
-import com.extrc.utils.Symbols;
+import com.extrc.draft.utils.Symbols;
 
 public class DefeasibleImplication extends PlFormula {
   private Pair<PlFormula, PlFormula> formulas;

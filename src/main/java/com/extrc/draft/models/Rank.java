@@ -1,4 +1,4 @@
-package com.extrc.models;
+package com.extrc.draft.models;
 
 public class Rank {
   private int rankNumber;

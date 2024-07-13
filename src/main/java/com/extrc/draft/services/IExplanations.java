@@ -1,6 +1,6 @@
-package com.extrc.services;
+package com.extrc.draft.services;
 
-import com.extrc.models.Explanation;
+import com.extrc.draft.models.Explanation;
 
 public interface IExplanations {
   public void clear();

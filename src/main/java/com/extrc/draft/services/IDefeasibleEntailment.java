@@ -1,6 +1,6 @@
-package com.extrc.services;
+package com.extrc.draft.services;
 
-import com.extrc.models.EntailmentResult;
+import com.extrc.draft.models.EntailmentResult;
 
 public interface IDefeasibleEntailment {
 
