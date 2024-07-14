@@ -12,7 +12,7 @@ import org.tweetyproject.logics.pl.syntax.PlSignature;
 import org.tweetyproject.logics.pl.syntax.Proposition;
 import org.tweetyproject.logics.pl.syntax.Tautology;
 
-import com.extrc.draft.utils.Symbols;
+import com.extrc.common.utils.Symbols;
 
 public class DefeasibleImplication extends PlFormula {
   private Pair<PlFormula, PlFormula> formulas;
@@ -55,7 +55,7 @@ public class DefeasibleImplication extends PlFormula {
 
   @Override
   public Set<Proposition> getAtoms() {
-    Set<Proposition> result = new HashSet<Proposition>();
+    Set<Proposition> result = new HashSet<>();
     result.addAll(formulas.getFirst().getAtoms());
     result.addAll(formulas.getSecond().getAtoms());
     return result;
@@ -63,7 +63,7 @@ public class DefeasibleImplication extends PlFormula {
 
   @Override
   public Set<PlFormula> getLiterals() {
-    Set<PlFormula> result = new HashSet<PlFormula>();
+    Set<PlFormula> result = new HashSet<>();
     result.addAll(formulas.getFirst().getLiterals());
     result.addAll(formulas.getSecond().getLiterals());
     return result;
@@ -78,7 +78,7 @@ public class DefeasibleImplication extends PlFormula {
 
   @Override
   public Set<PlPredicate> getPredicates() {
-    Set<PlPredicate> predicates = new HashSet<PlPredicate>();
+    Set<PlPredicate> predicates = new HashSet<>();
     predicates.addAll(this.formulas.getFirst().getPredicates());
     predicates.addAll(this.formulas.getSecond().getPredicates());
     return predicates;
