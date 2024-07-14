@@ -1,5 +1,12 @@
 package com.extrc.reasoning.reasoners;
 
+import org.tweetyproject.logics.pl.reasoner.SatReasoner;
+import org.tweetyproject.logics.pl.sat.Sat4jSolver;
+import org.tweetyproject.logics.pl.sat.SatSolver;
+import org.tweetyproject.logics.pl.syntax.Implication;
+import org.tweetyproject.logics.pl.syntax.Negation;
+import org.tweetyproject.logics.pl.syntax.PlFormula;
+
 import com.extrc.common.services.DefeasibleReasoner;
 import com.extrc.common.services.RankConstuctor;
 import com.extrc.common.structures.Entailment;
@@ -8,18 +15,11 @@ import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
 import com.extrc.reasoning.ranking.BaseRank;
 
-import org.tweetyproject.logics.pl.sat.Sat4jSolver;
-import org.tweetyproject.logics.pl.sat.SatSolver;
-import org.tweetyproject.logics.pl.syntax.Implication;
-import org.tweetyproject.logics.pl.syntax.Negation;
-import org.tweetyproject.logics.pl.syntax.PlFormula;
-import org.tweetyproject.logics.pl.reasoner.SatReasoner;
-
-public class RationalClosure implements DefeasibleReasoner {
+public class RationalReasoner implements DefeasibleReasoner {
   private final RankConstuctor rankConstructor;
   private final KnowledgeBase knowledgeBase;
 
-  public RationalClosure(KnowledgeBase knowledgeBase) {
+  public RationalReasoner(KnowledgeBase knowledgeBase) {
     this.knowledgeBase = knowledgeBase;
     this.rankConstructor = new BaseRank(knowledgeBase);
   }
