@@ -1,4 +1,4 @@
-package com.extrc.draft.utils;
+package com.extrc.common.utils;
 
 public final class Symbols {
   public static String DEFEASIBLE_IMPLICATION() {
