@@ -1,20 +1,25 @@
 package com.extrc.view.console;
 
-import org.jline.builtins.Completers.TreeCompleter;
 import static org.jline.builtins.Completers.TreeCompleter.node;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jline.builtins.Completers;
+
 import org.jline.reader.Completer;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.MaskingCallback;
 import org.jline.reader.ParsedLine;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
+import org.jline.utils.InfoCmp.Capability;
+import org.jline.builtins.Completers.TreeCompleter;
+import org.jline.builtins.Completers.FileNameCompleter;
 
 public class ConsoleApp {
 
@@ -58,7 +63,7 @@ public class ConsoleApp {
             node("query")),
         node("load-kb",
             node("--string"),
-            node("--file")),
+            node("--file", node(new FileNameCompleter()))),
         node("query",
             node("--all"),
             node("--rational"),
@@ -102,11 +107,82 @@ public class ConsoleApp {
         }
 
         ParsedLine pl = reader.getParser().parse(line, 0);
-        System.out.println(pl.word());
+        String command = pl.word();
+
+        switch (command) {
+          case "help" -> {
+            if (pl.words().size() > 1) {
+              String subCommand = pl.words().get(1);
+              switch (subCommand) {
+                case "load-kb" -> helpLoadKb();
+                case "query" -> helpQuery();
+                default -> System.out.println("Unknown help subcommand: " + subCommand);
+              }
+            } else {
+              generalHelp();
+            }
+          }
+          case "load-kb" -> {
+            if (pl.words().size() > 1) {
+              String option = pl.words().get(1);
+              switch (option) {
+                case "--string" -> {
+                  if (pl.words().size() > 2) {
+                    String kbString = pl.words().get(2);
+                    // TODO: Load knowledge from a comma-separated string
+                    System.out.println("Loading knowledge from string: " + kbString);
+                  } else {
+                    System.out.println("Error: Missing knowledge base string.");
+                  }
+                }
+                case "--file" -> {
+                  if (pl.words().size() > 2) {
+                    String kbFile = pl.words().get(2);
+                    // TODO: Load knowledge from a file
+                    System.out.println("Loading knowledge from file: " + kbFile);
+                  } else {
+                    System.out.println("Error: Missing file path.");
+                  }
+                }
+                default -> System.out.println("Unknown option for load-kb: " + option);
+              }
+            } else {
+              System.out.println("Error: Missing options for load-kb.");
+            }
+          }
+          case "query" -> {
+            if (pl.words().size() > 1) {
+              String option = pl.words().get(1);
+              String formula = pl.words().size() > 2 ? pl.words().get(2) : null;
+              switch (option) {
+                case "--all" -> {
+                  // TODO: Query using all defeasible reasoners
+                  System.out.println("Querying with all reasoners for formula: " + formula);
+                }
+                case "--rational" -> {
+                  // TODO: Query using the rational closure defeasible reasoner
+                  System.out.println("Querying with rational reasoner for formula: " + formula);
+                }
+                case "--lexical" -> {
+                  // TODO: Query using the lexicographic closure defeasible reasoner
+                  System.out.println("Querying with lexical reasoner for formula: " + formula);
+                }
+                default -> System.out.println("Unknown option for query: " + option);
+              }
+            } else {
+              System.out.println("Error: Missing options or formula for query.");
+            }
+          }
+          case "clear" -> {
+            terminal.puts(Capability.clear_screen);
+            terminal.flush();
+          }
+          default -> System.out.println("Unknown command: " + command);
+        }
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      System.err.println("An error occurred: " + e.getMessage());
     }
   }
 }
