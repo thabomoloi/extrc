@@ -2,11 +2,6 @@ package com.extrc.view.console;
 
 import static org.jline.builtins.Completers.TreeCompleter.node;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jline.builtins.Completers;
-
 import org.jline.reader.Completer;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -74,6 +69,7 @@ public class ConsoleApp {
 
   public static void run() {
     try (Terminal terminal = TerminalBuilder.builder().build()) {
+      ConsoleAppHandler appHandler = new ConsoleAppHandler(terminal);
 
       Completer completer = getCompleter();
 
@@ -129,8 +125,7 @@ public class ConsoleApp {
                 case "--string" -> {
                   if (pl.words().size() > 2) {
                     String kbString = pl.words().get(2);
-                    // TODO: Load knowledge from a comma-separated string
-                    System.out.println("Loading knowledge from string: " + kbString);
+                    appHandler.loadKb(kbString);
                   } else {
                     System.out.println("Error: Missing knowledge base string.");
                   }
@@ -138,8 +133,7 @@ public class ConsoleApp {
                 case "--file" -> {
                   if (pl.words().size() > 2) {
                     String kbFile = pl.words().get(2);
-                    // TODO: Load knowledge from a file
-                    System.out.println("Loading knowledge from file: " + kbFile);
+                    appHandler.loadKbFromFile(kbFile);
                   } else {
                     System.out.println("Error: Missing file path.");
                   }

@@ -44,7 +44,7 @@ public class Validator {
     }
   }
 
-  public Node parseFormulasFromFile(String filePath) {
+  public Node validateFormulasFromFile(String filePath) {
     try {
       Object parsed = parser.parseFormulasFromFile(filePath);
       return new Node(true, "", parsed);
