@@ -124,21 +124,19 @@ public class ConsoleApp {
               switch (option) {
                 case "--string" -> {
                   if (pl.words().size() > 2) {
-                    String kbString = pl.words().get(2);
-                    appHandler.loadKb(kbString);
+                    appHandler.loadKb(pl.words().get(2));
                   } else {
                     System.out.println("Error: Missing knowledge base string.");
                   }
                 }
                 case "--file" -> {
                   if (pl.words().size() > 2) {
-                    String kbFile = pl.words().get(2);
-                    appHandler.loadKbFromFile(kbFile);
+                    appHandler.loadKbFromFile(pl.words().get(2));
                   } else {
                     System.out.println("Error: Missing file path.");
                   }
                 }
-                default -> System.out.println("Unknown option for load-kb: " + option);
+                default -> appHandler.loadKb(pl.words().get(1));
               }
             } else {
               System.out.println("Error: Missing options for load-kb.");
@@ -149,19 +147,10 @@ public class ConsoleApp {
               String option = pl.words().get(1);
               String formula = pl.words().size() > 2 ? pl.words().get(2) : null;
               switch (option) {
-                case "--all" -> {
-                  // TODO: Query using all defeasible reasoners
-                  System.out.println("Querying with all reasoners for formula: " + formula);
-                }
-                case "--rational" -> {
-                  // TODO: Query using the rational closure defeasible reasoner
-                  System.out.println("Querying with rational reasoner for formula: " + formula);
-                }
-                case "--lexical" -> {
-                  // TODO: Query using the lexicographic closure defeasible reasoner
-                  System.out.println("Querying with lexical reasoner for formula: " + formula);
-                }
-                default -> System.out.println("Unknown option for query: " + option);
+                case "--all" -> appHandler.queryAll(formula);
+                case "--rational" -> appHandler.queryRationalReasoner(formula);
+                case "--lexical" -> appHandler.queryLexicalReasoner(formula);
+                default -> appHandler.queryAll(pl.words().get(1));
               }
             } else {
               System.out.println("Error: Missing options or formula for query.");

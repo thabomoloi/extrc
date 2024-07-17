@@ -6,6 +6,7 @@ import org.jline.utils.AttributedStyle;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
+import com.extrc.common.structures.Entailment;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.reasoning.reasoners.LexicalReasoner;
 import com.extrc.reasoning.reasoners.RationalReasoner;
@@ -29,7 +30,8 @@ public class ConsoleAppHandler {
   public void loadKb(String formulas) {
     Validator.Node validate = this.validator.validateFormulas(formulas);
     if (validate.isValid) {
-      this.kb = (KnowledgeBase) validate.parsedObject;
+      this.kb.clear();
+      this.kb.addAll((KnowledgeBase) validate.parsedObject);
       this.terminal.writer().println(this.kb.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
@@ -40,7 +42,8 @@ public class ConsoleAppHandler {
   public void loadKbFromFile(String formulas) {
     Validator.Node validate = this.validator.validateFormulasFromFile(formulas);
     if (validate.isValid) {
-      this.kb = (KnowledgeBase) validate.parsedObject;
+      this.kb.clear();
+      this.kb.addAll((KnowledgeBase) validate.parsedObject);
       this.terminal.writer().println(this.kb.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
@@ -48,10 +51,45 @@ public class ConsoleAppHandler {
     this.terminal.writer().flush();
   }
 
+  public void queryAll(String formula) {
+    this.queryRationalReasoner(formula);
+    this.queryLexicalReasoner(formula);
+  }
+
   public void queryRationalReasoner(String formula) {
-    new AttributedStringBuilder()
-        .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN).bold())
-        .append("extrc").style(AttributedStyle.DEFAULT)
-        .append("$ ").toAnsi();
+    this.terminal.writer().println();
+    this.rationalReasoner = new RationalReasoner(kb);
+    String heading = new AttributedStringBuilder()
+        .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).bold())
+        .append("RATIONAL CLOSURE").style(AttributedStyle.DEFAULT).toAnsi();
+    Validator.Node validate = this.validator.validateFormula(formula);
+    if (validate.isValid) {
+      PlFormula query = (PlFormula) validate.parsedObject;
+      Entailment entailment = this.rationalReasoner.query(query);
+      this.terminal.writer().println("[" + heading + "]");
+      this.terminal.writer().println(entailment.toString());
+    } else {
+      this.terminal.writer().println(validate.errorMessage);
+    }
+    this.terminal.writer().flush();
+
+  }
+
+  public void queryLexicalReasoner(String formula) {
+    this.terminal.writer().println();
+    this.lexicalReasoner = new LexicalReasoner(kb);
+    String heading = new AttributedStringBuilder()
+        .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).bold())
+        .append("LEXICOGRAPHIC CLOSURE").style(AttributedStyle.DEFAULT).toAnsi();
+    Validator.Node validate = this.validator.validateFormula(formula);
+    if (validate.isValid) {
+      PlFormula query = (PlFormula) validate.parsedObject;
+      Entailment entailment = this.lexicalReasoner.query(query);
+      this.terminal.writer().println("[" + heading + "]");
+      this.terminal.writer().println(entailment.toString());
+    } else {
+      this.terminal.writer().println(validate.errorMessage);
+    }
+    this.terminal.writer().flush();
   }
 }
