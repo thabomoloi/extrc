@@ -37,4 +37,8 @@ public class Rank extends KnowledgeBase {
     }
     return "Rank " + rankNumber + ": " + super.toString();
   }
+
+  public String formulasToString() {
+    return super.toString().replace("{", "").replace("}", "");
+  }
 }
