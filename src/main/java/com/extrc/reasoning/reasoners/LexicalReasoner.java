@@ -15,6 +15,7 @@ import com.extrc.common.structures.Entailment;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
+import com.extrc.common.structures.ReasonerTimer;
 import com.extrc.reasoning.ranking.BaseRank;
 
 public class LexicalReasoner implements DefeasibleReasoner {
@@ -28,9 +29,14 @@ public class LexicalReasoner implements DefeasibleReasoner {
 
   @Override
   public Entailment query(PlFormula queryFormula) {
+    ReasonerTimer timer = new ReasonerTimer();
 
     // Base ranking
+    timer.start("Ranking formulas");
     Ranking baseRanking = rankConstructor.construct();
+    timer.end();
+
+    timer.start("Removing formulas");
     Ranking removedRanking = new Ranking();
 
     // SAT reasoner
@@ -82,7 +88,9 @@ public class LexicalReasoner implements DefeasibleReasoner {
     }
 
     boolean entailed = !formulas.isEmpty() && reasoner.query(formulas, formula);
-    return new Entailment(knowledgeBase, baseRanking, removedRanking, queryFormula, entailed);
+    timer.end();
+
+    return new Entailment(knowledgeBase, baseRanking, removedRanking, queryFormula, entailed, timer);
   }
 
   private KnowledgeBase weakenRank(Rank rank, int size) {
