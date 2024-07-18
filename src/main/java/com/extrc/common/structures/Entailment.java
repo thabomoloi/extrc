@@ -42,11 +42,10 @@ public class Entailment {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("K = ").append(knowledgeBase).append("\n");
-    sb.append("α = ").append(formula).append("\n\n");
-    sb.append("Base Ranks:\n=====================\n").append(baseRanking).append("\n\n");
-    sb.append("Removed Ranks:\n=====================\n").append(removedRanking).append("\n\n");
-    sb.append("Does K entail α: ").append(entailed).append("\n");
+    sb.append("query = ").append(formula).append("\n\n");
+    sb.append("Base Ranks:\n").append(baseRanking).append("\n\n");
+    sb.append("Removed Ranks:\n").append(removedRanking).append("\n\n");
+    sb.append("Does K entail the formula ").append(formula).append("? ").append(entailed ? "Yes" : "No").append("\n");
     return sb.toString();
-
   }
 }

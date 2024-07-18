@@ -29,8 +29,15 @@ public class Ranking extends LinkedList<Rank> {
       ranks.addRow(rankNumber, formulas);
       ranks.addRule();
     }
+    if (this.isEmpty()) {
+      maxLengths[0] = 3;
+      maxLengths[1] = 10;
+      ranks.addRow("", "");
+      ranks.addRule();
+    }
     ranks.getRenderer().setCWC(new CWC_LongestWordMin(maxLengths));
     ranks.setTextAlignment(TextAlignment.CENTER);
+
     return ranks.render();
   }
 }

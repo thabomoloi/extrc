@@ -53,6 +53,10 @@ public class ConsoleAppHandler {
 
   public void queryAll(String formula) {
     this.queryRationalReasoner(formula);
+    for (int i = 0; i < 50; i++) {
+      this.terminal.writer().print("\u2582");
+    }
+    this.terminal.writer().println("\n");
     this.queryLexicalReasoner(formula);
   }
 
@@ -66,7 +70,7 @@ public class ConsoleAppHandler {
     if (validate.isValid) {
       PlFormula query = (PlFormula) validate.parsedObject;
       Entailment entailment = this.rationalReasoner.query(query);
-      this.terminal.writer().println("[" + heading + "]");
+      this.terminal.writer().println(heading);
       this.terminal.writer().println(entailment.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
@@ -85,7 +89,7 @@ public class ConsoleAppHandler {
     if (validate.isValid) {
       PlFormula query = (PlFormula) validate.parsedObject;
       Entailment entailment = this.lexicalReasoner.query(query);
-      this.terminal.writer().println("[" + heading + "]");
+      this.terminal.writer().println(heading);
       this.terminal.writer().println(entailment.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
