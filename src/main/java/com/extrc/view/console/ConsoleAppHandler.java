@@ -63,14 +63,11 @@ public class ConsoleAppHandler {
   public void queryRationalReasoner(String formula) {
     this.terminal.writer().println();
     this.rationalReasoner = new RationalReasoner(kb);
-    String heading = new AttributedStringBuilder()
-        .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).bold())
-        .append("RATIONAL CLOSURE").style(AttributedStyle.DEFAULT).toAnsi();
     Validator.Node validate = this.validator.validateFormula(formula);
     if (validate.isValid) {
       PlFormula query = (PlFormula) validate.parsedObject;
       Entailment entailment = this.rationalReasoner.query(query);
-      this.terminal.writer().println(heading);
+      printTitle("RATIONAL CLOSURE");
       this.terminal.writer().println(entailment.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
@@ -82,18 +79,27 @@ public class ConsoleAppHandler {
   public void queryLexicalReasoner(String formula) {
     this.terminal.writer().println();
     this.lexicalReasoner = new LexicalReasoner(kb);
-    String heading = new AttributedStringBuilder()
-        .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).bold())
-        .append("LEXICOGRAPHIC CLOSURE").style(AttributedStyle.DEFAULT).toAnsi();
+
     Validator.Node validate = this.validator.validateFormula(formula);
     if (validate.isValid) {
       PlFormula query = (PlFormula) validate.parsedObject;
       Entailment entailment = this.lexicalReasoner.query(query);
-      this.terminal.writer().println(heading);
+      printTitle("LEXICOGRAPHIC CLOSURE");
       this.terminal.writer().println(entailment.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
     }
     this.terminal.writer().flush();
+  }
+
+  private void printTitle(String title) {
+    String heading = new AttributedStringBuilder()
+        .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).bold())
+        .append(title).style(AttributedStyle.DEFAULT).toAnsi();
+    this.terminal.writer().println(heading);
+    for (int i = 0; i < title.length(); i++) {
+      this.terminal.writer().print("\u2500");
+    }
+    this.terminal.writer().println("\n");
   }
 }
