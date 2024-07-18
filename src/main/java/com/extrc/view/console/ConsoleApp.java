@@ -15,6 +15,7 @@ import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp.Capability;
 import org.jline.builtins.Completers.TreeCompleter;
 import org.jline.builtins.Completers.FileNameCompleter;
+import org.jline.reader.LineReader.Option;
 
 public class ConsoleApp {
 
@@ -77,6 +78,8 @@ public class ConsoleApp {
           .terminal(terminal)
           .completer(completer)
           .build();
+
+      reader.option(Option.USE_FORWARD_SLASH, true);
 
       String prompt = new AttributedStringBuilder()
           .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN).bold())
