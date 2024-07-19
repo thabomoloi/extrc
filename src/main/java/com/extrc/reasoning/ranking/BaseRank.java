@@ -31,6 +31,7 @@ public class BaseRank implements RankConstuctor {
     }
   }
 
+  @Override
   public Ranking construct() {
     this.ranking = new Ranking();
 
@@ -39,7 +40,7 @@ public class BaseRank implements RankConstuctor {
     SatReasoner reasoner = new SatReasoner();
 
     // Exceptionality sequences
-    KnowledgeBase current = this.defeasibleKb.materialise();
+    KnowledgeBase current = this.defeasibleKb;
     KnowledgeBase previous = new KnowledgeBase();
 
     while (!current.equals(previous)) {
