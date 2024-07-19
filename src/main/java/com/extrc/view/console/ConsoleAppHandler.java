@@ -6,6 +6,7 @@ import org.jline.utils.AttributedStyle;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
+import com.extrc.common.services.Explanation;
 import com.extrc.common.structures.Entailment;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.reasoning.reasoners.LexicalReasoner;
@@ -86,6 +87,47 @@ public class ConsoleAppHandler {
       Entailment entailment = this.lexicalReasoner.query(query);
       printTitle("LEXICOGRAPHIC CLOSURE");
       this.terminal.writer().println(entailment.toString());
+    } else {
+      this.terminal.writer().println(validate.errorMessage);
+    }
+    this.terminal.writer().flush();
+  }
+
+  public void explainAll(String formula) {
+    this.explainRationalClosure(formula);
+    for (int i = 0; i < 70; i++) {
+      this.terminal.writer().print("\u2582");
+    }
+    this.terminal.writer().println("\n");
+    this.explainLexicalClosure(formula);
+  }
+
+  public void explainRationalClosure(String formula) {
+    this.terminal.writer().println();
+    this.rationalReasoner = new RationalReasoner(kb);
+
+    Validator.Node validate = this.validator.validateFormula(formula);
+    if (validate.isValid) {
+      PlFormula query = (PlFormula) validate.parsedObject;
+      Explanation explanation = this.rationalReasoner.explain(query);
+      printTitle("RATIONAL CLOSURE EXPLANATION");
+      this.terminal.writer().println(explanation.toString());
+    } else {
+      this.terminal.writer().println(validate.errorMessage);
+    }
+    this.terminal.writer().flush();
+  }
+
+  public void explainLexicalClosure(String formula) {
+    this.terminal.writer().println();
+    this.lexicalReasoner = new LexicalReasoner(kb);
+
+    Validator.Node validate = this.validator.validateFormula(formula);
+    if (validate.isValid) {
+      PlFormula query = (PlFormula) validate.parsedObject;
+      Explanation explanation = this.lexicalReasoner.explain(query);
+      printTitle("LEXICOGRAPHIC CLOSURE EXPLANATION");
+      this.terminal.writer().println(explanation.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
     }

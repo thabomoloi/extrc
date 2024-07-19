@@ -8,21 +8,25 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
+import com.extrc.common.services.Explanation;
 import com.extrc.common.services.RankConstuctor;
 import com.extrc.common.structures.Entailment;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
 import com.extrc.common.structures.ReasonerTimer;
+import com.extrc.reasoning.explanation.RationalExplanation;
 import com.extrc.reasoning.ranking.BaseRank;
 
 public class RationalReasoner implements DefeasibleReasoner {
   private final RankConstuctor rankConstructor;
   private final KnowledgeBase knowledgeBase;
+  private Explanation explanation;
 
   public RationalReasoner(KnowledgeBase knowledgeBase) {
     this.knowledgeBase = knowledgeBase;
-    this.rankConstructor = new BaseRank(knowledgeBase);
+    this.explanation = new RationalExplanation();
+    this.rankConstructor = new BaseRank(knowledgeBase, this.explanation);
   }
 
   @Override
@@ -60,6 +64,14 @@ public class RationalReasoner implements DefeasibleReasoner {
     boolean entailed = !formulas.isEmpty() && reasoner.query(formulas, formula);
     timer.end();
     return new Entailment(knowledgeBase, baseRanking, removedRanking, queryFormula, entailed, timer);
+  }
+
+  @Override
+  public Explanation explain(PlFormula formula) {
+    this.explanation.setQueryFormula(formula);
+    this.explanation.setKnowledgeBase(knowledgeBase);
+    this.query(formula);
+    return this.explanation;
   }
 
 }

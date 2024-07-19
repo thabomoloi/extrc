@@ -10,21 +10,25 @@ import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
+import com.extrc.common.services.Explanation;
 import com.extrc.common.services.RankConstuctor;
 import com.extrc.common.structures.Entailment;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
 import com.extrc.common.structures.ReasonerTimer;
+import com.extrc.reasoning.explanation.LexicalExplanation;
 import com.extrc.reasoning.ranking.BaseRank;
 
 public class LexicalReasoner implements DefeasibleReasoner {
   private final RankConstuctor rankConstructor;
   private final KnowledgeBase knowledgeBase;
+  private Explanation explanation;
 
   public LexicalReasoner(KnowledgeBase knowledgeBase) {
     this.knowledgeBase = knowledgeBase;
-    this.rankConstructor = new BaseRank(knowledgeBase);
+    this.explanation = new LexicalExplanation();
+    this.rankConstructor = new BaseRank(knowledgeBase, this.explanation);
   }
 
   @Override
@@ -110,6 +114,14 @@ public class LexicalReasoner implements DefeasibleReasoner {
       }
     }
     return possibleFormulas;
+  }
+
+  @Override
+  public Explanation explain(PlFormula formula) {
+    this.explanation.setQueryFormula(formula);
+    this.explanation.setKnowledgeBase(knowledgeBase);
+    this.query(formula);
+    return this.explanation;
   }
 
 }
