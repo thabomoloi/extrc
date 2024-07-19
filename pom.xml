@@ -16,8 +16,13 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.tweetyproject.logics</groupId>
+      <artifactId>pl</artifactId>
+      <version>1.25</version>
+    </dependency>
+    <dependency>
       <groupId>org.tweetyproject</groupId>
-      <artifactId>tweety-full</artifactId>
+      <artifactId>commons</artifactId>
       <version>1.25</version>
     </dependency>
     <dependency>
