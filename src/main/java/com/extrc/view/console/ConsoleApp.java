@@ -52,6 +52,16 @@ public class ConsoleApp {
     System.out.println("                                 Example: query --lexical \"p~>f\"");
   }
 
+  public static void helpExplain() {
+    System.out.println("Usage: explain [options] [formula]");
+    System.out.println();
+    System.out.println("Options:");
+    System.out.println("  --all                          Use all defeasible reasoners");
+    System.out.println("  --rational                     Use the rational closure defeasible reasoner");
+    System.out.println("  --lexical                      Use the lexicographic closure defeasible reasoner");
+    System.out.println("                                 Example: explain --lexical \"p~>f\"");
+  }
+
   public static Completer getCompleter() {
     return new TreeCompleter(
         node("help",
@@ -61,6 +71,10 @@ public class ConsoleApp {
             node("--string"),
             node("--file", node(new FileNameCompleter()))),
         node("query",
+            node("--all"),
+            node("--rational"),
+            node("--lexical")),
+        node("explain",
             node("--all"),
             node("--rational"),
             node("--lexical")),
@@ -154,6 +168,20 @@ public class ConsoleApp {
                 case "--rational" -> appHandler.queryRationalReasoner(formula);
                 case "--lexical" -> appHandler.queryLexicalReasoner(formula);
                 default -> appHandler.queryAll(pl.words().get(1));
+              }
+            } else {
+              System.out.println("Error: Missing options or formula for query.");
+            }
+          }
+          case "explain" -> {
+            if (pl.words().size() > 1) {
+              String option = pl.words().get(1);
+              String formula = pl.words().size() > 2 ? pl.words().get(2) : null;
+              switch (option) {
+                case "--all" -> appHandler.explainAll(formula);
+                case "--rational" -> appHandler.explainRationalClosure(formula);
+                case "--lexical" -> appHandler.explainLexicalClosure(formula);
+                default -> appHandler.explainAll(pl.words().get(1));
               }
             } else {
               System.out.println("Error: Missing options or formula for query.");
