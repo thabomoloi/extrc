@@ -53,12 +53,12 @@ public class KnowledgeBase extends PlBeliefSet {
     return result;
   }
 
-  public KnowledgeBase antecedants() {
-    KnowledgeBase antecedants = new KnowledgeBase();
+  public KnowledgeBase antecedents() {
+    KnowledgeBase antecedents = new KnowledgeBase();
     for (PlFormula f : this) {
-      antecedants.add(((Implication) f).getFormulas().getFirst());
+      antecedents.add(((Implication) f).getFormulas().getFirst());
     }
-    return antecedants;
+    return antecedents;
   }
 
   public static final PlFormula dematerialise(PlFormula formula) {
