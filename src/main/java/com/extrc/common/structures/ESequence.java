@@ -31,12 +31,12 @@ public class ESequence extends LinkedList<KnowledgeBase> {
       if (!this.exceptionals.isEmpty()) {
         sb.append("\t\t(");
         if (this.exceptionals.size() > 1) {
-          sb.append("anticidents  ");
+          sb.append("antecedents  ");
         } else {
-          sb.append("anticident ");
+          sb.append("antecedent ");
         }
-        for (PlFormula anticident : this.exceptionals) {
-          sb.append(anticident.toString()).append(", ");
+        for (PlFormula antecedent : this.exceptionals) {
+          sb.append(antecedent.toString()).append(", ");
         }
         sb.delete(sb.length() - 2, sb.length());
         if (this.exceptionals.size() > 1) {
@@ -44,6 +44,7 @@ public class ESequence extends LinkedList<KnowledgeBase> {
         } else {
           sb.append(" is exceptional");
         }
+        sb.append(")");
       }
       return sb.toString();
     }

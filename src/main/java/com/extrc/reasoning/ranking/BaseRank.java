@@ -7,21 +7,21 @@ import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import com.extrc.common.services.Explanation;
 import com.extrc.common.services.RankConstuctor;
 import com.extrc.common.structures.DefeasibleImplication;
 import com.extrc.common.structures.ESequence;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
+import com.extrc.reasoning.explanation.BaseRankExplanation;
 
 public class BaseRank implements RankConstuctor {
   private final KnowledgeBase defeasibleKb;
   private final KnowledgeBase classicalKb;
   private Ranking ranking;
-  private final Explanation explanation;
+  private final BaseRankExplanation explanation;
 
-  public BaseRank(KnowledgeBase knowledgeBase, Explanation explanation) {
+  public BaseRank(KnowledgeBase knowledgeBase, BaseRankExplanation explanation) {
     this.ranking = new Ranking();
     this.defeasibleKb = new KnowledgeBase();
     this.classicalKb = new KnowledgeBase();
@@ -54,16 +54,16 @@ public class BaseRank implements RankConstuctor {
       KnowledgeBase union = previous.union(this.classicalKb);
       KnowledgeBase exceptionals = new KnowledgeBase();
 
-      for (PlFormula antecedant : previous.antecedants()) {
-        if (reasoner.query(union, new Negation(antecedant))) {
-          exceptionals.add(antecedant);
+      for (PlFormula antecedent : previous.antecedents()) {
+        if (reasoner.query(union, new Negation(antecedent))) {
+          exceptionals.add(antecedent);
         }
       }
 
       Rank rank = new Rank();
       for (PlFormula formula : previous) {
-        PlFormula antecedant = ((Implication) formula).getFormulas().getFirst();
-        if (exceptionals.contains(antecedant)) {
+        PlFormula antecedent = ((Implication) formula).getFormulas().getFirst();
+        if (exceptionals.contains(antecedent)) {
           current.add(formula);
         } else {
           rank.add(formula);

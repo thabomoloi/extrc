@@ -15,18 +15,18 @@ import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
 import com.extrc.common.structures.ReasonerTimer;
-import com.extrc.reasoning.explanation.RationalExplanation;
+import com.extrc.reasoning.explanation.RCExplanation;
 import com.extrc.reasoning.ranking.BaseRank;
 
 public class RationalReasoner implements DefeasibleReasoner {
   private final RankConstuctor rankConstructor;
   private final KnowledgeBase knowledgeBase;
-  private Explanation explanation;
+  private final RCExplanation explanation;
 
   public RationalReasoner(KnowledgeBase knowledgeBase) {
     this.knowledgeBase = knowledgeBase;
-    this.explanation = new RationalExplanation();
-    this.rankConstructor = new BaseRank(knowledgeBase, this.explanation);
+    this.explanation = new RCExplanation(this.knowledgeBase);
+    this.rankConstructor = new BaseRank(knowledgeBase, this.explanation.getBaseRankExplanation());
   }
 
   @Override
@@ -63,13 +63,14 @@ public class RationalReasoner implements DefeasibleReasoner {
 
     boolean entailed = !formulas.isEmpty() && reasoner.query(formulas, formula);
     timer.end();
+    this.explanation.setEntailed(entailed);
+    this.explanation.setRemovedRanking(removedRanking);
     return new Entailment(knowledgeBase, baseRanking, removedRanking, queryFormula, entailed, timer);
   }
 
   @Override
   public Explanation explain(PlFormula formula) {
-    this.explanation.setQueryFormula(formula);
-    this.explanation.setKnowledgeBase(knowledgeBase);
+    this.explanation.setFormula(formula);
     this.query(formula);
     return this.explanation;
   }

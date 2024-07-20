@@ -2,17 +2,20 @@ package com.extrc.common.services;
 
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import com.extrc.common.structures.ESequence;
-import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Ranking;
+import com.extrc.reasoning.explanation.BaseRankExplanation;
 
 public interface Explanation {
 
-  public void setKnowledgeBase(KnowledgeBase kb);
+  void setFormula(PlFormula formula);
 
-  public void setQueryFormula(PlFormula formula);
+  void setEntailed(boolean entailed);
 
-  public void setBaseRanking(Ranking baseRanking);
+  void setRemovedRanking(Ranking removedRanking);
 
-  public void setSequence(ESequence sequence);
+  BaseRankExplanation getBaseRankExplanation();
+
+  @Override
+  String toString();
+
 }
