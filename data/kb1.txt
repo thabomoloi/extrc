@@ -1,0 +1,10 @@
+b ~> a
+l ~> !a
+l ~> b
+t ~> a
+t ~> l
+t ~> b
+d ~> !a
+d ~> t
+p ~> a
+p ~> d

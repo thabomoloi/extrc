@@ -21,6 +21,14 @@ public class KnowledgeBase extends PlBeliefSet {
     return result;
   }
 
+  public KnowledgeBase union(Collection<KnowledgeBase> kb) {
+    KnowledgeBase result = new KnowledgeBase();
+    for (KnowledgeBase k : kb) {
+      result = result.union(k);
+    }
+    return result;
+  }
+
   public KnowledgeBase intersection(KnowledgeBase kb) {
     KnowledgeBase result = new KnowledgeBase();
     for (PlFormula f : this) {
