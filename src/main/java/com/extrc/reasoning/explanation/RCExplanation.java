@@ -66,11 +66,12 @@ public class RCExplanation implements Explanation {
     }
     if (entailed) {
       sb.append("\nThe remaining ranks entail the formula ").append(formula).append(".\n");
+      sb.append("Therefore ").append(formula).append(" is entailed by the knowledge base.\n");
     } else {
       sb.append("\nThe remaining ranks do not entail the formula ").append(formula).append(".\n");
+      sb.append("Therefore ").append(formula).append(" is not entailed by the knowledge base.\n");
     }
 
-    sb.append("Therefore ").append(formula).append(" is not entailed by the knowledge base.\n");
     return sb.toString();
   }
 }

@@ -5,6 +5,6 @@ t ~> a
 t ~> l
 t ~> b
 d ~> !a
-d ~> t
+d ~> a
 p ~> a
 p ~> d
