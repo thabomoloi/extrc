@@ -34,11 +34,11 @@ public class RationalReasoner implements DefeasibleReasoner {
     ReasonerTimer timer = new ReasonerTimer();
 
     // Base ranking
-    timer.start("Ranking formulas");
+    timer.start("Base Rank");
     Ranking baseRanking = rankConstructor.construct();
     timer.end();
 
-    timer.start("Removing formulas");
+    timer.start("Rational Closure");
     Ranking removedRanking = new Ranking();
 
     // SAT reasoner

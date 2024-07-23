@@ -37,11 +37,11 @@ public class LexicalReasoner implements DefeasibleReasoner {
     ReasonerTimer timer = new ReasonerTimer();
 
     // Base ranking
-    timer.start("Ranking formulas");
+    timer.start("Base Rank");
     Ranking baseRanking = rankConstructor.construct();
     timer.end();
 
-    timer.start("Removing formulas");
+    timer.start("Lexicographic Closure");
     Ranking removedRanking = new Ranking();
 
     // SAT reasoner
@@ -58,7 +58,6 @@ public class LexicalReasoner implements DefeasibleReasoner {
 
     int i = 0;
     Ranking allSubsets = new Ranking();
-    Ranking allDiscardedSubsets = new Ranking();
 
     while (!formulas.isEmpty() && reasoner.query(formulas, negation) && i < baseRanking.size() - 1) {
       Rank rank = baseRanking.get(i);
@@ -79,22 +78,12 @@ public class LexicalReasoner implements DefeasibleReasoner {
             allSubsets.add(new Rank(i, subset));
             if (!reasoner.query(formulas.union(subset), negation)) {
               formulas.addAll(subset);
-            } else {
-              allDiscardedSubsets.add(new Rank(i, subset));
             }
           }
           subsetSize--;
 
         } while (reasoner.query(formulas, negation) && subsetSize > 0);
         if (!subsets.isEmpty()) {
-          // int min = subsets.get(subsets.size() - 1).size();
-          // for (int j = subsets.size() - 1; j >= 0; j--) {
-          // if (subsets.get(j).size() == min && rank.containsAll(subsets.get(j))) {
-          // removedRank.addAll(subsets.get(j));
-          // } else {
-          // break;
-          // }
-          // }
           int min = allSubsets.get(allSubsets.size() - 1).size();
           for (int j = allSubsets.size() - 1; j >= 0; j--) {
             Rank removed = allSubsets.get(j);
@@ -116,7 +105,6 @@ public class LexicalReasoner implements DefeasibleReasoner {
 
     this.explanation.setEntailed(entailed);
     this.explanation.setRemovedRanking(removedRanking);
-    this.explanation.setDiscardedSubsets(allDiscardedSubsets);
     this.explanation.setSubsets(allSubsets);
 
     return new Entailment(knowledgeBase, baseRanking, removedRanking, queryFormula, entailed, timer);
