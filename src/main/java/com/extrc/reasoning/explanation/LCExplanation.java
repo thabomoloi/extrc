@@ -17,6 +17,8 @@ public class LCExplanation implements Explanation {
   private boolean entailed;
   private final BaseRankExplanation baseRankExplanation;
   private Ranking removedRanking;
+  private Ranking subsets;
+  private Ranking discardedSubsets;
 
   public LCExplanation(KnowledgeBase kb) {
     this.kb = kb;
@@ -24,6 +26,8 @@ public class LCExplanation implements Explanation {
     this.baseRankExplanation = new BaseRankExplanation();
     this.ranking = new Ranking();
     this.removedRanking = new Ranking();
+    this.subsets = new Ranking();
+    this.discardedSubsets = new Ranking();
   }
 
   @Override
@@ -47,30 +51,73 @@ public class LCExplanation implements Explanation {
     this.removedRanking = removedRanking;
   }
 
+  public void setDiscardedSubsets(Ranking discardedSubsets) {
+    this.discardedSubsets = discardedSubsets;
+  }
+
+  public void setSubsets(Ranking subsets) {
+    this.subsets = subsets;
+  }
+
   @Override
   public String toString() {
-    ranking = new Ranking(this.baseRankExplanation.getBaseRanking());
+    this.ranking = new Ranking(this.baseRankExplanation.getBaseRanking());
     StringBuilder sb = new StringBuilder();
     sb.append("K = ").append(kb).append("\n");
     sb.append("query = ").append(formula).append("\n\n");
-    sb.append(this.baseRankExplanation);
+    sb.append(this.baseRankExplanation).append("\n\n");
     if (this.removedRanking.isEmpty()) {
       sb.append("Ranks 0 to ∞ do not entail ").append(negation).append("\n");
     } else {
       for (Rank rank : this.removedRanking) {
-        sb.append("Ranks ").append(rank.getRankNumber()).append(" to ∞ entail ").append(negation).append("\n");
-        sb.append("Remove rank ").append(rank.getRankNumber()).append("\n");
-        this.ranking.poll();
-        sb.append("Remaining ranks:\n").append(this.ranking).append("\n");
+        sb.append("Ranks ").append(rank.getRankNumber()).append(" to ∞ entail ").append(negation).append("\n\n");
+        Ranking curr = new Ranking();
+        for (Rank subset : this.subsets) {
+          if (rank.getRankNumber() == subset.getRankNumber()) {
+            curr.add(subset);
+          }
+        }
+
+        if (this.ranking.peek().size() == 1) {
+          sb.append(String.format("Remove rank %d\n\n", rank.getRankNumber()));
+          this.ranking.poll();
+          sb.append("Remaining ranks:\n").append(this.ranking).append("\n\n");
+        } else {
+          for (int j = 0; j < curr.size(); j++) {
+            Ranking copyRanking = new Ranking(this.ranking);
+            Rank subset = curr.get(j);
+            sb.append(
+                String.format("Possible ranking (Rank %d subset = %s)\n", subset.getRankNumber(), subset.toString()));
+            copyRanking.set(0, subset);
+            sb.append(copyRanking).append("\n\n");
+
+            if (rank.containsAll(subset)) {
+              sb.append(String.format("Ranks %d to ∞ entail ", rank.getRankNumber())).append(negation)
+                  .append("\n");
+              if (j == curr.size() - 1 && rank.size() == this.ranking.peek().size()) {
+                sb.append(String.format("Discard rank %d.\n\n", rank.getRankNumber()));
+                this.ranking.poll();
+                sb.append("Remaining ranks:\n").append(this.ranking).append("\n\n");
+              } else {
+                sb.append("Move to the next subset.\n\n");
+              }
+            } else {
+              sb.append(String.format("Ranks %d to ∞ do not entail ", rank.getRankNumber())).append(negation)
+                  .append("\n");
+              this.ranking.set(0, subset);
+              break;
+            }
+          }
+        }
       }
     }
     if (entailed) {
-      sb.append("The remaining ranks entail the formula ").append(formula).append("\n");
+      sb.append("\nThe remaining ranks entail the formula ").append(formula).append(".\n");
     } else {
-      sb.append("The remaining ranks do not entail the formula ").append(formula).append("\n");
+      sb.append("\nThe remaining ranks do not entail the formula ").append(formula).append(".\n");
     }
 
-    sb.append(formula).append("is not entailed by the knowledge base.\n");
+    sb.append(formula).append(" is not entailed by the knowledge base.\n");
     return sb.toString();
   }
 }

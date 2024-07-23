@@ -1,12 +1,13 @@
 package com.extrc.reasoning.reasoners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
 import org.tweetyproject.logics.pl.sat.Sat4jSolver;
 import org.tweetyproject.logics.pl.sat.SatSolver;
-import org.tweetyproject.logics.pl.syntax.Conjunction;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
-import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
@@ -23,7 +24,7 @@ import com.extrc.reasoning.ranking.BaseRank;
 public class LexicalReasoner implements DefeasibleReasoner {
   private final RankConstuctor rankConstructor;
   private final KnowledgeBase knowledgeBase;
-  private final Explanation explanation;
+  private final LCExplanation explanation;
 
   public LexicalReasoner(KnowledgeBase knowledgeBase) {
     this.knowledgeBase = knowledgeBase;
@@ -56,6 +57,9 @@ public class LexicalReasoner implements DefeasibleReasoner {
     }
 
     int i = 0;
+    Ranking allSubsets = new Ranking();
+    Ranking allDiscardedSubsets = new Ranking();
+
     while (!formulas.isEmpty() && reasoner.query(formulas, negation)) {
       Rank rank = baseRanking.get(i);
       formulas.removeAll(rank);
@@ -65,28 +69,44 @@ public class LexicalReasoner implements DefeasibleReasoner {
 
       int subsetSize = rank.size() - 1;
 
-      KnowledgeBase rankFormulas;
+      List<KnowledgeBase> subsets;
 
-      do {
-        rankFormulas = weakenRank(rank, subsetSize);
-        for (PlFormula conjunction : rankFormulas) {
-          formulas.add(conjunction);
-          if (reasoner.query(formulas, negation)) {
-            formulas.remove(conjunction);
-            Conjunction alpha = (Conjunction) conjunction;
-            for (PlFormula f : alpha) {
-              KnowledgeBase temp = new KnowledgeBase();
-              temp.add(f);
-              if (reasoner.query(formulas.union(temp), negation)) {
-                removedRank.add(f);
-              }
+      if (subsetSize != 0) {
+        do {
+          subsets = refineRank(rank, subsetSize);
+
+          for (KnowledgeBase subset : subsets) {
+            allSubsets.add(new Rank(i, subset));
+            if (!reasoner.query(formulas.union(subset), negation)) {
+              formulas.addAll(subset);
+            } else {
+              allDiscardedSubsets.add(new Rank(i, subset));
             }
           }
+          subsetSize--;
+
+        } while (reasoner.query(formulas, negation) && subsetSize > 0);
+        if (!subsets.isEmpty()) {
+          // int min = subsets.get(subsets.size() - 1).size();
+          // for (int j = subsets.size() - 1; j >= 0; j--) {
+          // if (subsets.get(j).size() == min && rank.containsAll(subsets.get(j))) {
+          // removedRank.addAll(subsets.get(j));
+          // } else {
+          // break;
+          // }
+          // }
+          int min = allSubsets.get(allSubsets.size() - 1).size();
+          for (int j = allSubsets.size() - 1; j >= 0; j--) {
+            Rank removed = allSubsets.get(j);
+            if (removed.size() == min && removed.getRankNumber() == i) {
+              removedRank.addAll(removed.difference(formulas));
+            }
+          }
+
         }
-        subsetSize--;
-
-      } while (reasoner.query(formulas.union(rankFormulas), negation) && subsetSize > 0);
-
+      } else {
+        removedRank.addAll(rank);
+      }
       removedRanking.add(removedRank);
       i++;
     }
@@ -96,27 +116,30 @@ public class LexicalReasoner implements DefeasibleReasoner {
 
     this.explanation.setEntailed(entailed);
     this.explanation.setRemovedRanking(removedRanking);
+    this.explanation.setDiscardedSubsets(allDiscardedSubsets);
+    this.explanation.setSubsets(allSubsets);
 
     return new Entailment(knowledgeBase, baseRanking, removedRanking, queryFormula, entailed, timer);
   }
 
-  private KnowledgeBase weakenRank(Rank rank, int size) {
+  private List<KnowledgeBase> refineRank(Rank rank, int size) {
     int n = rank.size();
     Object[] rankArray = rank.toArray();
 
-    KnowledgeBase possibleFormulas = new KnowledgeBase();
+    List<KnowledgeBase> subsets = new ArrayList<>();
+
     for (int bitmask = 0; bitmask < (1 << n); bitmask++) {
       if (Integer.bitCount(bitmask) == size) {
-        PlBeliefSet conjunction = new PlBeliefSet();
+        KnowledgeBase subset = new KnowledgeBase();
         for (int i = 0; i < n; i++) {
           if ((bitmask & (1 << i)) != 0) {
-            conjunction.add((PlFormula) rankArray[i]);
+            subset.add((PlFormula) rankArray[i]);
           }
         }
-        possibleFormulas.add(new Conjunction(conjunction));
+        subsets.add(subset);
       }
     }
-    return possibleFormulas;
+    return subsets;
   }
 
   @Override
