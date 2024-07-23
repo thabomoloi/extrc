@@ -14,11 +14,11 @@ import com.extrc.reasoning.reasoners.RationalReasoner;
 import com.extrc.view.Validator;
 
 public class ConsoleAppHandler {
-  private KnowledgeBase kb;
+  private final KnowledgeBase kb;
   private DefeasibleReasoner rationalReasoner;
   private DefeasibleReasoner lexicalReasoner;
-  private Validator validator;
-  private Terminal terminal;
+  private final Validator validator;
+  private final Terminal terminal;
 
   public ConsoleAppHandler(Terminal terminal) {
     this.kb = new KnowledgeBase();
@@ -29,19 +29,16 @@ public class ConsoleAppHandler {
   }
 
   public void loadKb(String formulas) {
-    Validator.Node validate = this.validator.validateFormulas(formulas);
-    if (validate.isValid) {
-      this.kb.clear();
-      this.kb.addAll((KnowledgeBase) validate.parsedObject);
-      this.terminal.writer().println(this.kb.toString());
-    } else {
-      this.terminal.writer().println(validate.errorMessage);
-    }
-    this.terminal.writer().flush();
+    loadKnowledgeBase(formulas, false);
   }
 
   public void loadKbFromFile(String formulas) {
-    Validator.Node validate = this.validator.validateFormulasFromFile(formulas);
+    loadKnowledgeBase(formulas, true);
+  }
+
+  private void loadKnowledgeBase(String formulas, boolean fromFile) {
+    Validator.Node validate = fromFile ? this.validator.validateFormulasFromFile(formulas)
+        : this.validator.validateFormulas(formulas);
     if (validate.isValid) {
       this.kb.clear();
       this.kb.addAll((KnowledgeBase) validate.parsedObject);
@@ -53,39 +50,71 @@ public class ConsoleAppHandler {
   }
 
   public void queryAll(String formula) {
-    this.queryRationalReasoner(formula);
-    for (int i = 0; i < 50; i++) {
-      this.terminal.writer().print("\u2582");
+    if (validateQuery(formula)) {
+      queryRationalReasoner(formula);
+      printSeparator(50);
+      queryLexicalReasoner(formula);
     }
-    this.terminal.writer().println("\n");
-    this.queryLexicalReasoner(formula);
   }
 
   public void queryRationalReasoner(String formula) {
-    this.terminal.writer().println();
-    this.rationalReasoner = new RationalReasoner(kb);
-    Validator.Node validate = this.validator.validateFormula(formula);
-    if (validate.isValid) {
-      PlFormula query = (PlFormula) validate.parsedObject;
-      Entailment entailment = this.rationalReasoner.query(query);
-      printTitle("RATIONAL CLOSURE");
-      this.terminal.writer().println(entailment.toString());
-    } else {
-      this.terminal.writer().println(validate.errorMessage);
+    if (validateQuery(formula)) {
+      this.rationalReasoner = new RationalReasoner(kb);
+      queryReasoner(formula, this.rationalReasoner, "RATIONAL CLOSURE");
     }
-    this.terminal.writer().flush();
-
   }
 
   public void queryLexicalReasoner(String formula) {
-    this.terminal.writer().println();
-    this.lexicalReasoner = new LexicalReasoner(kb);
+    if (validateQuery(formula)) {
+      this.lexicalReasoner = new LexicalReasoner(kb);
+      queryReasoner(formula, this.lexicalReasoner, "LEXICOGRAPHIC CLOSURE");
+    }
+  }
 
+  public void explainAll(String formula) {
+    if (validateQuery(formula)) {
+      explainRationalClosure(formula);
+      printSeparator(70);
+      explainLexicalClosure(formula);
+    }
+  }
+
+  public void explainRationalClosure(String formula) {
+    if (validateQuery(formula)) {
+      this.rationalReasoner = new RationalReasoner(kb);
+      explainReasoner(formula, this.rationalReasoner, "RATIONAL CLOSURE EXPLANATION");
+    }
+  }
+
+  public void explainLexicalClosure(String formula) {
+    if (validateQuery(formula)) {
+      this.lexicalReasoner = new LexicalReasoner(kb);
+      explainReasoner(formula, this.lexicalReasoner, "LEXICOGRAPHIC CLOSURE EXPLANATION");
+    }
+  }
+
+  private boolean validateQuery(String formula) {
+    Validator.Node validate = this.validator.validateFormula(formula);
+    if (!validate.isValid) {
+      this.terminal.writer().println(validate.errorMessage);
+      return false;
+    }
+    PlFormula query = (PlFormula) validate.parsedObject;
+    if (!query.toString().contains("~>")) {
+      this.terminal.writer().println("Error: Query must be defeasible implication.");
+      this.terminal.writer().flush();
+      return false;
+    }
+    return true;
+  }
+
+  private void queryReasoner(String formula, DefeasibleReasoner reasoner, String title) {
+    this.terminal.writer().println();
     Validator.Node validate = this.validator.validateFormula(formula);
     if (validate.isValid) {
       PlFormula query = (PlFormula) validate.parsedObject;
-      Entailment entailment = this.lexicalReasoner.query(query);
-      printTitle("LEXICOGRAPHIC CLOSURE");
+      Entailment entailment = reasoner.query(query);
+      printTitle(title);
       this.terminal.writer().println(entailment.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
@@ -93,45 +122,25 @@ public class ConsoleAppHandler {
     this.terminal.writer().flush();
   }
 
-  public void explainAll(String formula) {
-    this.explainRationalClosure(formula);
-    for (int i = 0; i < 70; i++) {
+  private void explainReasoner(String formula, DefeasibleReasoner reasoner, String title) {
+    this.terminal.writer().println();
+    Validator.Node validate = this.validator.validateFormula(formula);
+    if (validate.isValid) {
+      PlFormula query = (PlFormula) validate.parsedObject;
+      Explanation explanation = reasoner.explain(query);
+      printTitle(title);
+      this.terminal.writer().println(explanation.toString());
+    } else {
+      this.terminal.writer().println(validate.errorMessage);
+    }
+    this.terminal.writer().flush();
+  }
+
+  private void printSeparator(int length) {
+    for (int i = 0; i < length; i++) {
       this.terminal.writer().print("\u2582");
     }
     this.terminal.writer().println("\n");
-    this.explainLexicalClosure(formula);
-  }
-
-  public void explainRationalClosure(String formula) {
-    this.terminal.writer().println();
-    this.rationalReasoner = new RationalReasoner(kb);
-
-    Validator.Node validate = this.validator.validateFormula(formula);
-    if (validate.isValid) {
-      PlFormula query = (PlFormula) validate.parsedObject;
-      Explanation explanation = this.rationalReasoner.explain(query);
-      printTitle("RATIONAL CLOSURE EXPLANATION");
-      this.terminal.writer().println(explanation.toString());
-    } else {
-      this.terminal.writer().println(validate.errorMessage);
-    }
-    this.terminal.writer().flush();
-  }
-
-  public void explainLexicalClosure(String formula) {
-    this.terminal.writer().println();
-    this.lexicalReasoner = new LexicalReasoner(kb);
-
-    Validator.Node validate = this.validator.validateFormula(formula);
-    if (validate.isValid) {
-      PlFormula query = (PlFormula) validate.parsedObject;
-      Explanation explanation = this.lexicalReasoner.explain(query);
-      printTitle("LEXICOGRAPHIC CLOSURE EXPLANATION");
-      this.terminal.writer().println(explanation.toString());
-    } else {
-      this.terminal.writer().println(validate.errorMessage);
-    }
-    this.terminal.writer().flush();
   }
 
   private void printTitle(String title) {

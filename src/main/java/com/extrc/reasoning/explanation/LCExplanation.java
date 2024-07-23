@@ -18,7 +18,6 @@ public class LCExplanation implements Explanation {
   private final BaseRankExplanation baseRankExplanation;
   private Ranking removedRanking;
   private Ranking subsets;
-  private Ranking discardedSubsets;
 
   public LCExplanation(KnowledgeBase kb) {
     this.kb = kb;
@@ -27,7 +26,6 @@ public class LCExplanation implements Explanation {
     this.ranking = new Ranking();
     this.removedRanking = new Ranking();
     this.subsets = new Ranking();
-    this.discardedSubsets = new Ranking();
   }
 
   @Override
@@ -49,10 +47,6 @@ public class LCExplanation implements Explanation {
   @Override
   public void setRemovedRanking(Ranking removedRanking) {
     this.removedRanking = removedRanking;
-  }
-
-  public void setDiscardedSubsets(Ranking discardedSubsets) {
-    this.discardedSubsets = discardedSubsets;
   }
 
   public void setSubsets(Ranking subsets) {

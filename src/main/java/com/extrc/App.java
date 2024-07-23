@@ -3,7 +3,6 @@ package com.extrc;
 import java.io.File;
 
 import com.extrc.view.console.ConsoleApp;
-import com.extrc.view.console.Example;
 
 public class App {
     public static void usage() {
