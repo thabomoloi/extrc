@@ -60,7 +60,7 @@ public class LexicalReasoner implements DefeasibleReasoner {
     Ranking allSubsets = new Ranking();
     Ranking allDiscardedSubsets = new Ranking();
 
-    while (!formulas.isEmpty() && reasoner.query(formulas, negation)) {
+    while (!formulas.isEmpty() && reasoner.query(formulas, negation) && i < baseRanking.size() - 1) {
       Rank rank = baseRanking.get(i);
       formulas.removeAll(rank);
 

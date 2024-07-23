@@ -54,7 +54,7 @@ public class RationalReasoner implements DefeasibleReasoner {
     }
 
     int i = 0;
-    while (!formulas.isEmpty() && reasoner.query(formulas, negation)) {
+    while (!formulas.isEmpty() && reasoner.query(formulas, negation) && i < baseRanking.size() - 1) {
       Rank rank = baseRanking.get(i);
       removedRanking.add(rank);
       formulas.removeAll(rank);
