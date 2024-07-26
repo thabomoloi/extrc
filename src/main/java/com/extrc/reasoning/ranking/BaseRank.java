@@ -9,7 +9,7 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.RankConstuctor;
 import com.extrc.common.structures.DefeasibleImplication;
-import com.extrc.common.structures.ESequence;
+import com.extrc.common.structures.ExceptionalitySequence;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
@@ -38,7 +38,7 @@ public class BaseRank implements RankConstuctor {
   @Override
   public Ranking construct() {
     this.ranking = new Ranking();
-    ESequence sequence = new ESequence();
+    ExceptionalitySequence sequence = new ExceptionalitySequence();
     // SAT reasoner
     SatSolver.setDefaultSolver(new Sat4jSolver());
     SatReasoner reasoner = new SatReasoner();
@@ -47,7 +47,7 @@ public class BaseRank implements RankConstuctor {
     KnowledgeBase current = this.defeasibleKb.materialise();
     KnowledgeBase previous;
 
-    sequence.addNode(current);
+    sequence.addElement(current);
     do {
       previous = current;
       current = new KnowledgeBase();
@@ -74,7 +74,7 @@ public class BaseRank implements RankConstuctor {
         rank.setRankNumber(this.ranking.size());
         this.ranking.add(rank);
       }
-      sequence.addNode(current, exceptionals);
+      sequence.addElement(current, exceptionals);
     } while (!current.equals(previous));
 
     ranking.add(new Rank(Integer.MAX_VALUE, this.classicalKb.union(current)));
