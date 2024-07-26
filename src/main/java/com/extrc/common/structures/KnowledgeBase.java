@@ -15,70 +15,76 @@ public class KnowledgeBase extends PlBeliefSet {
     super(formulas);
   }
 
-  public KnowledgeBase union(KnowledgeBase kb) {
+  public KnowledgeBase union(KnowledgeBase knowledgeBase) {
     KnowledgeBase result = new KnowledgeBase(this);
-    result.addAll(kb);
+    result.addAll(knowledgeBase);
     return result;
   }
 
-  public KnowledgeBase union(Collection<KnowledgeBase> kb) {
+  public KnowledgeBase union(Collection<KnowledgeBase> knowledgeBase) {
     KnowledgeBase result = new KnowledgeBase();
-    for (KnowledgeBase k : kb) {
-      result = result.union(k);
+    for (KnowledgeBase kb : knowledgeBase) {
+      result.addAll(kb);
     }
     return result;
   }
 
-  public KnowledgeBase intersection(KnowledgeBase kb) {
+  public KnowledgeBase intersection(KnowledgeBase knowledgeBase) {
     KnowledgeBase result = new KnowledgeBase();
-    for (PlFormula f : this) {
-      if (kb.contains(f)) {
-        result.add(f);
+    for (PlFormula formula : this) {
+      if (knowledgeBase.contains(formula)) {
+        result.add(formula);
       }
     }
     return result;
   }
 
-  public KnowledgeBase difference(KnowledgeBase kb) {
+  public KnowledgeBase difference(KnowledgeBase knowledgeBase) {
     KnowledgeBase result = new KnowledgeBase(this);
-    result.removeAll(kb);
+    result.removeAll(knowledgeBase);
     return result;
+  }
+
+  public KnowledgeBase antecedents() {
+    KnowledgeBase antecedents = new KnowledgeBase();
+    for (PlFormula formula : this) {
+      if (formula instanceof Implication implication) {
+        antecedents.add(implication.getFirstFormula());
+      }
+    }
+    return antecedents;
   }
 
   public KnowledgeBase materialise() {
     KnowledgeBase result = new KnowledgeBase();
-    for (PlFormula f : this) {
-      result.add(KnowledgeBase.materialise(f));
+    for (PlFormula formula : this) {
+      if (formula instanceof DefeasibleImplication defeasibleImplication) {
+        result.add(new Implication(defeasibleImplication.getFormulas()));
+      }
     }
     return result;
   }
 
   public KnowledgeBase dematerialise() {
     KnowledgeBase result = new KnowledgeBase();
-    for (PlFormula f : this) {
-      result.add(KnowledgeBase.dematerialise(f));
+    for (PlFormula formula : this) {
+      if ((formula instanceof Implication implication) && !(formula instanceof DefeasibleImplication)) {
+        result.add(new DefeasibleImplication(implication.getFormulas()));
+      }
     }
     return result;
   }
 
-  public KnowledgeBase antecedents() {
-    KnowledgeBase antecedents = new KnowledgeBase();
-    for (PlFormula f : this) {
-      antecedents.add(((Implication) f).getFormulas().getFirst());
-    }
-    return antecedents;
-  }
-
-  public static final PlFormula dematerialise(PlFormula formula) {
-    if ((formula instanceof Implication)) {
-      return new DefeasibleImplication(((Implication) formula).getFormulas());
+  public static PlFormula materialise(PlFormula formula) {
+    if (formula instanceof DefeasibleImplication defeasibleImplication) {
+      return new Implication(defeasibleImplication.getFormulas());
     }
     return formula;
   }
 
-  public static final PlFormula materialise(PlFormula formula) {
-    if (formula instanceof DefeasibleImplication) {
-      return new Implication(((DefeasibleImplication) formula).getFormulas());
+  public static PlFormula dematerialise(PlFormula formula) {
+    if (formula instanceof Implication implication) {
+      return new DefeasibleImplication(implication.getFormulas());
     }
     return formula;
   }

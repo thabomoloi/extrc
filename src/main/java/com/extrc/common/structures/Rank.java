@@ -30,15 +30,7 @@ public class Rank extends KnowledgeBase {
     this.rankNumber = rankNumber;
   }
 
-  // @Override
-  // public String toString() {
-  // if (this.rankNumber == Integer.MAX_VALUE) {
-  // return "Rank ∞: " + super.toString();
-  // }
-  // return "Rank " + rankNumber + ": " + super.toString();
-  // }
-
   public String formulasToString() {
-    return super.toString().replace("{", "").replace("}", "");
+    return super.toString().replaceAll("[{}]", "");
   }
 }
