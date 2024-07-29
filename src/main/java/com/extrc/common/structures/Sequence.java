@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * 
  * @author Thabo Vincent Moloi
  */
-public class ExceptionalitySequence extends ArrayList<SequenceElement> {
+public class Sequence extends ArrayList<SequenceElement> {
 
   /**
    * Add element to this sequence from given formulas.

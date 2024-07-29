@@ -11,38 +11,44 @@ import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
-import com.extrc.common.services.Explanation;
-import com.extrc.common.services.RankConstuctor;
-import com.extrc.common.structures.Entailment;
+import com.extrc.common.structures.EntailmentResult;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
 import com.extrc.common.structures.ReasonerTimer;
-import com.extrc.reasoning.explanation.LCExplanation;
 import com.extrc.reasoning.ranking.BaseRank;
 
+/**
+ * This class represents a defeasible reasoner using lexicographic closure.
+ * 
+ * @author Thabo Vincent Moloi
+ */
 public class LexicalReasoner implements DefeasibleReasoner {
-  private final RankConstuctor rankConstructor;
-  private final KnowledgeBase knowledgeBase;
-  private final LCExplanation explanation;
+  /** Knowledge base used to reason. */
+  private KnowledgeBase knowledgeBase;
 
+  /**
+   * Constructs a new lexicographic closure reasoner.
+   * 
+   * @param knowledgeBase
+   */
   public LexicalReasoner(KnowledgeBase knowledgeBase) {
     this.knowledgeBase = knowledgeBase;
-    this.explanation = new LCExplanation(this.knowledgeBase);
-    this.rankConstructor = new BaseRank(knowledgeBase, this.explanation.getBaseRankExplanation());
   }
 
   @Override
-  public Entailment query(PlFormula queryFormula) {
-    ReasonerTimer timer = new ReasonerTimer();
+  public EntailmentResult query(PlFormula queryFormula) {
+    EntailmentResult entailment = new EntailmentResult(queryFormula, this.knowledgeBase,
+        new BaseRank(this.knowledgeBase));
+    ReasonerTimer timer = entailment.getTimer();
 
     // Base ranking
     timer.start("Base Rank");
-    Ranking baseRanking = rankConstructor.construct();
+    Ranking baseRanking = entailment.getBaseRank().construct();
     timer.end();
 
     timer.start("Lexicographic Closure");
-    Ranking removedRanking = new Ranking();
+    Ranking removedRanking = entailment.getRemoveRanking();
 
     // SAT reasoner
     SatSolver.setDefaultSolver(new Sat4jSolver());
@@ -57,7 +63,7 @@ public class LexicalReasoner implements DefeasibleReasoner {
     }
 
     int i = 0;
-    Ranking allSubsets = new Ranking();
+    Ranking allSubsets = entailment.getSubsets();
 
     while (!formulas.isEmpty() && reasoner.query(formulas, negation) && i < baseRanking.size() - 1) {
       Rank rank = baseRanking.get(i);
@@ -103,13 +109,18 @@ public class LexicalReasoner implements DefeasibleReasoner {
     boolean entailed = !formulas.isEmpty() && reasoner.query(formulas, formula);
     timer.end();
 
-    this.explanation.setEntailed(entailed);
-    this.explanation.setRemovedRanking(removedRanking);
-    this.explanation.setSubsets(allSubsets);
+    entailment.setEntailed(entailed);
 
-    return new Entailment(knowledgeBase, baseRanking, removedRanking, queryFormula, entailed, timer);
+    return entailment;
   }
 
+  /**
+   * Finds subsets of a specific size in which rank formulas are removed.
+   * 
+   * @param rank Rank to refine.
+   * @param size Size of the subset.
+   * @return The list of subsets representing possible ranks.
+   */
   private List<KnowledgeBase> refineRank(Rank rank, int size) {
     int n = rank.size();
     Object[] rankArray = rank.toArray();
@@ -131,10 +142,12 @@ public class LexicalReasoner implements DefeasibleReasoner {
   }
 
   @Override
-  public Explanation explain(PlFormula formula) {
-    this.explanation.setFormula(formula);
-    this.query(formula);
-    return this.explanation;
+  public void setKnowledgeBase(KnowledgeBase knowledgeBase) {
+    this.knowledgeBase = knowledgeBase;
   }
 
+  @Override
+  public KnowledgeBase getKnowledgeBase() {
+    return this.knowledgeBase;
+  }
 }

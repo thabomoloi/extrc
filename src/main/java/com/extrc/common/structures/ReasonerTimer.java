@@ -2,59 +2,97 @@ package com.extrc.common.structures;
 
 import java.util.ArrayList;
 
-import com.extrc.common.structures.ReasonerTimer.TimerNode;
+/**
+ * Represents the time taken for different algorithms.
+ * This class extends ArrayList to store multiple TimerNode instances.
+ * Each TimerNode represents the time taken by a specific algorithm.
+ * 
+ * <p>
+ * Usage example:
+ * </p>
+ * 
+ * <pre>{@code
+ * ReasonerTimer timer = new ReasonerTimer();
+ * 
+ * timer.start("Algorithm A");
+ * // run algorithm A
+ * timer.end();
+ * 
+ * timer.start("Algorithm B");
+ * // run algorithm B
+ * timer.end();
+ * 
+ * for (ReasonerTimer.TimerNode node : timer) {
+ *   System.out.println(node.getTitle() + ": " + node.getTimeTaken() + " seconds");
+ * }
+ * }</pre>
+ * 
+ * The above usage example will output the time taken by each algorithm.
+ * 
+ * @author Thabo Vincent Moloi
+ */
+public class ReasonerTimer extends ArrayList<ReasonerTimer.TimerNode> {
 
-import de.vandermeer.asciitable.AsciiTable;
-import de.vandermeer.asciitable.CWC_LongestWordMin;
-import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
+  /** Current title of the running timer. */
+  private String currentTitle = "";
+  /** Start time in nanoseconds. */
+  private long startTime = 0;
 
-public class ReasonerTimer extends ArrayList<TimerNode> {
-  public class TimerNode {
-    public final String title;
-    public final double timeTaken;
+  /**
+   * Starts the timer for a specific algorithm.
+   * 
+   * @param title Name of the algorithm.
+   */
+  public void start(String title) {
+    this.currentTitle = title;
+    this.startTime = System.nanoTime();
+  }
 
+  /**
+   * Ends the timer for the current algorithm and records the time taken.
+   */
+  public void end() {
+    long endTime = System.nanoTime();
+    double timeTakenInSeconds = (endTime - startTime) / 1_000_000_000.0;
+    this.add(new TimerNode(currentTitle, timeTakenInSeconds));
+  }
+
+  /**
+   * Represents the time taken for a specific algorithm.
+   */
+  public static class TimerNode {
+    /** Name of the algorithm. */
+    private final String title;
+    /** Time taken in seconds. */
+    private final double timeTaken;
+
+    /**
+     * Constructs a new TimerNode.
+     * 
+     * @param title     Name of the algorithm.
+     * @param timeTaken Time taken in seconds.
+     */
     public TimerNode(String title, double timeTaken) {
       this.title = title;
       this.timeTaken = timeTaken;
     }
-  }
 
-  private String title = "";
-  private long start_time = 0;
-  private long end_time = 0;
-
-  public void start(String title) {
-    this.title = title;
-    start_time = System.nanoTime();
-  }
-
-  public void end() {
-    end_time = System.nanoTime();
-    add(new TimerNode(title, (end_time - start_time) / 1_000_000_000.0));
-  }
-
-  @Override
-  public String toString() {
-    AsciiTable times = new AsciiTable();
-    times.addRule();
-    int[] maxLengths = new int[] { -1, -1 };
-
-    for (TimerNode node : this) {
-      String timeTaken = String.format("%.6f seconds", node.timeTaken);
-      maxLengths[1] = maxLengths[1] >= timeTaken.length() ? maxLengths[1] : timeTaken.length() + 2;
-      maxLengths[0] = maxLengths[0] >= node.title.length() ? maxLengths[0] : node.title.length() + 2;
-      times.addRow(node.title, timeTaken);
-      times.addRule();
+    /**
+     * Retrieves the title of the algorithm.
+     * 
+     * @return Title of the algorithm.
+     */
+    public String getTitle() {
+      return title;
     }
-    if (this.isEmpty()) {
-      maxLengths[0] = 3;
-      maxLengths[1] = 10;
-      times.addRow("", "");
-      times.addRule();
-    }
-    times.getRenderer().setCWC(new CWC_LongestWordMin(maxLengths));
-    times.setTextAlignment(TextAlignment.LEFT);
-    return times.render();
 
+    /**
+     * Retrieves the time taken for the algorithm.
+     * 
+     * @return Time taken in seconds.
+     */
+    public double getTimeTaken() {
+      return timeTaken;
+    }
   }
 }

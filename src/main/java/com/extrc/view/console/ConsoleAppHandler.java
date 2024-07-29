@@ -6,8 +6,7 @@ import org.jline.utils.AttributedStyle;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
-import com.extrc.common.services.Explanation;
-import com.extrc.common.structures.Entailment;
+import com.extrc.common.structures.EntailmentResult;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.reasoning.reasoners.LexicalReasoner;
 import com.extrc.reasoning.reasoners.RationalReasoner;
@@ -71,27 +70,27 @@ public class ConsoleAppHandler {
     }
   }
 
-  public void explainAll(String formula) {
-    if (validateQuery(formula)) {
-      explainRationalClosure(formula);
-      printSeparator(70);
-      explainLexicalClosure(formula);
-    }
-  }
+  // public void explainAll(String formula) {
+  //   if (validateQuery(formula)) {
+  //     explainRationalClosure(formula);
+  //     printSeparator(70);
+  //     explainLexicalClosure(formula);
+  //   }
+  // }
 
-  public void explainRationalClosure(String formula) {
-    if (validateQuery(formula)) {
-      this.rationalReasoner = new RationalReasoner(kb);
-      explainReasoner(formula, this.rationalReasoner, "RATIONAL CLOSURE EXPLANATION");
-    }
-  }
+  // public void explainRationalClosure(String formula) {
+  //   if (validateQuery(formula)) {
+  //     this.rationalReasoner = new RationalReasoner(kb);
+  //     explainReasoner(formula, this.rationalReasoner, "RATIONAL CLOSURE EXPLANATION");
+  //   }
+  // }
 
-  public void explainLexicalClosure(String formula) {
-    if (validateQuery(formula)) {
-      this.lexicalReasoner = new LexicalReasoner(kb);
-      explainReasoner(formula, this.lexicalReasoner, "LEXICOGRAPHIC CLOSURE EXPLANATION");
-    }
-  }
+  // public void explainLexicalClosure(String formula) {
+  //   if (validateQuery(formula)) {
+  //     this.lexicalReasoner = new LexicalReasoner(kb);
+  //     explainReasoner(formula, this.lexicalReasoner, "LEXICOGRAPHIC CLOSURE EXPLANATION");
+  //   }
+  // }
 
   private boolean validateQuery(String formula) {
     Validator.Node validate = this.validator.validateFormula(formula);
@@ -113,23 +112,9 @@ public class ConsoleAppHandler {
     Validator.Node validate = this.validator.validateFormula(formula);
     if (validate.isValid) {
       PlFormula query = (PlFormula) validate.parsedObject;
-      Entailment entailment = reasoner.query(query);
+      EntailmentResult entailment = reasoner.query(query);
       printTitle(title);
       this.terminal.writer().println(entailment.toString());
-    } else {
-      this.terminal.writer().println(validate.errorMessage);
-    }
-    this.terminal.writer().flush();
-  }
-
-  private void explainReasoner(String formula, DefeasibleReasoner reasoner, String title) {
-    this.terminal.writer().println();
-    Validator.Node validate = this.validator.validateFormula(formula);
-    if (validate.isValid) {
-      PlFormula query = (PlFormula) validate.parsedObject;
-      Explanation explanation = reasoner.explain(query);
-      printTitle(title);
-      this.terminal.writer().println(explanation.toString());
     } else {
       this.terminal.writer().println(validate.errorMessage);
     }
