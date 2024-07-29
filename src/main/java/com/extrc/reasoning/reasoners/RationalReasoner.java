@@ -45,7 +45,7 @@ public class RationalReasoner implements DefeasibleReasoner {
     timer.end();
 
     timer.start("Rational Closure");
-    Ranking removedRanking = entailment.getRemoveRanking();
+    Ranking removedRanking = entailment.getRemovedRanking();
 
     // SAT reasoner
     SatSolver.setDefaultSolver(new Sat4jSolver());

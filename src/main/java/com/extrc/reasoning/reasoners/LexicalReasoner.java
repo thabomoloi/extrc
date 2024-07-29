@@ -48,7 +48,7 @@ public class LexicalReasoner implements DefeasibleReasoner {
     timer.end();
 
     timer.start("Lexicographic Closure");
-    Ranking removedRanking = entailment.getRemoveRanking();
+    Ranking removedRanking = entailment.getRemovedRanking();
 
     // SAT reasoner
     SatSolver.setDefaultSolver(new Sat4jSolver());

@@ -11,6 +11,7 @@ import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.reasoning.reasoners.LexicalReasoner;
 import com.extrc.reasoning.reasoners.RationalReasoner;
 import com.extrc.view.Validator;
+import com.extrc.view.console.components.EntailmentView;
 
 public class ConsoleAppHandler {
   private final KnowledgeBase kb;
@@ -112,9 +113,8 @@ public class ConsoleAppHandler {
     Validator.Node validate = this.validator.validateFormula(formula);
     if (validate.isValid) {
       PlFormula query = (PlFormula) validate.parsedObject;
-      EntailmentResult entailment = reasoner.query(query);
       printTitle(title);
-      this.terminal.writer().println(entailment.toString());
+      this.terminal.writer().println(new EntailmentView(reasoner.query(query)));
     } else {
       this.terminal.writer().println(validate.errorMessage);
     }
