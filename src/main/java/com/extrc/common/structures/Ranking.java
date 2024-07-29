@@ -41,7 +41,7 @@ public class Ranking extends ArrayList<Rank> {
    */
   public Rank getRank(int rankNumber) {
     if (rankNumber == Integer.MAX_VALUE) {
-      return this.getLast();
+      return this.get(this.size() - 1);
     }
     return this.get(rankNumber);
   }

@@ -86,7 +86,7 @@ public class EntailmentResult {
    *
    * @return the ranking of removed elements
    */
-  public Ranking getRemoveRanking() {
+  public Ranking getRemovedRanking() {
     return this.removedRanking;
   }
 
