@@ -7,25 +7,24 @@ import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-import com.extrc.common.services.RankConstuctor;
+import com.extrc.common.services.RankConstructor;
 import com.extrc.common.structures.DefeasibleImplication;
-import com.extrc.common.structures.ExceptionalitySequence;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.common.structures.Rank;
 import com.extrc.common.structures.Ranking;
-import com.extrc.reasoning.explanation.BaseRankExplanation;
+import com.extrc.common.structures.Sequence;
 
-public class BaseRank implements RankConstuctor {
+public class BaseRank implements RankConstructor {
   private final KnowledgeBase defeasibleKb;
   private final KnowledgeBase classicalKb;
+  private Sequence sequence;
   private Ranking ranking;
-  private final BaseRankExplanation explanation;
 
-  public BaseRank(KnowledgeBase knowledgeBase, BaseRankExplanation explanation) {
+  public BaseRank(KnowledgeBase knowledgeBase) {
     this.ranking = new Ranking();
+    this.sequence = new Sequence();
     this.defeasibleKb = new KnowledgeBase();
     this.classicalKb = new KnowledgeBase();
-    this.explanation = explanation;
     for (PlFormula formula : knowledgeBase) {
       if (formula instanceof DefeasibleImplication) {
         this.defeasibleKb.add(formula);
@@ -38,7 +37,8 @@ public class BaseRank implements RankConstuctor {
   @Override
   public Ranking construct() {
     this.ranking = new Ranking();
-    ExceptionalitySequence sequence = new ExceptionalitySequence();
+    this.sequence = new Sequence();
+
     // SAT reasoner
     SatSolver.setDefaultSolver(new Sat4jSolver());
     SatReasoner reasoner = new SatReasoner();
@@ -47,7 +47,7 @@ public class BaseRank implements RankConstuctor {
     KnowledgeBase current = this.defeasibleKb.materialise();
     KnowledgeBase previous;
 
-    sequence.addElement(current);
+    this.sequence.addElement(current);
     do {
       previous = current;
       current = new KnowledgeBase();
@@ -74,13 +74,21 @@ public class BaseRank implements RankConstuctor {
         rank.setRankNumber(this.ranking.size());
         this.ranking.add(rank);
       }
-      sequence.addElement(current, exceptionals);
+      this.sequence.addElement(current, exceptionals);
     } while (!current.equals(previous));
 
     ranking.add(new Rank(Integer.MAX_VALUE, this.classicalKb.union(current)));
-    explanation.setBaseRanking(this.ranking);
-    explanation.setSequence(sequence);
     return ranking;
+  }
+
+  @Override
+  public Sequence getSequence() {
+    return this.sequence;
+  }
+
+  @Override
+  public Ranking getRanking() {
+    return this.ranking;
   }
 
 }

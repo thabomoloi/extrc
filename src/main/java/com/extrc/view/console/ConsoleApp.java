@@ -174,18 +174,18 @@ public class ConsoleApp {
             }
           }
           case "explain" -> {
-            if (pl.words().size() > 1) {
-              String option = pl.words().get(1);
-              String formula = pl.words().size() > 2 ? pl.words().get(2) : null;
-              switch (option) {
-                case "--all" -> appHandler.explainAll(formula);
-                case "--rational" -> appHandler.explainRationalClosure(formula);
-                case "--lexical" -> appHandler.explainLexicalClosure(formula);
-                default -> appHandler.explainAll(pl.words().get(1));
-              }
-            } else {
-              System.out.println("Error: Missing options or formula for query.");
-            }
+            // if (pl.words().size() > 1) {
+            // String option = pl.words().get(1);
+            // String formula = pl.words().size() > 2 ? pl.words().get(2) : null;
+            // switch (option) {
+            // case "--all" -> appHandler.explainAll(formula);
+            // case "--rational" -> appHandler.explainRationalClosure(formula);
+            // case "--lexical" -> appHandler.explainLexicalClosure(formula);
+            // default -> appHandler.explainAll(pl.words().get(1));
+            // }
+            // } else {
+            // System.out.println("Error: Missing options or formula for query.");
+            // }
           }
           case "clear" -> {
             terminal.puts(Capability.clear_screen);
