@@ -191,7 +191,21 @@ public class ConsoleApp {
               System.out.println("Error: Missing options or formula for query.");
             }
           }
-          case "clear" -> {
+          case "view-rank" -> {
+            if (pl.words().size() > 1) {
+              String option = pl.words().get(1);
+              String number = pl.words().size() > 2 ? pl.words().get(2) : null;
+              switch (option) {
+                case "--all" -> appHandler.viewRankAll(number);
+                case "--rational" -> appHandler.viewRankRational(number);
+                case "--lexical" -> appHandler.viewRankLexical(number);
+                default -> appHandler.viewRankAll(pl.words().get(1));
+              }
+            } else {
+              System.out.println("Error: Missing options or formula for query.");
+            }
+          }
+          case "clear", "cls" -> {
             terminal.puts(Capability.clear_screen);
             terminal.flush();
           }

@@ -15,6 +15,7 @@ import com.extrc.reasoning.reasoners.RationalReasoner;
 import com.extrc.view.Validator;
 import com.extrc.view.console.components.EntailmentView;
 import com.extrc.view.console.components.ExplanationView;
+import com.extrc.view.console.components.RankView;
 
 public class ConsoleAppHandler {
   private final KnowledgeBase knowledgeBase;
@@ -117,6 +118,55 @@ public class ConsoleAppHandler {
         entailment.setLexicalEntailment(lexicalReasoner.query(query));
       }
       writer.println(new ExplanationView(entailment.getLexicalEntailment()));
+      writer.flush();
+    }
+  }
+
+  public void viewRankAll(String number) {
+    try {
+      int rankNumber = Integer.parseInt(number);
+      viewRankRational(Integer.toString(rankNumber));
+      printSeparator(70);
+      viewRankLexical(Integer.toString(rankNumber));
+      writer.flush();
+    } catch (NumberFormatException e) {
+      writer.println("Error parsing rank number \"" + number + "\".");
+      writer.flush();
+    }
+  }
+
+  public void viewRankRational(String number) {
+    try {
+      int rankNumber = Integer.parseInt(number);
+      printTitle(String.format("RANK %d (RATIONAL CLOSURE)", rankNumber));
+      if (entailment.getRationalEntailment() == null) {
+        writer.println("Error: rational entailment not computed yet.");
+      } else if (rankNumber > entailment.getRationalEntailment().getBaseRank().getRanking().size() - 2) {
+        writer.println("Error: rank number " + rankNumber + " out of range.");
+      } else {
+        writer.println(new RankView(rankNumber, entailment.getRationalEntailment()));
+      }
+      writer.flush();
+    } catch (NumberFormatException e) {
+      writer.println("Error parsing rank number \"" + number + "\".");
+      writer.flush();
+    }
+  }
+
+  public void viewRankLexical(String number) {
+    try {
+      int rankNumber = Integer.parseInt(number);
+      printTitle(String.format("RANK %d (LEXICOGRAPHIC CLOSURE)", rankNumber));
+      if (entailment.getLexicalEntailment() == null) {
+        writer.println("Error: lexicographic entailment not computed yet.");
+      } else if (rankNumber > entailment.getLexicalEntailment().getBaseRank().getRanking().size() - 2) {
+        writer.println("Error: rank number " + rankNumber + " out of range.");
+      } else {
+        writer.println(new RankView(rankNumber, entailment.getLexicalEntailment()));
+      }
+      writer.flush();
+    } catch (NumberFormatException e) {
+      writer.println("Error parsing rank number \"" + number + "\".");
       writer.flush();
     }
   }
