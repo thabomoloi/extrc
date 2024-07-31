@@ -103,7 +103,7 @@ public class ConsoleAppHandler {
           || !knowledgeBase.equals(entailment.getLexicalEntailment().getKnowledgeBase())) {
         entailment.setRationalEntailment(rationalReasoner.query(query));
       }
-      writer.println(new ExplanationView("rational", entailment.getRationalEntailment()));
+      writer.println(new ExplanationView(entailment.getRationalEntailment()));
       writer.flush();
     }
   }
@@ -116,7 +116,7 @@ public class ConsoleAppHandler {
           || !knowledgeBase.equals(entailment.getLexicalEntailment().getKnowledgeBase())) {
         entailment.setLexicalEntailment(lexicalReasoner.query(query));
       }
-      writer.println(new ExplanationView("rational", entailment.getLexicalEntailment()));
+      writer.println(new ExplanationView(entailment.getLexicalEntailment()));
       writer.flush();
     }
   }
