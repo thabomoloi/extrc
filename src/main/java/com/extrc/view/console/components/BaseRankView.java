@@ -27,7 +27,7 @@ public class BaseRankView {
     sb.append("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n");
     for (int i = 0, n = sequence.size(); i < n; i++) {
       SequenceElement element = sequence.get(i);
-      if (n > 4 && i >= 2 && i < n - 3) {
+      if (n > 4 && i >= 2 && i < n - 2) {
         if (i == 2) {
           sb.append("...\n");
         }
