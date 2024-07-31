@@ -1,12 +1,16 @@
 package com.extrc.view.console;
 
+import java.io.PrintWriter;
+
+import javax.management.Query;
+
 import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
-import com.extrc.common.structures.EntailmentResult;
+import com.extrc.common.structures.Entailment;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.reasoning.reasoners.LexicalReasoner;
 import com.extrc.reasoning.reasoners.RationalReasoner;
@@ -14,39 +18,46 @@ import com.extrc.view.Validator;
 import com.extrc.view.console.components.EntailmentView;
 
 public class ConsoleAppHandler {
-  private final KnowledgeBase kb;
-  private DefeasibleReasoner rationalReasoner;
-  private DefeasibleReasoner lexicalReasoner;
+  private final KnowledgeBase knowledgeBase;
+  private final DefeasibleReasoner rationalReasoner;
+  private final DefeasibleReasoner lexicalReasoner;
   private final Validator validator;
-  private final Terminal terminal;
+  private final Entailment entailment;
+  private final PrintWriter writer;
+  private PlFormula query;
 
   public ConsoleAppHandler(Terminal terminal) {
-    this.kb = new KnowledgeBase();
-    this.rationalReasoner = new RationalReasoner(kb);
-    this.lexicalReasoner = new LexicalReasoner(kb);
-    this.terminal = terminal;
-    this.validator = new Validator();
+    knowledgeBase = new KnowledgeBase();
+    rationalReasoner = new RationalReasoner(knowledgeBase);
+    lexicalReasoner = new LexicalReasoner(knowledgeBase);
+    writer = terminal.writer();
+    validator = new Validator();
+    entailment = new Entailment();
+    query = null;
   }
 
   public void loadKb(String formulas) {
-    loadKnowledgeBase(formulas, false);
+    loadKb(validator.validateFormulas(formulas));
   }
 
-  public void loadKbFromFile(String formulas) {
-    loadKnowledgeBase(formulas, true);
+  public void loadKbFromFile(String filepath) {
+    loadKb(validator.validateFormulasFromFile(filepath));
   }
 
-  private void loadKnowledgeBase(String formulas, boolean fromFile) {
-    Validator.Node validate = fromFile ? this.validator.validateFormulasFromFile(formulas)
-        : this.validator.validateFormulas(formulas);
-    if (validate.isValid) {
-      this.kb.clear();
-      this.kb.addAll((KnowledgeBase) validate.parsedObject);
-      this.terminal.writer().println(this.kb.toString());
+  private void loadKb(Validator.Node validation) {
+    if (validation.isValid) {
+      knowledgeBase.clear();
+      knowledgeBase.addAll((KnowledgeBase) validation.parsedObject);
+      writer.println(knowledgeBase);
     } else {
-      this.terminal.writer().println(validate.errorMessage);
+      writer.println(validation.errorMessage);
     }
-    this.terminal.writer().flush();
+    writer.flush();
+  }
+
+  public void showKb() {
+    writer.println(knowledgeBase);
+    writer.flush();
   }
 
   public void queryAll(String formula) {
@@ -59,83 +70,52 @@ public class ConsoleAppHandler {
 
   public void queryRationalReasoner(String formula) {
     if (validateQuery(formula)) {
-      this.rationalReasoner = new RationalReasoner(kb);
-      queryReasoner(formula, this.rationalReasoner, "RATIONAL CLOSURE");
+      entailment.setRationalEntailment(rationalReasoner.query(query));
+      printTitle("RATIONAL CLOSURE");
+      writer.println(new EntailmentView(entailment.getRationalEntailment()));
+      writer.flush();
     }
   }
 
   public void queryLexicalReasoner(String formula) {
     if (validateQuery(formula)) {
-      this.lexicalReasoner = new LexicalReasoner(kb);
-      queryReasoner(formula, this.lexicalReasoner, "LEXICOGRAPHIC CLOSURE");
+      entailment.setLexicalEntailment(lexicalReasoner.query(query));
+      printTitle("LEXICOGRAPHIC CLOSURE");
+      writer.println(new EntailmentView(entailment.getLexicalEntailment()));
+      writer.flush();
     }
   }
 
-  // public void explainAll(String formula) {
-  //   if (validateQuery(formula)) {
-  //     explainRationalClosure(formula);
-  //     printSeparator(70);
-  //     explainLexicalClosure(formula);
-  //   }
-  // }
-
-  // public void explainRationalClosure(String formula) {
-  //   if (validateQuery(formula)) {
-  //     this.rationalReasoner = new RationalReasoner(kb);
-  //     explainReasoner(formula, this.rationalReasoner, "RATIONAL CLOSURE EXPLANATION");
-  //   }
-  // }
-
-  // public void explainLexicalClosure(String formula) {
-  //   if (validateQuery(formula)) {
-  //     this.lexicalReasoner = new LexicalReasoner(kb);
-  //     explainReasoner(formula, this.lexicalReasoner, "LEXICOGRAPHIC CLOSURE EXPLANATION");
-  //   }
-  // }
-
   private boolean validateQuery(String formula) {
-    Validator.Node validate = this.validator.validateFormula(formula);
+    Validator.Node validate = validator.validateFormula(formula);
     if (!validate.isValid) {
-      this.terminal.writer().println(validate.errorMessage);
+      writer.println(validate.errorMessage);
       return false;
     }
-    PlFormula query = (PlFormula) validate.parsedObject;
+    query = (PlFormula) validate.parsedObject;
     if (!query.toString().contains("~>")) {
-      this.terminal.writer().println("Error: Query must be defeasible implication.");
-      this.terminal.writer().flush();
+      writer.println("Error: Query must be defeasible implication.");
+      writer.flush();
       return false;
     }
     return true;
   }
 
-  private void queryReasoner(String formula, DefeasibleReasoner reasoner, String title) {
-    this.terminal.writer().println();
-    Validator.Node validate = this.validator.validateFormula(formula);
-    if (validate.isValid) {
-      PlFormula query = (PlFormula) validate.parsedObject;
-      printTitle(title);
-      this.terminal.writer().println(new EntailmentView(reasoner.query(query)));
-    } else {
-      this.terminal.writer().println(validate.errorMessage);
-    }
-    this.terminal.writer().flush();
-  }
-
   private void printSeparator(int length) {
     for (int i = 0; i < length; i++) {
-      this.terminal.writer().print("\u2582");
+      writer.print("\u2582");
     }
-    this.terminal.writer().println("\n");
+    writer.println("\n");
   }
 
   private void printTitle(String title) {
     String heading = new AttributedStringBuilder()
         .style(AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE).bold())
         .append(title).style(AttributedStyle.DEFAULT).toAnsi();
-    this.terminal.writer().println(heading);
+    writer.println(heading);
     for (int i = 0; i < title.length(); i++) {
-      this.terminal.writer().print("\u2500");
+      writer.print("\u2500");
     }
-    this.terminal.writer().println("\n");
+    writer.println("\n");
   }
 }
