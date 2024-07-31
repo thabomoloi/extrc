@@ -2,8 +2,6 @@ package com.extrc.view.console;
 
 import java.io.PrintWriter;
 
-import javax.management.Query;
-
 import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
@@ -16,6 +14,7 @@ import com.extrc.reasoning.reasoners.LexicalReasoner;
 import com.extrc.reasoning.reasoners.RationalReasoner;
 import com.extrc.view.Validator;
 import com.extrc.view.console.components.EntailmentView;
+import com.extrc.view.console.components.ExplanationView;
 
 public class ConsoleAppHandler {
   private final KnowledgeBase knowledgeBase;
@@ -48,6 +47,8 @@ public class ConsoleAppHandler {
     if (validation.isValid) {
       knowledgeBase.clear();
       knowledgeBase.addAll((KnowledgeBase) validation.parsedObject);
+      entailment.setLexicalEntailment(null);
+      entailment.setRationalEntailment(null);
       writer.println(knowledgeBase);
     } else {
       writer.println(validation.errorMessage);
@@ -82,6 +83,40 @@ public class ConsoleAppHandler {
       entailment.setLexicalEntailment(lexicalReasoner.query(query));
       printTitle("LEXICOGRAPHIC CLOSURE");
       writer.println(new EntailmentView(entailment.getLexicalEntailment()));
+      writer.flush();
+    }
+  }
+
+  public void explainAll(String formula) {
+    if (validateQuery(formula)) {
+      explainRationalClosure(formula);
+      printSeparator(70);
+      explainLexicalClosure(formula);
+    }
+  }
+
+  public void explainRationalClosure(String formula) {
+    if (validateQuery(formula)) {
+      printTitle("RATIONAL CLOSURE EXPLANATION");
+      if (entailment.getRationalEntailment() == null
+          || !query.equals(entailment.getRationalEntailment().getFormula())
+          || !knowledgeBase.equals(entailment.getLexicalEntailment().getKnowledgeBase())) {
+        entailment.setRationalEntailment(rationalReasoner.query(query));
+      }
+      writer.println(new ExplanationView("rational", entailment.getRationalEntailment()));
+      writer.flush();
+    }
+  }
+
+  public void explainLexicalClosure(String formula) {
+    if (validateQuery(formula)) {
+      printTitle("LEXICOGRAPHIC CLOSURE EXPLANATION");
+      if (entailment.getLexicalEntailment() == null
+          || !query.equals(entailment.getLexicalEntailment().getFormula())
+          || !knowledgeBase.equals(entailment.getLexicalEntailment().getKnowledgeBase())) {
+        entailment.setLexicalEntailment(lexicalReasoner.query(query));
+      }
+      writer.println(new ExplanationView("rational", entailment.getLexicalEntailment()));
       writer.flush();
     }
   }
