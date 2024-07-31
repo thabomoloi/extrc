@@ -33,6 +33,8 @@ public class TimingView {
       times.addRow("", "");
       times.addRule();
     }
+    times.setPaddingLeft(1);
+    times.setPaddingRight(1);
     times.getRenderer().setCWC(new CWC_LongestWordMin(maxLengths));
     times.setTextAlignment(TextAlignment.LEFT);
     return times.render();

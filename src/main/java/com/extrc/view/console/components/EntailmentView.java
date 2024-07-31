@@ -18,7 +18,7 @@ public class EntailmentView {
         .append(entailmentResult.getEntailed() ? "Yes" : "No").append("\n\n");
     sb.append("Base ranking:\n").append(new RankingView(entailmentResult.getBaseRank().getRanking())).append("\n\n");
     sb.append("Removed ranking:\n").append(new RankingView(entailmentResult.getRemovedRanking())).append("\n\n");
-    sb.append("Time taken:\n").append(new TimingView(entailmentResult.getTimer())).append("\n\n");
+    sb.append("Time taken:\n").append(new TimingView(entailmentResult.getTimer())).append("\n");
     return sb.toString();
   }
 }

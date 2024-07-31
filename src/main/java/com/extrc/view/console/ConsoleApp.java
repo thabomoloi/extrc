@@ -70,6 +70,7 @@ public class ConsoleApp {
         node("load-kb",
             node("--string"),
             node("--file", node(new FileNameCompleter()))),
+        node("show-kb"),
         node("query",
             node("--all"),
             node("--rational"),
@@ -129,7 +130,7 @@ public class ConsoleApp {
               switch (subCommand) {
                 case "load-kb" -> helpLoadKb();
                 case "query" -> helpQuery();
-                default -> System.out.println("Unknown help subcommand: " + subCommand);
+                default -> System.out.println("No help for command: " + subCommand);
               }
             } else {
               generalHelp();
@@ -158,6 +159,9 @@ public class ConsoleApp {
             } else {
               System.out.println("Error: Missing options for load-kb.");
             }
+          }
+          case "show-kb" -> {
+            appHandler.showKb();
           }
           case "query" -> {
             if (pl.words().size() > 1) {
