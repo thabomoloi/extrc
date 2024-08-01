@@ -13,6 +13,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>22</java.version>
     <maven.compiler.release>18</maven.compiler.release>
+    <frontend.app.dir>${project.basedir}/src/main/web</frontend.app.dir>
+    <main.class>com.extrc.App</main.class>
+    <node.version>v20.16.0</node.version>
+    <pnpm.version>9.6.0</pnpm.version>
   </properties>
   <dependencies>
     <dependency>
@@ -90,6 +94,66 @@
                   <mainClass>com.extrc.App</mainClass>
                 </transformer>
               </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.15.0</version>
+        <configuration>
+          <nodeVersion>${node.version}</nodeVersion>
+          <pnpmVersion>${pnpm.version}</pnpmVersion>
+          <workingDirectory>${frontend.app.dir}</workingDirectory>
+          <installDirectory>${project.build.directory}</installDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install-frontend-tools</id>
+            <goals>
+              <goal>install-node-and-pnpm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>pnpm-install</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>build-frontend</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <arguments>build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>position-react-build</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/web</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${frontend.app.dir}/dist</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
