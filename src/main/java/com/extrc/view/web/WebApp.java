@@ -3,6 +3,7 @@ package com.extrc.view.web;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
+import com.extrc.common.structures.DefeasibleImplication;
 import com.extrc.common.structures.KnowledgeBase;
 import com.extrc.reasoning.reasoners.RationalReasoner;
 import com.extrc.view.Validator;
@@ -28,23 +29,33 @@ public class WebApp {
     app.get("/api/validate/query/{formula}", ctx -> {
       String formula = ctx.pathParam("formula");
       Validator.Node validation = validator.validateFormula(formula);
-      if (validation.isValid) {
-        ctx.sessionAttribute("formula", formula);
-        ctx.json(new ParserValidation(true, "The query formula is valid."));
-      } else {
-        ctx.json(new ParserValidation(true, "The query formula \"" + formula + "\" is invalid."));
+
+      boolean isDefeasibleImplication = false;
+      try {
+        isDefeasibleImplication = validation.parsedObject instanceof DefeasibleImplication;
+      } catch (ClassCastException e) {
       }
+      String message;
+      if (validation.isValid && isDefeasibleImplication) {
+        ctx.sessionAttribute("formula", formula);
+        message = "The query formula is valid.";
+      } else {
+        message = "The query formula \"" + formula + "\" is invalid.";
+      }
+      ctx.json(new ParserValidation(validation.isValid && isDefeasibleImplication, message));
     });
 
     app.get("/api/validate/formulas/{formulas}", ctx -> {
       String formulas = ctx.pathParam("formulas");
       Validator.Node validation = validator.validateFormulas(formulas);
+      String message;
       if (validation.isValid) {
         ctx.sessionAttribute("knowledgeBase", formulas);
-        ctx.json(new ParserValidation(true, "The knowledge base is valid."));
+        message = "The knowledge base is valid.";
       } else {
-        ctx.json(new ParserValidation(true, "The knowledge base contains at least one invalid formula."));
+        message = "The knowledge base contains at least one invalid formula.";
       }
+      ctx.json(new ParserValidation(validation.isValid, message));
     });
 
     app.get("/api/entailment/rational", ctx -> {
