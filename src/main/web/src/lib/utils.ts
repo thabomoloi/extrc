@@ -7,12 +7,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export function texFormula(formula: string): string {
   return formula
-    .replace("~>", " \\vsim ")
-    .replace("=>", " \\to ")
-    .replace("!", " \\neg ")
-    .replace("&&", " \\land ")
-    .replace("||", " \\lor ")
-    .replace("<=>", " \\leftrightarrow ");
+    .replaceAll("~>", " \\vsim ")
+    .replaceAll("=>", " \\to ")
+    .replaceAll("!", " \\neg ")
+    .replaceAll("&&", " \\land ")
+    .replaceAll("||", " \\lor ")
+    .replaceAll("<=>", " \\leftrightarrow ");
 }
 
 export enum Operation {

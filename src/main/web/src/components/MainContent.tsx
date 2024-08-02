@@ -11,12 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QueryCard from "@/components/QueryCard";
+import KnowledgeBaseCard from "./KnowledgeBaseCard";
 
 export default function MainContent() {
   return (
     <div className="space-y-6">
-      <div>
+      <div className="grid grid-cols-2 gap-4">
         <QueryCard />
+        <KnowledgeBaseCard />
       </div>
       <Tabs defaultValue="account">
         <TabsList className="grid w-full grid-cols-2">
