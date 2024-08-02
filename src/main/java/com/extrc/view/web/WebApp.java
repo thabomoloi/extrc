@@ -2,59 +2,90 @@ package com.extrc.view.web;
 
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
+import com.extrc.common.services.DefeasibleReasoner;
+import com.extrc.common.structures.KnowledgeBase;
+import com.extrc.reasoning.reasoners.RationalReasoner;
 import com.extrc.view.Validator;
+import com.extrc.view.web.helpers.ParserValidation;
 
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 
 public class WebApp {
-  static class Error {
-    private final String error;
-
-    public Error(String error) {
-      this.error = error;
-    }
-
-    public String getError() {
-      return error;
-    }
-  }
 
   public static void run() {
     Validator validator = new Validator();
-    // var app = Javalin.create(/* config */)
-    // .get("/", ctx -> ctx.result("Hello World"))
-    // .start(7070);
 
-    // app.get("/entail/{algorithm}/{formula}", ctx -> {
-    // String algorithm = ctx.pathParam("algorithm");
-    // String formula = ctx.pathParam("formula");
-    // Validator.Node validated = validator.validateFormula(formula);
-    // if (validated.isValid) {
-    // PlFormula query = (PlFormula) validated.parsedObject;
-
-    // ctx.result("Received parameter: " + formula);
-    // } else {
-    // ctx.json(new Error("Invalid formula: " + formula)).status(400);
-    // }
-    // });
-    // Javalin app = Javalin.create()
-    // .get("/api/users/:username", UserController.user)
-    // .get("/api/*", ctx -> ctx.status(400)); // Any unmapped API will result in a
-    // 400 Bad Request
-    // .get("version", VersionController.version);
-
-    // app.config
-    // .addStaticFiles("/web") // The ReactJS application
-    // .addStaticFiles("/") // Other static assets, external to the ReactJS
-    // application
-    // .addSinglePageRoot("/", "/web/index.html"); // Catch-all route for the
-    // single-page application
     var app = Javalin.create(
         config -> {
           config.staticFiles.add("/web");
-          // config.staticFiles.add("/");
+          // config.staticFiles.add("/"); // Other static assets, external to the ReactJS
           config.spaRoot.addFile("/", "/web/index.html"); // Catch-all route for the single-page application
         });
+
     app.start(8080);
+
+    app.get("/api/validate/query/{formula}", ctx -> {
+      String formula = ctx.pathParam("formula");
+      Validator.Node validation = validator.validateFormula(formula);
+      if (validation.isValid) {
+        ctx.sessionAttribute("formula", formula);
+        ctx.json(new ParserValidation(true, "The query formula is valid."));
+      } else {
+        ctx.json(new ParserValidation(true, "The query formula \"" + formula + "\" is invalid."));
+      }
+    });
+
+    app.get("/api/validate/formulas/{formulas}", ctx -> {
+      String formulas = ctx.pathParam("formulas");
+      Validator.Node validation = validator.validateFormulas(formulas);
+      if (validation.isValid) {
+        ctx.sessionAttribute("knowledgeBase", formulas);
+        ctx.json(new ParserValidation(true, "The knowledge base is valid."));
+      } else {
+        ctx.json(new ParserValidation(true, "The knowledge base contains at least one invalid formula."));
+      }
+    });
+
+    app.get("/api/entailment/rational", ctx -> {
+      String formula = ctx.sessionAttribute("formula");
+      String formulas = ctx.sessionAttribute("formulas");
+      if (formula == null || formulas == null) {
+        throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
+      } else {
+        Validator.Node queryValidation = validator.validateFormulas(formula);
+        Validator.Node kbValidation = validator.validateFormulas(formulas);
+        if (queryValidation.isValid && kbValidation.isValid) {
+          DefeasibleReasoner reasoner = new RationalReasoner((KnowledgeBase) kbValidation.parsedObject);
+          ctx.json(reasoner.query((PlFormula) queryValidation.parsedObject));
+        } else {
+          throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
+        }
+      }
+    });
+
+    app.get("/api/entailment/lexical", ctx -> {
+      String formula = ctx.sessionAttribute("formula");
+      String formulas = ctx.sessionAttribute("formulas");
+      if (formula == null || formulas == null) {
+        throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
+      } else {
+        Validator.Node queryValidation = validator.validateFormulas(formula);
+        Validator.Node kbValidation = validator.validateFormulas(formulas);
+        if (queryValidation.isValid && kbValidation.isValid) {
+          DefeasibleReasoner reasoner = new RationalReasoner((KnowledgeBase) kbValidation.parsedObject);
+          ctx.json(reasoner.query((PlFormula) queryValidation.parsedObject));
+        } else {
+          throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
+        }
+      }
+    });
+
+    app.get("/api/invalidate-session", ctx -> {
+      ctx.req().getSession().invalidate();
+      ctx.result("Session invalidated");
+    });
+
+    app.get("/api/*", ctx -> ctx.status(400)); // Any unmapped API will result in a 400 Bad Request
   }
 }
