@@ -26,6 +26,20 @@ public class WebApp {
 
     app.start(8080);
 
+    app.get("/api/query", ctx -> {
+      ctx.json(new Object() {
+        @SuppressWarnings("unused")
+        public final String formula = ctx.sessionAttribute("formula");
+      });
+    });
+
+    app.get("/api/formulas", ctx -> {
+      ctx.json(new Object() {
+        @SuppressWarnings("unused")
+        public final String formulas = ctx.sessionAttribute("formulas");
+      });
+    });
+
     app.get("/api/validate/query/{formula}", ctx -> {
       String formula = ctx.pathParam("formula");
       Validator.Node validation = validator.validateFormula(formula);
@@ -37,7 +51,7 @@ public class WebApp {
       }
       String message;
       if (validation.isValid && isDefeasibleImplication) {
-        ctx.sessionAttribute("formula", formula);
+        ctx.sessionAttribute("formula", validation.parsedObject.toString());
         message = "The query formula is valid.";
       } else {
         message = "The query formula \"" + formula + "\" is invalid.";
@@ -50,7 +64,7 @@ public class WebApp {
       Validator.Node validation = validator.validateFormulas(formulas);
       String message;
       if (validation.isValid) {
-        ctx.sessionAttribute("knowledgeBase", formulas);
+        ctx.sessionAttribute("formulas", validation.parsedObject.toString().replaceAll("[{}]", ""));
         message = "The knowledge base is valid.";
       } else {
         message = "The knowledge base contains at least one invalid formula.";
