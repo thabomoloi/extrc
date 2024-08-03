@@ -1,6 +1,7 @@
 package com.extrc.view;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.tweetyproject.commons.ParserException;
 
@@ -60,6 +61,10 @@ public class Validator {
 
   public Node validateFormulasFromFile(String filePath) {
     return validate(() -> parser.parseFormulasFromFile(filePath), "formulas");
+  }
+
+  public Node validateInputStream(InputStream inputStream) {
+    return validate(() -> parser.parseInputStream(inputStream), "formulas");
   }
 
   private Node validate(ParserFunction parserFunction, String inputType) {

@@ -5,6 +5,7 @@ import {
   GET_QUERY_URL,
   VALIDATE_DEFAULT_KB_URL,
   VALIDATE_DEFAULT_QUERY_URL,
+  VALIDATE_FILE_URL,
   VALIDATE_KB_URL,
   VALIDATE_QUERY_URL,
 } from "@/lib/api-urls";
@@ -85,10 +86,29 @@ export function useKnowledgeBase() {
     [serverErrorToast]
   );
 
+  const validateKnowledgeBaseFile = useCallback(
+    async (formData: FormData) => {
+      try {
+        // Validate the fike
+        const response = await axios.post(VALIDATE_FILE_URL, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        if (response.data.valid == true) {
+          return true;
+        }
+        return false;
+      } catch {
+        serverErrorToast();
+      }
+    },
+    [serverErrorToast]
+  );
+
   return {
     fetchKnowledgeBase,
     fetchQueryFormula,
     validateQueryFormula,
     validateKnowledgeBase,
+    validateKnowledgeBaseFile,
   };
 }

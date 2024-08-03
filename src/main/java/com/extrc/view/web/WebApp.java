@@ -1,5 +1,7 @@
 package com.extrc.view.web;
 
+import java.util.List;
+
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.common.services.DefeasibleReasoner;
@@ -11,6 +13,7 @@ import com.extrc.view.web.helpers.ParserValidation;
 
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
+import io.javalin.http.UploadedFile;
 
 public class WebApp {
 
@@ -70,6 +73,24 @@ public class WebApp {
         message = "The knowledge base contains at least one invalid formula.";
       }
       ctx.json(new ParserValidation(validation.isValid, message));
+    });
+
+    app.post("/api/validate/file", ctx -> {
+      List<UploadedFile> files = ctx.uploadedFiles("file");
+      if (!files.isEmpty()) {
+        UploadedFile file = files.get(0);
+        Validator.Node validation = validator.validateInputStream(file.content());
+        String message;
+        if (validation.isValid) {
+          ctx.sessionAttribute("formulas", validation.parsedObject.toString().replaceAll("[{}]", ""));
+          message = "The knowledge base is valid.";
+        } else {
+          message = "The knowledge base contains at least one invalid formula.";
+        }
+        ctx.json(new ParserValidation(validation.isValid, message));
+      } else {
+        ctx.status(400).result("No file uploaded");
+      }
     });
 
     app.get("/api/entailment/rational", ctx -> {
