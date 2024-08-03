@@ -20,9 +20,12 @@ const formSchema = z.object({
   formulas: z.string().min(1, {
     message: "Knowledge base is required.",
   }),
-  file: z.any().refine((file) => file instanceof File, {
-    message: "File is required.",
-  }),
+  file: z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: "File is required.",
+    })
+    .optional(),
 });
 
 export default function KnowledgeBaseCard() {
@@ -65,15 +68,22 @@ export default function KnowledgeBaseCard() {
     setState((prevState) => ({ ...prevState, loading: true }));
 
     let isValid: boolean | undefined;
-    let target: "formulas" | "file";
+    let target: "formulas" | "file" = "formulas";
     if (!state.loadFromFile) {
       isValid = await validateKnowledgeBase(values.formulas);
       target = "formulas";
     } else {
-      const formData = new FormData();
-      formData.append("file", values.file);
-      isValid = await validateKnowledgeBaseFile(formData);
-      target = "file";
+      if (values.file) {
+        const formData = new FormData();
+        formData.append("file", values.file);
+        isValid = await validateKnowledgeBaseFile(formData);
+        target = "file";
+      } else {
+        form.setError("file", {
+          type: "manual",
+          message: "File is required",
+        });
+      }
     }
     setState((prevState) => ({ ...prevState, loading: false }));
     if (isValid) {
@@ -83,6 +93,7 @@ export default function KnowledgeBaseCard() {
             ...prevState,
             formulas,
             operation: "view",
+            loadFromFile: false,
           }));
         }
       });
