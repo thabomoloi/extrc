@@ -5,12 +5,23 @@ import Summary from "@/components/main-tabs/Summary";
 import BaseRank from "@/components/main-tabs/BaseRank";
 import RationalClosure from "@/components/main-tabs/RationalClosure";
 import LexicographicClosure from "@/components/main-tabs/LexicographicClosure";
+import { useEntailment } from "@/hooks/use-entailment";
 
 export default function MainContent() {
+  const {
+    rationaEntailment,
+    lexicalEntailment,
+    fetchLexicalEntailment,
+    fetchRationalEntailment,
+  } = useEntailment();
+
+  const computeEntailment = async () => {
+    await Promise.all([fetchLexicalEntailment(), fetchRationalEntailment()]);
+  };
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1 sm:grid-cols-[45%,_55%] md:grid-cols-[40%,_60%] gap-4">
-        <QueryCard />
+        <QueryCard handleQuerySubmit={() => computeEntailment()} />
         <KnowledgeBaseCard />
       </div>
       <Tabs defaultValue="summary">
@@ -23,7 +34,10 @@ export default function MainContent() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="summary">
-          <Summary />
+          <Summary
+            lexicalEntailment={lexicalEntailment}
+            rationalEntailment={rationaEntailment}
+          />
         </TabsContent>
         <TabsContent value="baseRank">
           <BaseRank />

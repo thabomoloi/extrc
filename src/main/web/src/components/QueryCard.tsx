@@ -22,7 +22,11 @@ const formSchema = z.object({
   }),
 });
 
-export default function QueryCard() {
+interface QueryCardProps {
+  handleQuerySubmit: () => void;
+}
+
+export default function QueryCard({ handleQuerySubmit }: QueryCardProps) {
   const { fetchQueryFormula, validateQueryFormula } = useKnowledgeBase();
 
   const [state, setState] = useState<{
@@ -91,7 +95,7 @@ export default function QueryCard() {
       <Card>
         <CardHeader className="space-y-0 pb-4">
           <CardTitle className="text-base text-center font-medium">
-            Query Formula
+            Query Formula <TexFormula>{"(\\alpha)"}</TexFormula>
           </CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
@@ -106,7 +110,7 @@ export default function QueryCard() {
                 >
                   Edit
                 </Button>
-                <Button type="submit" disabled={state.loading}>
+                <Button onClick={handleQuerySubmit} disabled={state.loading}>
                   Query
                 </Button>
               </div>

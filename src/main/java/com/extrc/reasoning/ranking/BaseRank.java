@@ -44,7 +44,7 @@ public class BaseRank implements RankConstructor {
     SatReasoner reasoner = new SatReasoner();
 
     // Exceptionality sequences
-    KnowledgeBase current = this.defeasibleKb.materialise();
+    KnowledgeBase current = this.defeasibleKb;
     KnowledgeBase previous;
 
     this.sequence.addElement(current);
