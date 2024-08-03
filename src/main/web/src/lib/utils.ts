@@ -14,9 +14,3 @@ export function texFormula(formula: string): string {
     .replaceAll("||", " \\lor ")
     .replaceAll("<=>", " \\leftrightarrow ");
 }
-
-export enum Operation {
-  View,
-  Edit,
-  Update,
-}

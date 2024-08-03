@@ -1,9 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Operation, texFormula } from "@/lib/utils";
+import { texFormula } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
@@ -15,8 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import TexFormula from "@/components/TexFormula";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { useKnowledgeBase } from "@/hooks/use-knowledge-base";
 
 const formSchema = z.object({
   formula: z.string().min(1, {
@@ -25,16 +23,16 @@ const formSchema = z.object({
 });
 
 export default function QueryCard() {
-  const { toast } = useToast();
+  const { fetchQueryFormula, validateQueryFormula } = useKnowledgeBase();
 
   const [state, setState] = useState<{
     formula: string;
-    operation: Operation;
-    updating: boolean;
+    operation: string;
+    loading: boolean;
   }>({
-    operation: Operation.View,
-    formula: "p~>f",
-    updating: false,
+    operation: "view",
+    formula: "",
+    loading: false,
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,63 +40,50 @@ export default function QueryCard() {
     defaultValues: { formula: state.formula },
   });
 
+  useEffect(() => {
+    fetchQueryFormula().then((formula) => {
+      if (formula != undefined) {
+        setState((prevState) => ({ ...prevState, formula }));
+      }
+    });
+  }, [fetchQueryFormula]);
+
+  useEffect(() => {
+    form.reset({ formula: state.formula });
+  }, [form, state.formula]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setState((prevState) => ({
-      ...prevState,
-      updating: true,
-    }));
+    setState((prevState) => ({ ...prevState, loading: true }));
 
-    const isValid = await validateFormula(values.formula);
+    const isValid = await validateQueryFormula(values.formula);
 
-    setState((prevState) => ({
-      ...prevState,
-      updating: false,
-    }));
+    setState((prevState) => ({ ...prevState, loading: false }));
 
-    if (isValid == false) {
+    if (isValid) {
+      fetchQueryFormula().then((formula) => {
+        if (formula != undefined) {
+          setState((prevState) => ({
+            ...prevState,
+            formula,
+            operation: "view",
+          }));
+        }
+      });
+    } else {
       form.setError("formula", {
         type: "manual",
         message: "The query formula is invalid",
       });
-    } else if (isValid == true) {
-      setState((prevState) => ({
-        ...prevState,
-        operation: Operation.View,
-        formula: values.formula,
-      }));
     }
   };
 
   const handleCancel = () => {
     form.reset({ formula: state.formula });
-    setState((prevState) => ({
-      ...prevState,
-      operation: Operation.View,
-    }));
+    setState((prevState) => ({ ...prevState, operation: "view" }));
   };
 
   const handleEdit = () => {
-    setState((prevState) => ({
-      ...prevState,
-      operation: Operation.Edit,
-    }));
-  };
-
-  const validateFormula = async (formula: string) => {
-    try {
-      const response = await axios.get(`/api/validate/query/${formula}`);
-      console.log("response", response.data.valid);
-      return response.data.valid as boolean;
-    } catch (error) {
-      console.error(error);
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-      return null;
-    }
+    setState((prevState) => ({ ...prevState, operation: "edit" }));
   };
 
   return (
@@ -110,24 +95,24 @@ export default function QueryCard() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
-          {state.operation == Operation.View && (
+          {state.operation == "view" && (
             <div className="w-full flex flex-col gap-4 items-center">
               <TexFormula>{texFormula(state.formula)}</TexFormula>
               <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
                 <Button
                   variant="secondary"
                   onClick={handleEdit}
-                  disabled={state.updating}
+                  disabled={state.loading}
                 >
                   Edit
                 </Button>
-                <Button type="submit" disabled={state.updating}>
+                <Button type="submit" disabled={state.loading}>
                   Query
                 </Button>
               </div>
             </div>
           )}
-          {state.operation == Operation.Edit && (
+          {state.operation == "edit" && (
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -154,11 +139,11 @@ export default function QueryCard() {
                     type="button"
                     variant="secondary"
                     onClick={handleCancel}
-                    disabled={state.updating}
+                    disabled={state.loading}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={state.updating}>
+                  <Button type="submit" disabled={state.loading}>
                     Update
                   </Button>
                 </div>
