@@ -7,8 +7,10 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import com.extrc.common.services.DefeasibleReasoner;
 import com.extrc.common.structures.DefeasibleImplication;
 import com.extrc.common.structures.KnowledgeBase;
+import com.extrc.reasoning.reasoners.LexicalReasoner;
 import com.extrc.reasoning.reasoners.RationalReasoner;
 import com.extrc.view.Validator;
+import com.extrc.view.web.helpers.EntailmentJson;
 import com.extrc.view.web.helpers.ParserValidation;
 
 import io.javalin.Javalin;
@@ -99,11 +101,11 @@ public class WebApp {
       if (formula == null || formulas == null) {
         throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
       } else {
-        Validator.Node queryValidation = validator.validateFormulas(formula);
+        Validator.Node queryValidation = validator.validateFormula(formula);
         Validator.Node kbValidation = validator.validateFormulas(formulas);
         if (queryValidation.isValid && kbValidation.isValid) {
           DefeasibleReasoner reasoner = new RationalReasoner((KnowledgeBase) kbValidation.parsedObject);
-          ctx.json(reasoner.query((PlFormula) queryValidation.parsedObject));
+          ctx.json(new EntailmentJson(reasoner.query((PlFormula) queryValidation.parsedObject)));
         } else {
           throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
         }
@@ -116,11 +118,11 @@ public class WebApp {
       if (formula == null || formulas == null) {
         throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
       } else {
-        Validator.Node queryValidation = validator.validateFormulas(formula);
+        Validator.Node queryValidation = validator.validateFormula(formula);
         Validator.Node kbValidation = validator.validateFormulas(formulas);
         if (queryValidation.isValid && kbValidation.isValid) {
-          DefeasibleReasoner reasoner = new RationalReasoner((KnowledgeBase) kbValidation.parsedObject);
-          ctx.json(reasoner.query((PlFormula) queryValidation.parsedObject));
+          DefeasibleReasoner reasoner = new LexicalReasoner((KnowledgeBase) kbValidation.parsedObject);
+          ctx.json(new EntailmentJson(reasoner.query((PlFormula) queryValidation.parsedObject)));
         } else {
           throw new BadRequestResponse("Either the query formula or knowledge base is invalid.");
         }
