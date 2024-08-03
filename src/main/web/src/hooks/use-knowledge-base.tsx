@@ -58,12 +58,12 @@ export function useKnowledgeBase() {
     try {
       // Get knowledge base in server session
       let response = await axios.get(GET_KB_URL);
-      if (response.data.formula == null) {
+      if (response.data.formulas == null) {
         // Set default knowledge base
         await axios.get(VALIDATE_DEFAULT_KB_URL);
         response = await axios.get(GET_KB_URL);
       }
-      return response.data.formula as string;
+      return response.data.formulas as string;
     } catch {
       serverErrorToast();
     }

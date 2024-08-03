@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Operation, texFormula } from "@/lib/utils";
+import { texFormula } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
@@ -12,9 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import TexFormula from "@/components/TexFormula";
-import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
-import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { useKnowledgeBase } from "@/hooks/use-knowledge-base";
 
 const formSchema = z.object({
   formulas: z.string().min(1, {
@@ -27,15 +27,20 @@ const formSchema = z.object({
     })
     .optional(),
 });
+
 export default function KnowledgeBaseCard() {
+  const { fetchKnowledgeBase, validateKnowledgeBase } = useKnowledgeBase();
+
   const [state, setState] = useState<{
     formulas: string;
     loadFromFile: boolean;
-    operation: Operation;
+    operation: string;
+    loading: boolean;
   }>({
-    operation: Operation.View,
+    operation: "view",
     loadFromFile: false,
-    formulas: "p=>b, b~>f, b~>w, p~>!f",
+    formulas: "",
+    loading: false,
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,26 +48,56 @@ export default function KnowledgeBaseCard() {
     defaultValues: { formulas: state.formulas },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    setState((prevState) => ({
-      ...prevState,
-      operation: Operation.Update,
-    }));
-    console.log(values);
+  useEffect(() => {
+    fetchKnowledgeBase().then((formulas) => {
+      if (formulas != undefined) {
+        setState((prevState) => ({ ...prevState, formulas }));
+      }
+    });
+  }, [fetchKnowledgeBase]);
+
+  useEffect(() => {
+    form.reset({ formulas: state.formulas });
+  }, [form, state.formulas]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setState((prevState) => ({ ...prevState, loading: true }));
+
+    const isValid = await validateKnowledgeBase(values.formulas);
+
+    setState((prevState) => ({ ...prevState, loading: false }));
+    if (isValid) {
+      fetchKnowledgeBase().then((formulas) => {
+        if (formulas != undefined) {
+          setState((prevState) => ({
+            ...prevState,
+            formulas,
+            operation: "view",
+          }));
+        }
+      });
+    } else {
+      form.setError("formulas", {
+        type: "manual",
+        message: "The knowledge base is invalid",
+      });
+    }
   };
 
   const handleCancel = () => {
     form.reset({ formulas: state.formulas });
     setState((prevState) => ({
       ...prevState,
-      operation: Operation.View,
+      loadFromFile: false,
+      operation: "view",
     }));
   };
 
   const handleEdit = () => {
     setState((prevState) => ({
       ...prevState,
-      operation: Operation.Edit,
+      loadFromFile: false,
+      operation: "edit",
     }));
   };
 
@@ -70,15 +105,9 @@ export default function KnowledgeBaseCard() {
     setState((prevState) => ({
       ...prevState,
       loadFromFile: true,
-      operation: Operation.Edit,
+      operation: "edit",
     }));
   };
-
-  useEffect(() => {
-    axios
-      .get(`/api/validate/formulas/${state.formulas}`)
-      .then((response) => console.log(response.data));
-  }, [state.formulas]);
 
   return (
     <div>
@@ -89,7 +118,7 @@ export default function KnowledgeBaseCard() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
-          {state.operation == Operation.View && (
+          {state.operation == "view" && (
             <div className="w-full flex flex-col gap-4 items-center">
               <div className="line-clamp-1">
                 {state.formulas.split(",").map((formula, index, array) => (
@@ -111,7 +140,7 @@ export default function KnowledgeBaseCard() {
               </div>
             </div>
           )}
-          {state.operation == Operation.Edit && (
+          {state.operation == "edit" && (
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
