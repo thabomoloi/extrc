@@ -7,6 +7,9 @@ const VALIDATE_FILE_URL = "/api/validate/file";
 const VALIDATE_QUERY_URL = "/api/validate/query";
 const VALIDATE_DEFAULT_KB_URL = `${VALIDATE_KB_URL}/${KB}`;
 const VALIDATE_DEFAULT_QUERY_URL = `${VALIDATE_QUERY_URL}/${QUERY}`;
+const RATIONAL_ENTAILMENT_URL = "/api/entailment/rational";
+const LEXICAL_ENTAILMENT_URL = "/api/entailment/lexical";
+const INVALIDATE_SESSION_URL = "/api/invalidate-session";
 
 export {
   GET_KB_URL,
@@ -16,4 +19,7 @@ export {
   VALIDATE_QUERY_URL,
   VALIDATE_DEFAULT_KB_URL,
   VALIDATE_DEFAULT_QUERY_URL,
+  RATIONAL_ENTAILMENT_URL,
+  LEXICAL_ENTAILMENT_URL,
+  INVALIDATE_SESSION_URL,
 };

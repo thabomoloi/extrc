@@ -135,7 +135,7 @@ export default function KnowledgeBaseCard() {
       <Card className="h-full">
         <CardHeader className="space-y-0 pb-4">
           <CardTitle className="text-base text-center font-medium">
-            Knowledge Base
+            Knowledge Base <TexFormula>{"(\\mathcal{K})"}</TexFormula>
           </CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
