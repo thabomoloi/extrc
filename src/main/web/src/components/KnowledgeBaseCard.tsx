@@ -20,16 +20,17 @@ const formSchema = z.object({
   formulas: z.string().min(1, {
     message: "Knowledge base is required.",
   }),
-  file: z
-    .any()
-    .refine((file) => file instanceof File, {
-      message: "File is required.",
-    })
-    .optional(),
+  file: z.any().refine((file) => file instanceof File, {
+    message: "File is required.",
+  }),
 });
 
 export default function KnowledgeBaseCard() {
-  const { fetchKnowledgeBase, validateKnowledgeBase } = useKnowledgeBase();
+  const {
+    fetchKnowledgeBase,
+    validateKnowledgeBase,
+    validateKnowledgeBaseFile,
+  } = useKnowledgeBase();
 
   const [state, setState] = useState<{
     formulas: string;
@@ -63,8 +64,17 @@ export default function KnowledgeBaseCard() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setState((prevState) => ({ ...prevState, loading: true }));
 
-    const isValid = await validateKnowledgeBase(values.formulas);
-
+    let isValid: boolean | undefined;
+    let target: "formulas" | "file";
+    if (!state.loadFromFile) {
+      isValid = await validateKnowledgeBase(values.formulas);
+      target = "formulas";
+    } else {
+      const formData = new FormData();
+      formData.append("file", values.file);
+      isValid = await validateKnowledgeBaseFile(formData);
+      target = "file";
+    }
     setState((prevState) => ({ ...prevState, loading: false }));
     if (isValid) {
       fetchKnowledgeBase().then((formulas) => {
@@ -77,7 +87,7 @@ export default function KnowledgeBaseCard() {
         }
       });
     } else {
-      form.setError("formulas", {
+      form.setError(target, {
         type: "manual",
         message: "The knowledge base is invalid",
       });

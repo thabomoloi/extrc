@@ -3,6 +3,9 @@ package com.extrc.common.utils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import org.tweetyproject.commons.ParserException;
 import org.tweetyproject.logics.pl.parser.PlParser;
@@ -44,6 +47,20 @@ public class DefeasibleParser {
   public KnowledgeBase parseFormulasFromFile(String filePath) throws IOException {
     KnowledgeBase kb = new KnowledgeBase();
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        PlFormula parsedFormula = this.parseFormula(line.trim());
+        kb.add(parsedFormula);
+      }
+    } catch (IOException e) {
+      throw e;
+    }
+    return kb;
+  }
+
+  public KnowledgeBase parseInputStream(InputStream inputStream) throws IOException {
+    KnowledgeBase kb = new KnowledgeBase();
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         PlFormula parsedFormula = this.parseFormula(line.trim());
