@@ -101,7 +101,7 @@ public class ConsoleAppHandler {
       printTitle("RATIONAL CLOSURE EXPLANATION");
       if (entailment.getRationalEntailment() == null
           || !query.equals(entailment.getRationalEntailment().getFormula())
-          || !knowledgeBase.equals(entailment.getLexicalEntailment().getKnowledgeBase())) {
+          || !knowledgeBase.equals(entailment.getRationalEntailment().getKnowledgeBase())) {
         entailment.setRationalEntailment(rationalReasoner.query(query));
       }
       writer.println(new ExplanationView(entailment.getRationalEntailment()));
