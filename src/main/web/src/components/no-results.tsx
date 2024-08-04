@@ -12,7 +12,9 @@ export default function NoResults() {
         <h4 className="scroll-m-20 font-bold text-lg tracking-tight">
           No Results Yet.
         </h4>
-        <p>Please submit a query first.</p>
+        <p className="font-semibold text-muted-foreground">
+          Please submit a query first.
+        </p>
       </div>
     </div>
   );
