@@ -1,16 +1,19 @@
 package com.extrc.view.web.helpers;
 
-import com.extrc.common.structures.EntailmentResult;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.tweetyproject.logics.pl.syntax.Negation;
+
+import com.extrc.common.structures.DefeasibleImplication;
+import com.extrc.common.structures.EntailmentResult;
 import com.extrc.common.structures.Rank;
 
 public class EntailmentJson {
   public final String queryFormula;
   public final String knowledgeBase;
   public final boolean entailed;
+  public final String negation;
   public final List<String> sequence;
   public final List<RankJson> baseRanking;
   public final List<RankJson> removedRanking;
@@ -30,6 +33,7 @@ public class EntailmentJson {
     this.times = entailmentResult.getTimer().stream()
         .map(timer -> new TimeJson(timer.getTitle(), timer.getTimeTaken()))
         .collect(Collectors.toList());
+    this.negation = new Negation(((DefeasibleImplication) entailmentResult.getFormula()).getFirstFormula()).toString();
   }
 
   private List<RankJson> createRankList(List<Rank> rankList) {

@@ -46,6 +46,19 @@ const columns: ColumnDef<Ranking>[] = [
   },
 ];
 
-export default function RankingTable({ ranking }: { ranking: Ranking[] }) {
-  return <DataTable columns={columns} data={ranking} filter />;
+export default function RankingTable({
+  ranking,
+  caption = "",
+}: {
+  ranking: Ranking[];
+  caption?: string;
+}) {
+  return (
+    <DataTable
+      columns={columns}
+      data={ranking}
+      filter={ranking.length != 0}
+      caption={caption}
+    />
+  );
 }

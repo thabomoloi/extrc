@@ -81,9 +81,9 @@ export default function BaseRank({
           <div>
             <KnowledgeBase knowledgeBase={rationalEntailment.knowledgeBase} />
             <div className="mb-6">
-              <TexFormula>{`\\alpha = ${texFormula(
+              {/* <TexFormula>{`\\alpha = ${texFormula(
                 rationalEntailment.queryFormula
-              )}`}</TexFormula>
+              )}`}</TexFormula> */}
             </div>
             <div className="mb-6">
               <p>
@@ -115,7 +115,7 @@ export default function BaseRank({
                 <li>
                   <TexFormula>
                     {
-                      "*_{i+1}^\\mathcal{K}=\\left\\{\\alpha\\vsim\\beta \\in *_{i}^\\mathcal{K} \\mid \\overline{\\mathcal{K}_C\\cup *_{i}^\\mathcal{K}}\\models\\neg\\alpha\\right\\}"
+                      "*_{i+1}^\\mathcal{K}=\\left\\{\\alpha\\vsim\\beta \\in *_{i}^\\mathcal{K} \\mid \\mathcal{K}_C\\cup \\overline{*_{i}^\\mathcal{K}}\\models\\neg\\alpha\\right\\}"
                     }
                   </TexFormula>
                 </li>
@@ -151,7 +151,7 @@ export default function BaseRank({
             </div>
             <div className="mb-6">
               <p>
-                Finite rank is gve by{" "}
+                Finite rank is given by{" "}
                 <TexFormula>
                   {
                     "\\mathcal{R}_i=*_i^\\mathcal{K}\\setminus *_{i+1}^\\mathcal{K}"
@@ -161,6 +161,7 @@ export default function BaseRank({
                 <TexFormula>
                   {"\\mathcal{R}_i=*_\\infty^\\mathcal{K}\\cup\\mathcal{K}_C"}
                 </TexFormula>
+                .
               </p>
               <RankingTable ranking={rationalEntailment.baseRanking} />
             </div>
