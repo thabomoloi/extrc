@@ -9,6 +9,7 @@ import { useCallback, useState } from "react";
 
 export interface EntailmentResult {
   queryFormula: string;
+  negation: string;
   knowledgeBase: string;
   entailed: boolean;
   sequence: string[];
