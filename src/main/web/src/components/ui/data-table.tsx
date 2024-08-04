@@ -24,15 +24,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filter?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filter = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -59,36 +62,41 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4 space-x-4">
-        <Input
-          placeholder="Search rank..."
-          value={
-            (table.getColumn("rankNumber")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("rankNumber")?.setFilterValue(event.target.value)
-          }
-          className="max-w-xs"
-        />
-        <Input
-          placeholder="Search formula..."
-          value={
-            (table.getColumn("formulas")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("formulas")?.setFilterValue(event.target.value)
-          }
-          className="max-w-xs"
-        />
-      </div>
-      <div className="rounded-md border">
-        <Table>
+      {filter && (
+        <div className="flex items-center py-4 space-x-4">
+          <Input
+            placeholder="Search rank..."
+            value={
+              (table.getColumn("rankNumber")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("rankNumber")?.setFilterValue(event.target.value)
+            }
+            className="max-w-xs"
+          />
+          <Input
+            placeholder="Search formula..."
+            value={
+              (table.getColumn("formulas")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("formulas")?.setFilterValue(event.target.value)
+            }
+            className="max-w-xs"
+          />
+        </div>
+      )}
+      <div className={cn("rounded-md border", { "mt-4": !filter })}>
+        <Table className="overflow-x-auto">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className={header.column.columnDef.meta?.headerClassName}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -109,7 +117,10 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

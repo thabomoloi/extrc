@@ -11,44 +11,41 @@ const columns: ColumnDef<Ranking>[] = [
   {
     accessorKey: "rankNumber",
     header: ({ column }) => (
-      <div className="text-center">
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Rank Number
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Rank Number
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
-
-    cell: ({ row }) => (
-      <div className="text-center">
-        <TexFormula>{row.getValue("rankNumber")}</TexFormula>
-      </div>
-    ),
+    meta: {
+      headerClassName: "max-w-[200px] text-center",
+      cellClassName: "text-center",
+    },
+    cell: ({ row }) => <TexFormula>{row.getValue("rankNumber")}</TexFormula>,
   },
   {
     accessorKey: "formulas",
-    header: () => <div className="text-center">Formulas</div>,
+    header: "Formulas",
     cell: ({ row }) => {
       const rowFormulas = row.getValue("formulas");
       const formulas = typeof rowFormulas === "string" ? rowFormulas : "";
-      return (
-        <div className="text-center">
-          {formulas.split(",").map((formula, index, array) => (
-            <span key={index}>
-              <TexFormula>{texFormula(formula)}</TexFormula>
-              {index < array.length - 1 && <TexFormula>{",\\;"}</TexFormula>}
-            </span>
-          ))}
-        </div>
-      );
+      return formulas.split(",").map((formula, index, array) => (
+        <span key={index}>
+          <TexFormula>{texFormula(formula)}</TexFormula>
+          {index < array.length - 1 && <TexFormula>{",\\;"}</TexFormula>}
+        </span>
+      ));
+    },
+    meta: {
+      headerClassName: "min-w-max w-full", // min-width, taking
+      cellClassName: "whitespace-nowrap",
     },
     filterFn: "includesString",
   },
 ];
 
 export default function RankingTable({ ranking }: { ranking: Ranking[] }) {
-  return <DataTable columns={columns} data={ranking} />;
+  return <DataTable columns={columns} data={ranking} filter />;
 }
