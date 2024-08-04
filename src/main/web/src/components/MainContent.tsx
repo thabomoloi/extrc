@@ -25,7 +25,7 @@ export default function MainContent() {
         <KnowledgeBaseCard />
       </div>
       <Tabs defaultValue="summary">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="flex items-center justify-start flex-wrap h-auto space-y-1'">
           <TabsTrigger value="summary">Summary</TabsTrigger>
           <TabsTrigger value="baseRank">Base Rank</TabsTrigger>
           <TabsTrigger value="rationaClosure">Rational Closure</TabsTrigger>
