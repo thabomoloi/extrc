@@ -30,12 +30,17 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filter?: boolean;
+  filters?: { id: string; search: string }[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   filter = false,
+  filters = [
+    { id: "rankNumber", search: "Search rank..." },
+    { id: "formulas", search: "Search formulas..." },
+  ],
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -64,26 +69,18 @@ export function DataTable<TData, TValue>({
     <div>
       {filter && (
         <div className="flex items-center py-4 space-x-4">
-          <Input
-            placeholder="Search rank..."
-            value={
-              (table.getColumn("rankNumber")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("rankNumber")?.setFilterValue(event.target.value)
-            }
-            className="max-w-xs"
-          />
-          <Input
-            placeholder="Search formula..."
-            value={
-              (table.getColumn("formulas")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("formulas")?.setFilterValue(event.target.value)
-            }
-            className="max-w-xs"
-          />
+          {filters.map((value) => (
+            <Input
+              placeholder={value.search}
+              value={
+                (table.getColumn(value.id)?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn(value.id)?.setFilterValue(event.target.value)
+              }
+              className="max-w-xs"
+            />
+          ))}
         </div>
       )}
       <div className={cn("rounded-md border", { "mt-4": !filter })}>

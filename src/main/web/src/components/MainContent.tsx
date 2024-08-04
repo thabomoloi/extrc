@@ -40,13 +40,16 @@ export default function MainContent() {
           />
         </TabsContent>
         <TabsContent value="baseRank">
-          <BaseRank />
+          <BaseRank
+            lexicalEntailment={lexicalEntailment}
+            rationalEntailment={rationaEntailment}
+          />
         </TabsContent>
         <TabsContent value="rationaClosure">
-          <RationalClosure />
+          <RationalClosure rationalEntailment={rationaEntailment} />
         </TabsContent>
         <TabsContent value="lexicographicClosure">
-          <LexicographicClosure />
+          <LexicographicClosure lexicalEntailment={lexicalEntailment} />
         </TabsContent>
       </Tabs>
     </div>

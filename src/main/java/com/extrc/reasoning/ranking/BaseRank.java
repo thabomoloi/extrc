@@ -74,7 +74,9 @@ public class BaseRank implements RankConstructor {
         rank.setRankNumber(this.ranking.size());
         this.ranking.add(rank);
       }
-      this.sequence.addElement(current, exceptionals);
+      if (!current.equals(previous)) {
+        this.sequence.addElement(current, exceptionals);
+      }
     } while (!current.equals(previous));
 
     ranking.add(new Rank(Integer.MAX_VALUE, this.classicalKb.union(current)));
