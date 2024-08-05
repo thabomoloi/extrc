@@ -100,7 +100,7 @@ export default function Summary({
       const diff = rounded.toString().length - time.toString().length;
       results.push({
         algorithm: times[i].title,
-        timeTaken: "\\;\\;".repeat(diff) + time.toString(),
+        timeTaken: "\\;\\;".repeat(Math.max(diff, 1)) + time.toString(),
       });
     }
     return results;
