@@ -93,7 +93,10 @@ export default function BaseRank({
               <div className="text-center">
                 <KnowledgeBase
                   name={"\\mathcal{K}_C"}
-                  knowledgeBase={rationalEntailment.knowledgeBase}
+                  knowledgeBase={rationalEntailment.knowledgeBase
+                    .split(",")
+                    .filter((formula) => formula.includes("=>"))
+                    .join(",")}
                 />
               </div>
             </div>
