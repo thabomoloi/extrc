@@ -2,27 +2,23 @@ package com.extrc;
 
 import java.io.File;
 
-public class App {
-  public static void usage() {
-    String appName = new File(App.class.getProtectionDomain()
-        .getCodeSource()
-        .getLocation()
-        .getPath())
-        .getName();
-    System.out.println("Usage: java -jar " + appName + " [console/web]");
-  }
+import com.extrc.apps.Application;
+import com.extrc.apps.ApplicationFactory;
 
-  public static void main(String[] args) throws Exception {
-    // Example.run(args);
-    if (args == null || args.length == 0) {
-      usage();
-    } else {
-      String mode = args[0];
-      switch (mode) {
-        // case "console" -> ConsoleApp.run();
-        // case "web" -> WebApp.run();
-        default -> usage();
-      }
+public class App {
+  public static void main(String[] args) {
+    try {
+      Application app = ApplicationFactory.createApplication(args[0]);
+      app.run();
+    } catch (ArrayIndexOutOfBoundsException e) {
+      String appName = (new File(App.class.getProtectionDomain()
+          .getCodeSource()
+          .getLocation()
+          .getPath()))
+          .getName();
+      System.out.println("Usage: java -jar " + appName + " [console/web]");
+    } catch (IllegalArgumentException e) {
+      System.out.println(e.getMessage());
     }
   }
 }
