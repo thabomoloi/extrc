@@ -10,6 +10,7 @@ import com.extrc.models.BaseRank;
 import com.extrc.models.KnowledgeBase;
 import com.extrc.models.Rank;
 import com.extrc.models.Ranking;
+import com.extrc.models.QueryInput;
 
 public class BaseRankServiceImpl implements BaseRankService {
   private final SatReasoner reasoner;
@@ -20,12 +21,12 @@ public class BaseRankServiceImpl implements BaseRankService {
   }
 
   @Override
-  public BaseRank constructBaseRank(KnowledgeBase knowledgeBase) {
+  public BaseRank constructBaseRank(QueryInput queryInput) {
     // Start time
     long startTime = System.nanoTime();
 
     // Separate defeasible and classical statements
-    KnowledgeBase[] kb = knowledgeBase.separate();
+    KnowledgeBase[] kb = queryInput.getKnowledgeBase().separate();
     KnowledgeBase defeasible = kb[0];
     KnowledgeBase classical = kb[1];
 
@@ -38,7 +39,7 @@ public class BaseRankServiceImpl implements BaseRankService {
 
     int i = 0;
     while (!previous.equals(current)) {
-      sequence.addRank(i, knowledgeBase);
+      sequence.addRank(i, current);
       previous = current;
       current = new KnowledgeBase();
 
@@ -47,7 +48,7 @@ public class BaseRankServiceImpl implements BaseRankService {
       Rank rank = new Rank();
       constructRank(rank, previous, current, exceptionals);
 
-      if (rank.isEmpty()) {
+      if (!rank.isEmpty()) {
         rank.setRankNumber(i);
         ranking.add(rank);
       }
@@ -56,7 +57,7 @@ public class BaseRankServiceImpl implements BaseRankService {
     ranking.addRank(Integer.MAX_VALUE, classical.union(current));
 
     long endTime = System.nanoTime();
-    return new BaseRank(sequence, ranking, (endTime - startTime) / 1_000_000_000.0);
+    return new BaseRank(queryInput, sequence, ranking, (endTime - startTime) / 1_000_000_000.0);
   }
 
   private KnowledgeBase getExceptionals(KnowledgeBase defeasible, KnowledgeBase classical) {

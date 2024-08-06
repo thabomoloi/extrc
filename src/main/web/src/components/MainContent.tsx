@@ -22,8 +22,12 @@ export default function MainContent() {
   // };
 
   useEffect(() => {
-    const data = { queryFormula: "p~>f", knowledgeBase: ["p~>f", "p=>b"] };
+    const data = {
+      queryFormula: "p~>f",
+      knowledgeBase: ["p=>b", "p~>!f", "b~>f", "b~>w"],
+    };
     axios.post("/api/query", data).then((resp) => console.log(resp.data));
+    axios.post("/api/base-rank", data).then((resp) => console.log(resp.data));
   }, []);
 
   return (
