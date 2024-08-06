@@ -6,21 +6,29 @@ import BaseRank from "@/components/main-tabs/BaseRank";
 import RationalClosure from "@/components/main-tabs/RationalClosure";
 import LexicographicClosure from "@/components/main-tabs/LexicographicClosure";
 import { useEntailment } from "@/hooks/use-entailment";
+import { useEffect } from "react";
+import axios from "axios";
 
 export default function MainContent() {
-  const {
-    rationaEntailment,
-    lexicalEntailment,
-    fetchLexicalEntailment,
-    fetchRationalEntailment,
-  } = useEntailment();
+  // const {
+  //   rationaEntailment,
+  //   lexicalEntailment,
+  //   fetchLexicalEntailment,
+  //   fetchRationalEntailment,
+  // } = useEntailment();
 
-  const computeEntailment = async () => {
-    await Promise.all([fetchLexicalEntailment(), fetchRationalEntailment()]);
-  };
+  // const computeEntailment = async () => {
+  //   await Promise.all([fetchLexicalEntailment(), fetchRationalEntailment()]);
+  // };
+
+  useEffect(() => {
+    const data = { queryFormula: "p~>f", knowledgeBase: ["p~>f", "p=>b"] };
+    axios.post("/api/query", data).then((resp) => console.log(resp.data));
+  }, []);
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 sm:grid-cols-[45%,_55%] md:grid-cols-[40%,_60%] gap-4">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-[45%,_55%] md:grid-cols-[40%,_60%] gap-4">
         <QueryCard handleQuerySubmit={() => computeEntailment()} />
         <KnowledgeBaseCard />
       </div>
@@ -51,7 +59,7 @@ export default function MainContent() {
         <TabsContent value="lexicographicClosure">
           <LexicographicClosure lexicalEntailment={lexicalEntailment} />
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
     </div>
   );
 }
