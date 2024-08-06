@@ -50,9 +50,9 @@ public class KnowledgeBase extends PlBeliefSet {
    */
   public KnowledgeBase union(Collection<KnowledgeBase> knowledgeBases) {
     KnowledgeBase result = new KnowledgeBase();
-    for (KnowledgeBase kb : knowledgeBases) {
+    knowledgeBases.forEach(kb -> {
       result.addAll(kb);
-    }
+    });
     return result;
   }
 
@@ -65,11 +65,11 @@ public class KnowledgeBase extends PlBeliefSet {
    */
   public KnowledgeBase intersection(KnowledgeBase knowledgeBase) {
     KnowledgeBase result = new KnowledgeBase();
-    for (PlFormula formula : this) {
+    this.forEach(formula -> {
       if (knowledgeBase.contains(formula)) {
         result.add(formula);
       }
-    }
+    });
     return result;
   }
 
@@ -92,11 +92,11 @@ public class KnowledgeBase extends PlBeliefSet {
    */
   public KnowledgeBase antecedents() {
     KnowledgeBase antecedents = new KnowledgeBase();
-    for (PlFormula formula : this) {
+    this.forEach(formula -> {
       if (formula instanceof Implication implication) {
         antecedents.add(implication.getFirstFormula());
       }
-    }
+    });
     return antecedents;
   }
 
@@ -107,11 +107,11 @@ public class KnowledgeBase extends PlBeliefSet {
    */
   public KnowledgeBase materialise() {
     KnowledgeBase result = new KnowledgeBase();
-    for (PlFormula formula : this) {
+    this.forEach(formula -> {
       if (formula instanceof DefeasibleImplication defeasibleImplication) {
         result.add(new Implication(defeasibleImplication.getFormulas()));
       }
-    }
+    });
     return result;
   }
 
@@ -122,12 +122,32 @@ public class KnowledgeBase extends PlBeliefSet {
    */
   public KnowledgeBase dematerialise() {
     KnowledgeBase result = new KnowledgeBase();
-    for (PlFormula formula : this) {
+    this.forEach(formula -> {
       if ((formula instanceof Implication implication) && !(formula instanceof DefeasibleImplication)) {
         result.add(new DefeasibleImplication(implication.getFormulas()));
       }
-    }
+    });
     return result;
+  }
+
+  /**
+   * Separates the knowledge base into defeasbile and classical statemetents.
+   * 
+   * @return KnowledgeBase array where index 0 is defeasible knowledge base and
+   *         index 1 is classical knowledge base.
+   */
+
+  public KnowledgeBase[] separate() {
+    KnowledgeBase defeasible = new KnowledgeBase();
+    KnowledgeBase classical = new KnowledgeBase();
+    this.forEach(formula -> {
+      if (formula instanceof DefeasibleImplication) {
+        defeasible.add(formula);
+      } else {
+        classical.add(formula);
+      }
+    });
+    return new KnowledgeBase[] { defeasible, classical };
   }
 
   /**
