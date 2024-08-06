@@ -12,7 +12,7 @@
     <!-- https://maven.apache.org/general.html#encoding-warning -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- <java.version>22</java.version> -->
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>18</maven.compiler.release>
     <frontend.app.dir>${project.basedir}/src/main/web</frontend.app.dir>
     <main.class>com.extrc.App</main.class>
     <node.version>v20.16.0</node.version>
@@ -98,7 +98,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!-- <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
         <version>1.15.0</version>
@@ -135,8 +135,8 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
+      </plugin> -->
+      <!-- <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.3.1</version>
         <executions>
@@ -157,7 +157,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin> -->
     </plugins>
   </build>
 
