@@ -4,6 +4,7 @@ import com.extrc.apps.Application;
 import com.extrc.config.ObjectMapperConfig;
 import com.extrc.controllers.BaseRankController;
 import com.extrc.controllers.QueryInputController;
+import com.extrc.controllers.ReasonerController;
 
 import io.javalin.Javalin;
 import io.javalin.json.JavalinJackson;
@@ -21,5 +22,6 @@ public class WebApp implements Application {
     app.get("/api/query", QueryInputController::getQueryInput);
     app.post("/api/query", QueryInputController::createQueryInput);
     app.post("/api/base-rank", BaseRankController::getBaseRank);
+    app.post("/api/entailment/{reasoner}", ReasonerController::getEntailment);
   }
 }
