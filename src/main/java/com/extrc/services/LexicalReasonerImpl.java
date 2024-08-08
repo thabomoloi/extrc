@@ -43,10 +43,10 @@ public class LexicalReasonerImpl implements ReasonerService {
 
     int i = 0;
     while (!union.isEmpty() && reasoner.query(union, negation) && i < baseRanking.size() - 1) {
-      union.removeAll(union);
+      union.removeAll(baseRanking.get(i));
 
       KnowledgeBase removedFormulas = new KnowledgeBase();
-      int m = baseRanking.size() - 1;
+      int m = baseRanking.get(i).size() - 1;
 
       List<KnowledgeBase> rankSubsets;
       if (m != 0) {

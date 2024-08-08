@@ -12,18 +12,18 @@ public class ReasonerController {
 
   public static void getEntailment(Context ctx) {
     String reasonerType = ctx.pathParam("reasoner");
-
     try {
       BaseRank baseRank = ctx.bodyValidator(BaseRank.class)
           .check(v -> v.getQueryInput() != null, "Query input is required")
           .check(v -> v.getRanking() != null, "Ranking is required").get();
+      BaseRank baseRankCopy = new BaseRank(baseRank);
       ReasonerService reasoner = ReasonerFactory.createReasoner(reasonerType);
-      ctx.json(reasoner.getEntailment(baseRank));
+      ctx.json(reasoner.getEntailment(baseRankCopy));
     } catch (IllegalArgumentException e) {
       throw new BadRequestResponse(e.getMessage());
     } catch (Exception e) {
       // Handle deserialization error
-      throw new UnprocessableContentResponse("Failed to deserialize QueryInput: " + e.getMessage());
+      throw new UnprocessableContentResponse("Failed to deserialize BaseRank: " + e.getMessage());
     }
   }
 

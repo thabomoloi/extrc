@@ -17,12 +17,16 @@ public class BaseRank {
     this.queryInput = queryInput;
   }
 
+  public BaseRank(BaseRank baseRank) {
+    this(baseRank.getQueryInput(), baseRank.getSequence(), baseRank.getRanking(), baseRank.getTimeTaken());
+  }
+
   public Ranking getRanking() {
-    return ranking;
+    return new Ranking(ranking);
   }
 
   public Ranking getSequence() {
-    return sequence;
+    return new Ranking(sequence);
   }
 
   public double getTimeTaken() {
@@ -30,6 +34,6 @@ public class BaseRank {
   }
 
   public QueryInput getQueryInput() {
-    return queryInput;
+    return new QueryInput(queryInput);
   }
 }

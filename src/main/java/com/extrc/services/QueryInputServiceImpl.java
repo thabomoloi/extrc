@@ -24,7 +24,7 @@ public class QueryInputServiceImpl implements QueryInputService {
     kb.add(new DefeasibleImplication(b, f));
     kb.add(new DefeasibleImplication(b, w));
     kb.add(new DefeasibleImplication(p, new Negation(f)));
-    return new QueryInput(new DefeasibleImplication(p, f), kb);
+    return new QueryInput(new DefeasibleImplication(p, w), kb);
   }
 
   @Override
