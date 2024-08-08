@@ -15,6 +15,11 @@ public class QueryInput {
     this.knowledgeBase = knowledgeBase;
   }
 
+  public QueryInput(QueryInput queryInput) {
+    this.queryFormula = queryInput.getQueryFormula();
+    this.knowledgeBase = new KnowledgeBase(queryInput.getKnowledgeBase());
+  }
+
   public PlFormula getQueryFormula() {
     return queryFormula;
   }

@@ -39,7 +39,7 @@ public class RationalReasonerImpl implements ReasonerService {
     int i = 0;
     while (!union.isEmpty() && reasoner.query(union, negation) && i < baseRanking.size() - 1) {
       removedRanking.add(baseRanking.get(i));
-      union.removeAll(union);
+      union.removeAll(baseRanking.get(i));
       i++;
     }
 
