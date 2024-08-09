@@ -1,8 +1,8 @@
 // import reactLogo from "./assets/react.svg";
 // import viteLogo from "/vite.svg";
 import "katex/dist/katex.min.css";
-import MainContent from "@/components/MainContent";
 import { Toaster } from "@/components/ui/toaster";
+import { MainContent } from "./components/MainContent";
 
 function App() {
   return (

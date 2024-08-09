@@ -1,43 +1,24 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import QueryCard from "@/components/QueryCard";
-import KnowledgeBaseCard from "@/components/KnowledgeBaseCard";
-import Summary from "@/components/main-tabs/Summary";
-import BaseRank from "@/components/main-tabs/BaseRank";
-import RationalClosure from "@/components/main-tabs/RationalClosure";
-import LexicographicClosure from "@/components/main-tabs/LexicographicClosure";
-import { useEntailment } from "@/hooks/use-entailment";
-import { useEffect } from "react";
-import axios from "axios";
+import { useReasoner } from "@/hooks/use-reasoner";
+import { Summary } from "./main-tabs/Summary";
+import { BaseRank } from "./main-tabs/BaseRank";
+import { RationalClosure } from "./main-tabs/RationalClosure";
+import { LexicographicClosure } from "./main-tabs/LexicographicClosure";
+import { QueryInputs } from "./inputs/QueryInputs";
 
-export default function MainContent() {
-  // const {
-  //   rationaEntailment,
-  //   lexicalEntailment,
-  //   fetchLexicalEntailment,
-  //   fetchRationalEntailment,
-  // } = useEntailment();
-
-  // const computeEntailment = async () => {
-  //   await Promise.all([fetchLexicalEntailment(), fetchRationalEntailment()]);
-  // };
-
-  useEffect(() => {
-    const data = {
-      queryFormula: "p~>f",
-      knowledgeBase: ["p=>b", "p~>!f", "b~>f", "b~>w"],
-    };
-    axios.post("/api/query", data).then((resp) => console.log(resp.data));
-    axios.post("/api/base-rank", data).then((resp) => console.log(resp.data));
-  }, []);
+export function MainContent() {
+  const reasoner = useReasoner();
 
   return (
     <div className="flex flex-col gap-6">
-      {/* <div className="grid grid-cols-1 sm:grid-cols-[45%,_55%] md:grid-cols-[40%,_60%] gap-4">
-        <QueryCard handleQuerySubmit={() => computeEntailment()} />
-        <KnowledgeBaseCard />
-      </div>
+      <QueryInputs
+        isLoading={reasoner.isPending}
+        queryInput={reasoner.queryInput}
+        submitKnowledgeBase={reasoner.submitKnowledgeBase}
+        uploadKnowledgeBase={reasoner.uploadKnowledgeBase}
+      />
       <Tabs defaultValue="summary">
-        <TabsList className="flex items-center justify-start flex-wrap h-auto space-y-1'">
+        <TabsList className="grid grid-cols-2 sm:grid-cols-4 flex-wrap h-auto space-y-1'">
           <TabsTrigger value="summary">Summary</TabsTrigger>
           <TabsTrigger value="baseRank">Base Rank</TabsTrigger>
           <TabsTrigger value="rationaClosure">Rational Closure</TabsTrigger>
@@ -47,23 +28,30 @@ export default function MainContent() {
         </TabsList>
         <TabsContent value="summary">
           <Summary
-            lexicalEntailment={lexicalEntailment}
-            rationalEntailment={rationaEntailment}
+            isLoading={reasoner.isPending}
+            lexicalEntailment={reasoner.lexicalEntailment}
+            rationalEntailment={reasoner.rationalEntailment}
           />
         </TabsContent>
         <TabsContent value="baseRank">
           <BaseRank
-            lexicalEntailment={lexicalEntailment}
-            rationalEntailment={rationaEntailment}
+            isLoading={reasoner.isPending}
+            baseRank={reasoner.baseRank}
           />
         </TabsContent>
         <TabsContent value="rationaClosure">
-          <RationalClosure rationalEntailment={rationaEntailment} />
+          <RationalClosure
+            isLoading={reasoner.isPending}
+            rationalEntailment={reasoner.rationalEntailment}
+          />
         </TabsContent>
         <TabsContent value="lexicographicClosure">
-          <LexicographicClosure lexicalEntailment={lexicalEntailment} />
+          <LexicographicClosure
+            isLoading={reasoner.isPending}
+            lexicalEntailment={reasoner.lexicalEntailment}
+          />
         </TabsContent>
-      </Tabs> */}
+      </Tabs>
     </div>
   );
 }
