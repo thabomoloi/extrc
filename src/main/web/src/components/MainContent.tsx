@@ -16,6 +16,8 @@ export function MainContent() {
         queryInput={reasoner.queryInput}
         submitKnowledgeBase={reasoner.submitKnowledgeBase}
         uploadKnowledgeBase={reasoner.uploadKnowledgeBase}
+        submitQuery={reasoner.submitQuery}
+        updateFormula={reasoner.updateFormula}
       />
       <Tabs defaultValue="summary">
         <TabsList className="grid grid-cols-2 sm:grid-cols-4 flex-wrap h-auto space-y-1'">

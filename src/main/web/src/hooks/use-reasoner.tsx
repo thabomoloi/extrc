@@ -187,13 +187,43 @@ export function useReasoner() {
       if (queryInput) {
         const data: QueryInput = {
           ...queryInput,
-          knowledgeBase: knowledgeBase,
+          knowledgeBase,
         };
         updateQueryInput(data);
       }
     },
     [queryInput, updateQueryInput]
   );
+
+  const updateFormula = useCallback(
+    (queryFormula: string) => {
+      if (queryInput) {
+        const data: QueryInput = {
+          ...queryInput,
+          queryFormula,
+        };
+        updateQueryInput(data);
+      }
+    },
+    [queryInput, updateQueryInput]
+  );
+
+  const submitQuery = useCallback(() => {
+    if (!isPending && queryInput) {
+      fetchBaseRank();
+      if (!isPending && baseRank) {
+        fetchRationalEntailment();
+        fetchLexicalEntailment();
+      }
+    }
+  }, [
+    baseRank,
+    fetchBaseRank,
+    fetchLexicalEntailment,
+    fetchRationalEntailment,
+    isPending,
+    queryInput,
+  ]);
 
   useEffect(() => {
     fetchQueryInput();
@@ -205,13 +235,10 @@ export function useReasoner() {
     baseRank,
     rationalEntailment,
     lexicalEntailment,
-    fetchQueryInput,
-    updateQueryInput,
-    fetchBaseRank,
-    fetchRationalEntailment,
-    fetchLexicalEntailment,
     clearData,
     submitKnowledgeBase,
     uploadKnowledgeBase,
+    submitQuery,
+    updateFormula,
   };
 }
