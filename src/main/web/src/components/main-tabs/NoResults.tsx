@@ -1,11 +1,12 @@
+import logo from "@/assets/logo2.svg";
 import penguin from "@/assets/penguin.png";
-import Logo from "./ui/logo";
+import { Logo } from "@/components/ui/logo";
 
-export default function NoResults() {
+export function NoResults() {
   return (
     <div className="flex flex-col gap-4 items-center">
       <div className="relative">
-        <Logo className="w-16 absolute bottom-0 left-14" />
+        <Logo src={logo} className="w-16 absolute bottom-0 left-12" />
         <img src={penguin} alt="A penguin with an umbrella." className="w-96" />
       </div>
       <div className="text-center">

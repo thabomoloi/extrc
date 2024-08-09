@@ -10,4 +10,4 @@ const Logo: React.FC<LogoProps> = ({ src = logo, alt = "Logo", ...rest }) => {
   return <img src={src} alt={alt} {...rest} />;
 };
 
-export default Logo;
+export { Logo };

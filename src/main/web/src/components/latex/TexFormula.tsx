@@ -21,7 +21,7 @@ const defaultSettings: KatexOptions = {
   },
 };
 
-export default function TexFormula(props: TeXProps) {
+export function TexFormula(props: TeXProps) {
   const mergedSettings = { ...defaultSettings, ...props.settings };
 
   return <TeX {...props} settings={mergedSettings} />;
