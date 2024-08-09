@@ -1,12 +1,17 @@
 package com.extrc.controllers;
 
+import java.util.List;
+
 import com.extrc.models.DefeasibleImplication;
 import com.extrc.models.QueryInput;
+import com.extrc.models.KnowledgeBase;
 import com.extrc.services.QueryInputService;
 import com.extrc.services.QueryInputServiceImpl;
+import com.extrc.utils.DefeasibleParser;
 
 import io.javalin.http.Context;
 import io.javalin.http.UnprocessableContentResponse;
+import io.javalin.http.UploadedFile;
 
 public class QueryInputController {
   private final static QueryInputService queryInputService = new QueryInputServiceImpl();
@@ -28,6 +33,24 @@ public class QueryInputController {
     } catch (Exception e) {
       // Handle deserialization error
       throw new UnprocessableContentResponse("Failed to deserialize QueryInput: " + e.getMessage());
+    }
+  }
+
+  public static void createKbFromFile(Context ctx) {
+    List<UploadedFile> files = ctx.uploadedFiles("file");
+    try {
+      if (!files.isEmpty()) {
+        UploadedFile file = files.get(0);
+        DefeasibleParser parser = new DefeasibleParser();
+        KnowledgeBase kb = parser.parseInputStream(file.content());
+        QueryInput queryInput = new QueryInput(queryInputService.getQueryInput(ctx).getQueryFormula(), kb);
+        queryInputService.saveQueryInput(ctx, queryInput);
+        ctx.json(queryInput);
+      } else {
+        ctx.status(400).result("No file uploaded");
+      }
+    } catch (Exception e) {
+      throw new UnprocessableContentResponse("Failed to update knowledge base.");
     }
   }
 }

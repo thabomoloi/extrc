@@ -21,6 +21,7 @@ public class WebApp implements Application {
     // Routes
     app.get("/api/query", QueryInputController::getQueryInput);
     app.post("/api/query", QueryInputController::createQueryInput);
+    app.post("/api/query/file", QueryInputController::createKbFromFile);
     app.post("/api/base-rank", BaseRankController::getBaseRank);
     app.post("/api/entailment/{reasoner}", ReasonerController::getEntailment);
   }
