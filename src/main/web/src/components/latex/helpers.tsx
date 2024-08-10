@@ -1,5 +1,6 @@
 import { texFormula } from "@/lib/latex";
 import { TexFormula } from "./TexFormula";
+import { Entailment } from "@/types";
 
 function kb({
   name = "\\mathcal{K}",
@@ -24,4 +25,14 @@ function kb({
   );
 }
 
-export { kb };
+function entailResult({ entailed, queryFormula }: Entailment) {
+  return (
+    <TexFormula>
+      {entailed
+        ? texFormula("\\mathcal{K} \\vapprox " + queryFormula)
+        : texFormula("\\mathcal{K} \\nvapprox " + queryFormula)}
+    </TexFormula>
+  );
+}
+
+export { kb, entailResult };

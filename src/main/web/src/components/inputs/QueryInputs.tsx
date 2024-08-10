@@ -1,8 +1,6 @@
 import { QueryInput } from "@/types";
 import { KbCard } from "./KbCard";
-import { KbCardSkeleton } from "./KbCardSkeleton";
 import { FormulaCard } from "./FormulaCard";
-import { FormulaCardSkeleton } from "./FormulaCardSkeleton";
 
 interface QueryInputProps {
   isLoading: boolean;
@@ -22,22 +20,22 @@ function QueryInputs({
 }: QueryInputProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-[45%,_55%] md:grid-cols-[40%,_60%] gap-4">
-      {!isLoading && queryInput && (
+      {queryInput && (
         <FormulaCard
+          isLoading={isLoading}
           handleQuerySubmit={submitQuery}
           queryFormula={queryInput.queryFormula}
           updateFormula={updateFormula}
         />
       )}
-      {(isLoading || !queryInput) && <FormulaCardSkeleton />}
-      {!isLoading && queryInput && (
+      {queryInput && (
         <KbCard
+          isLoading={isLoading}
           knowledgeBase={queryInput.knowledgeBase}
           submitKnowledgeBase={submitKnowledgeBase}
           uploadKnowledgeBase={uploadKnowledgeBase}
         />
       )}
-      {(isLoading || !queryInput) && <KbCardSkeleton />}
     </div>
   );
 }

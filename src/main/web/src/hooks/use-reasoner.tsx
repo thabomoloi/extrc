@@ -2,7 +2,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { BaseRanking, Entailment, QueryInput } from "@/types";
 import axios from "axios";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const QUERY_URL = "/api/query";
 const KBFILE_URL = "/api/query/file";
@@ -11,35 +11,25 @@ const ENTAILMENT_URL = (reasoner: string) => `/api/entailment/${reasoner}`;
 
 export function useReasoner() {
   const { toast } = useToast();
+  const [queryInputPending, setQueryInputPending] = useState(false);
+  const [resultsPending, setResultsPending] = useState(false);
 
-  const [isPending, startTransition] = useTransition();
-  const [queryInput, setQueryInput] = useState<QueryInput | null>(() => {
-    const storedQueryInput = localStorage.getItem("queryInput");
-    return storedQueryInput ? JSON.parse(storedQueryInput) : null;
-  });
-
-  const [baseRank, setBaseRank] = useState<BaseRanking | null>(() => {
-    const storedBaseRank = localStorage.getItem("baseRank");
-    return storedBaseRank ? JSON.parse(storedBaseRank) : null;
-  });
-
-  const [rationalEntailment, setRationalEntailment] =
-    useState<Entailment | null>(() => {
-      const storedRationalEntailment =
-        localStorage.getItem("rationalEntailment");
-      return storedRationalEntailment
-        ? JSON.parse(storedRationalEntailment)
-        : null;
-    });
-
-  const [lexicalEntailment, setLexicalEntailment] = useState<Entailment | null>(
-    () => {
-      const storedLexicalEntailment = localStorage.getItem("lexicalEntailment");
-      return storedLexicalEntailment
-        ? JSON.parse(storedLexicalEntailment)
-        : null;
-    }
+  const [queryInput, setQueryInput] = useState<QueryInput | null>(
+    initializeState("queryInput")
   );
+  const [baseRank, setBaseRank] = useState<BaseRanking | null>(
+    initializeState("baseRank")
+  );
+  const [rationalEntailment, setRationalEntailment] =
+    useState<Entailment | null>(initializeState("rationalEntailment"));
+  const [lexicalEntailment, setLexicalEntailment] = useState<Entailment | null>(
+    initializeState("lexicalEntailment")
+  );
+
+  function initializeState<T>(key: string): T | null {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : null;
+  }
 
   const serverErrorToast = useCallback(() => {
     toast({
@@ -50,32 +40,99 @@ export function useReasoner() {
     });
   }, [toast]);
 
-  const clearData = useCallback(() => {
+  const clearData = () => {
     setBaseRank(null);
     setRationalEntailment(null);
     setLexicalEntailment(null);
     localStorage.removeItem("baseRank");
     localStorage.removeItem("rationalEntailment");
     localStorage.removeItem("lexicalEntailment");
-  }, []);
+  };
 
-  const fetchQueryInput = useCallback(() => {
-    startTransition(() => {
-      axios
-        .get(QUERY_URL)
-        .then((response) => {
-          const data = response.data as QueryInput;
-          setQueryInput(data);
-          localStorage.setItem("queryInput", JSON.stringify(data));
-        })
-        .catch((error) => {
-          console.error(error);
-          setQueryInput(null);
-          localStorage.removeItem("queryInput");
-          serverErrorToast();
-        });
-    });
+  const fetchQueryInput = useCallback(async () => {
+    clearData();
+    try {
+      const response = await axios.get(QUERY_URL);
+      const data = response.data as QueryInput;
+      setQueryInput(data);
+      localStorage.setItem("queryInput", JSON.stringify(data));
+    } catch (error) {
+      console.error(error);
+      setQueryInput(null);
+      localStorage.removeItem("queryInput");
+      serverErrorToast();
+    }
   }, [serverErrorToast]);
+
+  const updateQueryInput = async (data: QueryInput) => {
+    setQueryInputPending(true);
+    clearData();
+    try {
+      const response = await axios.post(QUERY_URL, data);
+      const updatedData = response.data as QueryInput;
+      setQueryInput(updatedData);
+      localStorage.setItem("queryInput", JSON.stringify(updatedData));
+    } catch (error) {
+      console.error(error);
+      setQueryInput(null);
+      localStorage.removeItem("queryInput");
+      serverErrorToast();
+    }
+    setQueryInputPending(false);
+  };
+
+  const uploadKnowledgeBase = async (data: FormData) => {
+    setQueryInputPending(true);
+    try {
+      const response = await axios.post(KBFILE_URL, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const updatedData = response.data as QueryInput;
+      setQueryInput(updatedData);
+      localStorage.setItem("queryInput", JSON.stringify(updatedData));
+    } catch (error) {
+      console.error(error);
+      setQueryInput(null);
+      localStorage.removeItem("queryInput");
+      clearData();
+      serverErrorToast();
+    }
+    setQueryInputPending(false);
+  };
+
+  const submitKnowledgeBase = (knowledgeBase: string[]) => {
+    if (queryInput) {
+      const data: QueryInput = { ...queryInput, knowledgeBase };
+      updateQueryInput(data);
+    }
+  };
+
+  const updateFormula = (queryFormula: string) => {
+    if (queryInput) {
+      const data: QueryInput = { ...queryInput, queryFormula };
+      updateQueryInput(data);
+    }
+  };
+
+  const submitQuery = async () => {
+    if (!queryInput) return;
+    setResultsPending(true);
+    try {
+      let response = await axios.post(BASE_RANK_URL, queryInput);
+      const brData = response.data as BaseRanking;
+      response = await axios.post(ENTAILMENT_URL("rational"), brData);
+      const rcData = response.data as Entailment;
+      response = await axios.post(ENTAILMENT_URL("lexical"), brData);
+      const lcData = response.data as Entailment;
+      setBaseRank(brData);
+      setRationalEntailment(rcData);
+      setLexicalEntailment(lcData);
+    } catch (error) {
+      console.error(error);
+      clearData();
+    }
+    setResultsPending(false);
+  };
 
   useEffect(() => {
     if (queryInput == null) {
@@ -83,154 +140,9 @@ export function useReasoner() {
     }
   }, [fetchQueryInput, queryInput]);
 
-  const updateQueryInput = useCallback(
-    (data: QueryInput) => {
-      startTransition(() => {
-        axios
-          .post(QUERY_URL, data)
-          .then((response) => {
-            const data = response.data as QueryInput;
-            setQueryInput(data);
-            localStorage.setItem("queryInput", JSON.stringify(data));
-          })
-          .catch((error) => {
-            console.error(error);
-            setQueryInput(null);
-            localStorage.removeItem("queryInput");
-            serverErrorToast();
-          });
-      });
-    },
-    [serverErrorToast]
-  );
-
-  const uploadKnowledgeBase = useCallback(
-    (data: FormData) => {
-      startTransition(() => {
-        axios
-          .post(KBFILE_URL, data, {
-            headers: { "Content-Type": "multipart/form-data" },
-          })
-          .then((response) => {
-            const data = response.data as QueryInput;
-            setQueryInput(data);
-            localStorage.setItem("queryInput", JSON.stringify(data));
-          })
-          .catch((error) => {
-            console.error(error);
-            setQueryInput(null);
-            localStorage.removeItem("queryInput");
-            clearData();
-            serverErrorToast();
-          });
-      });
-    },
-    [clearData, serverErrorToast]
-  );
-
-  const fetchBaseRank = useCallback(() => {
-    startTransition(() => {
-      axios
-        .post(BASE_RANK_URL, queryInput)
-        .then((response) => {
-          const data = response.data as BaseRanking;
-          setBaseRank(data);
-          localStorage.setItem("baseRank", JSON.stringify(data));
-        })
-        .catch((error) => {
-          console.error(error);
-          setBaseRank(null);
-          localStorage.removeItem("baseRank");
-          serverErrorToast();
-        });
-    });
-  }, [queryInput, serverErrorToast]);
-
-  const fetchRationalEntailment = useCallback(() => {
-    startTransition(() => {
-      axios
-        .post(ENTAILMENT_URL("rational"), baseRank)
-        .then((response) => {
-          const data = response.data as Entailment;
-          setRationalEntailment(data);
-          localStorage.setItem("rationalEntailment", JSON.stringify(data));
-        })
-        .catch((error) => {
-          console.error(error);
-          setRationalEntailment(null);
-          localStorage.removeItem("rationalEntailment");
-          serverErrorToast();
-        });
-    });
-  }, [baseRank, serverErrorToast]);
-
-  const fetchLexicalEntailment = useCallback(() => {
-    startTransition(() => {
-      axios
-        .post(ENTAILMENT_URL("lexical"), baseRank)
-        .then((response) => {
-          const data = response.data as Entailment;
-          setLexicalEntailment(data);
-          localStorage.setItem("lexicalEntailment", JSON.stringify(data));
-        })
-        .catch((error) => {
-          console.error(error);
-          setLexicalEntailment(null);
-          localStorage.removeItem("lexicalEntailment");
-          serverErrorToast();
-        });
-    });
-  }, [baseRank, serverErrorToast]);
-
-  const submitKnowledgeBase = useCallback(
-    (knowledgeBase: string[]) => {
-      if (queryInput) {
-        const data: QueryInput = {
-          ...queryInput,
-          knowledgeBase,
-        };
-        updateQueryInput(data);
-      }
-    },
-    [queryInput, updateQueryInput]
-  );
-
-  const updateFormula = useCallback(
-    (queryFormula: string) => {
-      if (queryInput) {
-        const data: QueryInput = {
-          ...queryInput,
-          queryFormula,
-        };
-        updateQueryInput(data);
-      }
-    },
-    [queryInput, updateQueryInput]
-  );
-
-  const submitQuery = useCallback(() => {
-    if (!isPending && queryInput) {
-      fetchBaseRank();
-      if (!isPending && baseRank) {
-        fetchRationalEntailment();
-        fetchLexicalEntailment();
-      }
-    }
-  }, [
-    baseRank,
-    fetchBaseRank,
-    fetchLexicalEntailment,
-    fetchRationalEntailment,
-    isPending,
-    queryInput,
-  ]);
-
-  useEffect(() => {
-    fetchQueryInput();
-  }, [fetchQueryInput]);
-
   return {
-    isPending,
+    queryInputPending,
+    resultsPending,
     queryInput,
     baseRank,
     rationalEntailment,

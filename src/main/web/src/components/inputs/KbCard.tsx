@@ -6,12 +6,14 @@ import { kb } from "../latex/helpers";
 import { KbForm } from "./kb-form";
 
 interface KbCardProps {
+  isLoading: boolean;
   knowledgeBase: string[];
   submitKnowledgeBase: (knowledgeBase: string[]) => void;
   uploadKnowledgeBase: (data: FormData) => void;
 }
 
 function KbCard({
+  isLoading,
   knowledgeBase,
   submitKnowledgeBase,
   uploadKnowledgeBase,
@@ -42,10 +44,18 @@ function KbCard({
           <div className="w-full flex flex-col gap-4 items-center">
             {kb({ formulas: knowledgeBase })}
             <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
-              <Button variant="outline" onClick={handleUpload}>
+              <Button
+                variant="outline"
+                onClick={handleUpload}
+                disabled={isLoading}
+              >
                 Upload
               </Button>
-              <Button variant="secondary" onClick={handleEdit}>
+              <Button
+                variant="secondary"
+                onClick={handleEdit}
+                disabled={isLoading}
+              >
                 Edit
               </Button>
             </div>
