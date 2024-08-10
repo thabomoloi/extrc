@@ -33,13 +33,13 @@ public class RationalReasonerImpl implements ReasonerService {
 
     KnowledgeBase union = new KnowledgeBase();
     baseRanking.forEach(rank -> {
-      union.addAll(rank);
+      union.addAll(rank.getFormulas());
     });
 
     int i = 0;
     while (!union.isEmpty() && reasoner.query(union, negation) && i < baseRanking.size() - 1) {
       removedRanking.add(baseRanking.get(i));
-      union.removeAll(baseRanking.get(i));
+      union.removeAll(baseRanking.get(i).getFormulas());
       i++;
     }
 
