@@ -38,15 +38,15 @@ public class LexicalReasonerImpl implements ReasonerService {
 
     KnowledgeBase union = new KnowledgeBase();
     baseRanking.forEach(rank -> {
-      union.addAll(rank);
+      union.addAll(rank.getFormulas());
     });
 
     int i = 0;
     while (!union.isEmpty() && reasoner.query(union, negation) && i < baseRanking.size() - 1) {
-      union.removeAll(baseRanking.get(i));
+      union.removeAll(baseRanking.get(i).getFormulas());
 
       KnowledgeBase removedFormulas = new KnowledgeBase();
-      int m = baseRanking.get(i).size() - 1;
+      int m = baseRanking.get(i).getFormulas().size() - 1;
 
       List<KnowledgeBase> rankSubsets;
       if (m != 0) {
@@ -63,15 +63,15 @@ public class LexicalReasonerImpl implements ReasonerService {
         } while (reasoner.query(union, negation) && m > 0);
 
         if (!rankSubsets.isEmpty()) {
-          int min = subsets.get(subsets.size() - 1).size();
+          int min = subsets.get(subsets.size() - 1).getFormulas().size();
           for (int k = subsets.size() - 1; k >= 0; k--) {
-            if (subsets.get(k).size() == min && subsets.get(k).getRankNumber() == i) {
-              removedFormulas.addAll(subsets.get(i).difference(union));
+            if (subsets.get(k).getFormulas().size() == min && subsets.get(k).getRankNumber() == i) {
+              removedFormulas.addAll(subsets.get(i).getFormulas().difference(union));
             }
           }
         }
       } else {
-        removedFormulas.addAll(baseRanking.get(i));
+        removedFormulas.addAll(baseRanking.get(i).getFormulas());
       }
       removedRanking.addRank(i, removedFormulas);
       i++;
@@ -91,8 +91,8 @@ public class LexicalReasonerImpl implements ReasonerService {
    * @return The list of subsets representing possible ranks.
    */
   private List<KnowledgeBase> refineRank(Rank rank, int size) {
-    int n = rank.size();
-    Object[] rankArray = rank.toArray();
+    int n = rank.getFormulas().size();
+    Object[] rankArray = rank.getFormulas().toArray();
 
     List<KnowledgeBase> subsets = new ArrayList<>();
 

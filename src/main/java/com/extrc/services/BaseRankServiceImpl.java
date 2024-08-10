@@ -48,13 +48,13 @@ public class BaseRankServiceImpl implements BaseRankService {
       Rank rank = new Rank();
       constructRank(rank, previous, current, exceptionals);
 
-      if (!rank.isEmpty()) {
+      if (!rank.getFormulas().isEmpty()) {
         rank.setRankNumber(i);
         ranking.add(rank);
       }
       i++;
     }
-    ranking.addRank(Integer.MAX_VALUE, classical.union(current));
+    ranking.addRank(-1, classical.union(current));
 
     long endTime = System.nanoTime();
     return new BaseRank(queryInput, sequence, ranking, (endTime - startTime) / 1_000_000_000.0);
@@ -77,7 +77,7 @@ public class BaseRankServiceImpl implements BaseRankService {
       if (exceptionals.contains(((Implication) formula).getFormulas().getFirst())) {
         current.add(formula);
       } else {
-        rank.add(formula);
+        rank.getFormulas().add(formula);
       }
     });
   }
