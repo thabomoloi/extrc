@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -28,13 +27,6 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
         {isLoading && <ResultSkeleton />}
         {!baseRank && <NoResults />}
       </CardContent>
-      <CardFooter>
-        {baseRank && (
-          <p className="uppercase text-muted-foreground italic font-semibold">
-            End of Base Rank!
-          </p>
-        )}
-      </CardFooter>
     </Card>
   );
 }
