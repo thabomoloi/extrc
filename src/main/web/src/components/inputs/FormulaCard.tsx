@@ -22,12 +22,14 @@ const formSchema = z.object({
 });
 
 interface FormulaCardProps {
+  isLoading: boolean;
   queryFormula: string;
   updateFormula: (formula: string) => void;
   handleQuerySubmit: () => void;
 }
 
 export function FormulaCard({
+  isLoading,
   queryFormula,
   updateFormula,
   handleQuerySubmit,
@@ -69,10 +71,16 @@ export function FormulaCard({
             <div className="w-full flex flex-col gap-4 items-center">
               <TexFormula>{texFormula(queryFormula)}</TexFormula>
               <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
-                <Button variant="secondary" onClick={handleEdit}>
+                <Button
+                  variant="secondary"
+                  onClick={handleEdit}
+                  disabled={isLoading}
+                >
                   Edit
                 </Button>
-                <Button onClick={handleQuerySubmit}>Query</Button>
+                <Button onClick={handleQuerySubmit} disabled={isLoading}>
+                  Query
+                </Button>
               </div>
             </div>
           )}
@@ -103,10 +111,13 @@ export function FormulaCard({
                     type="button"
                     variant="secondary"
                     onClick={handleCancel}
+                    disabled={isLoading}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit">Update</Button>
+                  <Button disabled={isLoading} type="submit">
+                    Update
+                  </Button>
                 </div>
               </form>
             </Form>

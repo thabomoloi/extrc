@@ -6,18 +6,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
-import { Entailment } from "@/types";
+import { BaseRanking, Entailment } from "@/types";
 import { NoResults } from "./NoResults";
+import { kb } from "../latex/helpers";
+import { ResultSkeleton } from "./ResultSkeleton";
 
 interface SummaryProps {
   isLoading: boolean;
+  baseRank: BaseRanking | null;
   rationalEntailment: Entailment | null;
   lexicalEntailment: Entailment | null;
 }
 
 function Summary({
   isLoading,
+  baseRank,
   rationalEntailment,
   lexicalEntailment,
 }: SummaryProps): JSX.Element {
@@ -28,11 +31,17 @@ function Summary({
         <CardDescription>Summary of entailment algorithms.</CardDescription>
       </CardHeader>
       <CardContent>
+        {!isLoading && baseRank && rationalEntailment && lexicalEntailment && (
+          <div>{kb({ formulas: rationalEntailment.knowledgeBase })}</div>
+        )}
+        {!isLoading &&
+          !(baseRank && rationalEntailment && lexicalEntailment) && (
+            <NoResults />
+          )}
         {isLoading && <ResultSkeleton />}
-        {!(rationalEntailment && lexicalEntailment) && <NoResults />}
       </CardContent>
       <CardFooter>
-        {rationalEntailment && lexicalEntailment && (
+        {baseRank && rationalEntailment && lexicalEntailment && (
           <p className="uppercase text-muted-foreground italic font-semibold">
             End of summary!
           </p>
