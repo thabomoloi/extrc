@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -31,13 +30,6 @@ function RationalClosure({
         {isLoading && <ResultSkeleton />}
         {!rationalEntailment && <NoResults />}
       </CardContent>
-      <CardFooter>
-        {rationalEntailment && (
-          <p className="uppercase text-muted-foreground italic font-semibold">
-            End of Rational Closure!
-          </p>
-        )}
-      </CardFooter>
     </Card>
   );
 }

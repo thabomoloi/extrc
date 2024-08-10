@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -31,13 +30,6 @@ function LexicographicClosure({
         {isLoading && <ResultSkeleton />}
         {!lexicalEntailment && <NoResults />}
       </CardContent>
-      <CardFooter>
-        {lexicalEntailment && (
-          <p className="uppercase text-muted-foreground italic font-semibold">
-            End of Lexicographic Closure!
-          </p>
-        )}
-      </CardFooter>
     </Card>
   );
 }

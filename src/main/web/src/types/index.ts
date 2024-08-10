@@ -3,10 +3,14 @@ export interface QueryInput {
   knowledgeBase: string[];
 }
 
+export interface Ranking {
+  rankNumber: number;
+  formulas: string[];
+}
 export interface BaseRanking {
   queryInput: QueryInput;
-  ranking: string[];
-  sequence: string[];
+  ranking: Ranking[];
+  sequence: Ranking[];
   timeTaken: number;
 }
 
@@ -14,8 +18,8 @@ export interface Entailment {
   queryFormula: string;
   knowledgeBase: string[];
   entailed: boolean;
-  baseRanking: string[];
-  removedRanking: string[];
-  subsets: string[];
+  baseRanking: Ranking[];
+  removedRanking: Ranking[];
+  subsets: Ranking[];
   timeTaken: number;
 }

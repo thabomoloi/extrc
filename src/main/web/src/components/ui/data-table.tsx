@@ -70,8 +70,8 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       {filter && (
-        <div className="flex items-center py-4 space-x-4">
-          {filters.map((value) => (
+        <div className="flex items-center my-2 space-x-4">
+          {filters.map((value, index) => (
             <Input
               placeholder={value.search}
               value={
@@ -81,12 +81,13 @@ export function DataTable<TData, TValue>({
                 table.getColumn(value.id)?.setFilterValue(event.target.value)
               }
               className="max-w-xs"
+              key={index}
             />
           ))}
         </div>
       )}
       <div>
-        <div className={cn("rounded-md border", { "mt-4": !filter })}>
+        <div className={cn("rounded-md border", { "mt-2": !filter })}>
           <Table className="overflow-x-auto">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

@@ -52,7 +52,7 @@ const timesColumns: ColumnDef<TimesResult>[] = [
       return <TexFormula>{value}</TexFormula>;
     },
     meta: {
-      headerClassName: "w-full",
+      headerClassName: "w-full min-w-[180px]",
       cellClassName: "whitespace-nowrap",
     },
   },

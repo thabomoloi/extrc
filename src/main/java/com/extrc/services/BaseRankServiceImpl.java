@@ -39,7 +39,6 @@ public class BaseRankServiceImpl implements BaseRankService {
 
     int i = 0;
     while (!previous.equals(current)) {
-      sequence.addRank(i, current);
       previous = current;
       current = new KnowledgeBase();
 
@@ -52,9 +51,10 @@ public class BaseRankServiceImpl implements BaseRankService {
         rank.setRankNumber(i);
         ranking.add(rank);
       }
+      sequence.addRank(previous.equals(current) ? Integer.MAX_VALUE : i, previous);
       i++;
     }
-    ranking.addRank(-1, classical.union(current));
+    ranking.addRank(Integer.MAX_VALUE, classical.union(current));
 
     long endTime = System.nanoTime();
     return new BaseRank(queryInput, sequence, ranking, (endTime - startTime) / 1_000_000_000.0);
