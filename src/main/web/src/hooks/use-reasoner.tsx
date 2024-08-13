@@ -50,32 +50,28 @@ export function useReasoner() {
   };
 
   const fetchQueryInput = useCallback(async () => {
-    clearData();
     try {
+      clearData();
       const response = await axios.get(QUERY_URL);
       const data = response.data as QueryInput;
       setQueryInput(data);
       localStorage.setItem("queryInput", JSON.stringify(data));
     } catch (error) {
       console.error(error);
-      setQueryInput(null);
-      localStorage.removeItem("queryInput");
       serverErrorToast();
     }
   }, [serverErrorToast]);
 
   const updateQueryInput = async (data: QueryInput) => {
     setQueryInputPending(true);
-    clearData();
     try {
       const response = await axios.post(QUERY_URL, data);
       const updatedData = response.data as QueryInput;
+      clearData();
       setQueryInput(updatedData);
       localStorage.setItem("queryInput", JSON.stringify(updatedData));
     } catch (error) {
       console.error(error);
-      setQueryInput(null);
-      localStorage.removeItem("queryInput");
       serverErrorToast();
     }
     setQueryInputPending(false);
@@ -88,13 +84,13 @@ export function useReasoner() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       const updatedData = response.data as QueryInput;
+      clearData();
+
       setQueryInput(updatedData);
       localStorage.setItem("queryInput", JSON.stringify(updatedData));
     } catch (error) {
       console.error(error);
-      setQueryInput(null);
-      localStorage.removeItem("queryInput");
-      clearData();
+      // clearData();
       serverErrorToast();
     }
     setQueryInputPending(false);
@@ -127,9 +123,13 @@ export function useReasoner() {
       setBaseRank(brData);
       setRationalEntailment(rcData);
       setLexicalEntailment(lcData);
+      localStorage.setItem("baseRank", JSON.stringify(brData));
+      localStorage.setItem("rationalEntailment", JSON.stringify(rcData));
+      localStorage.setItem("lexicalEntailment", JSON.stringify(lcData));
     } catch (error) {
       console.error(error);
-      clearData();
+      // clearData()
+      serverErrorToast();
     }
     setResultsPending(false);
   };

@@ -7,12 +7,10 @@ import {
 } from "@/components/ui/card";
 import { BaseRanking, Entailment } from "@/types";
 import { NoResults } from "./NoResults";
-import { kb } from "../latex/helpers";
 import { ResultSkeleton } from "./ResultSkeleton";
-import { TexFormula } from "../latex/TexFormula";
-import { texFormula } from "@/lib/latex";
 import { EntailmentTable, TimesTable } from "./tables/other-tables";
 import { RankingTable } from "./tables/RankingTable";
+import { QueryInputContainer } from "./common/query-input";
 
 interface SummaryProps {
   isLoading: boolean;
@@ -30,19 +28,17 @@ function Summary({
   return (
     <Card className="w-full h-full">
       <CardHeader>
-        <CardTitle>Summary</CardTitle>
+        <CardTitle className="text-lg font-bold">Summary</CardTitle>
         <CardDescription>Summary of entailment algorithms.</CardDescription>
       </CardHeader>
       <CardContent>
         {!isLoading && baseRank && rationalEntailment && lexicalEntailment && (
-          <div>
-            {kb({ formulas: baseRank.queryInput.knowledgeBase, set: true })}
-            <div className="mb-6">
-              <TexFormula>
-                {texFormula("\\alpha = " + baseRank.queryInput.queryFormula)}
-              </TexFormula>
-            </div>
-            <div className="mb-6">
+          <div className="space-y-6">
+            <QueryInputContainer
+              knowledgeBase={baseRank.queryInput.knowledgeBase}
+              queryFormula={baseRank.queryInput.queryFormula}
+            />
+            <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
                 Entailment Results
               </h4>
@@ -51,13 +47,13 @@ function Summary({
                 lexicalEntailment={lexicalEntailment}
               />
             </div>
-            <div className="mb-6">
+            <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
                 Initial Ranks
               </h4>
               <RankingTable ranking={baseRank.ranking} />
             </div>
-            <div className="mb-6">
+            <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
                 Removed Ranks
               </h4>
@@ -70,7 +66,7 @@ function Summary({
               </h5>
               <RankingTable ranking={lexicalEntailment.removedRanking} />
             </div>
-            <div className="mb-6">
+            <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
                 Time Taken
               </h4>

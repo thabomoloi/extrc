@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TexFormula } from "../latex/TexFormula";
-import { kb } from "../latex/helpers";
 import { KbForm } from "./kb-form";
+import { KnowledgeBase } from "../latex/formulas";
 
 interface KbCardProps {
   isLoading: boolean;
@@ -35,14 +35,14 @@ function KbCard({
   return (
     <Card className="h-full">
       <CardHeader className="space-y-0 pb-4">
-        <CardTitle className="text-base text-center font-medium">
+        <CardTitle className="text-center font-semibold">
           Knowledge Base <TexFormula>{"(\\mathcal{K})"}</TexFormula>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {!state.editing && (
           <div className="w-full flex flex-col gap-4 items-center">
-            {kb({ formulas: knowledgeBase })}
+            <KnowledgeBase formulas={knowledgeBase} />
             <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
               <Button
                 variant="outline"
@@ -62,13 +62,15 @@ function KbCard({
           </div>
         )}
         {state.editing && (
-          <KbForm
-            defaultFormulas={knowledgeBase.join(",")}
-            fromFile={state.fromFile}
-            submitKnowledgeBase={submitKnowledgeBase}
-            handleReset={handleReset}
-            uploadKnowledgeBase={uploadKnowledgeBase}
-          />
+          <div className="w-full flex flex-col gap-4 items-center">
+            <KbForm
+              defaultFormulas={knowledgeBase.join(",")}
+              fromFile={state.fromFile}
+              submitKnowledgeBase={submitKnowledgeBase}
+              handleReset={handleReset}
+              uploadKnowledgeBase={uploadKnowledgeBase}
+            />
+          </div>
         )}
       </CardContent>
     </Card>

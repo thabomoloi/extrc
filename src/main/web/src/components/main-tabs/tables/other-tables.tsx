@@ -113,7 +113,7 @@ function TimesTable({
           timeTaken: roundOff(rationalEntailment.timeTaken),
         },
         {
-          algorithm: "Lexicographic Closue",
+          algorithm: "Lexicographic Closure",
           timeTaken: roundOff(lexicalEntailment.timeTaken),
         },
       ]}

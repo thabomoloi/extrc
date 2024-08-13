@@ -1,5 +1,7 @@
 package com.extrc.models;
 
+import org.tweetyproject.logics.pl.syntax.Implication;
+import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 public class Entailment {
@@ -10,6 +12,7 @@ public class Entailment {
   private final Ranking subsets;
   private final boolean entailed;
   private final double timeTaken;
+  private final PlFormula negation;
 
   public Entailment() {
     this(new KnowledgeBase(), null, new Ranking(), new Ranking(), new Ranking(), false, 0.0);
@@ -25,6 +28,7 @@ public class Entailment {
     this.subsets = subsets;
     this.entailed = entailed;
     this.timeTaken = timeTaken;
+    this.negation = queryFormula == null ? null : new Negation(((Implication) queryFormula).getFirstFormula());
   }
 
   public KnowledgeBase getKnowledgeBase() {
@@ -33,6 +37,10 @@ public class Entailment {
 
   public PlFormula getQueryFormula() {
     return queryFormula;
+  }
+
+  public PlFormula getNegation() {
+    return negation;
   }
 
   public Ranking getBaseRanking() {

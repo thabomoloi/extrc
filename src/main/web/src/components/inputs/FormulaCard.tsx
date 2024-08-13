@@ -62,7 +62,7 @@ export function FormulaCard({
     <div className="h-full">
       <Card>
         <CardHeader className="space-y-0 pb-4">
-          <CardTitle className="text-base text-center font-medium">
+          <CardTitle className="font-semibold text-center">
             Query Formula <TexFormula>{"(\\alpha)"}</TexFormula>
           </CardTitle>
         </CardHeader>
