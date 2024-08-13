@@ -65,14 +65,22 @@ export function useReasoner() {
   const updateQueryInput = async (data: QueryInput) => {
     setQueryInputPending(true);
     try {
-      const response = await axios.post(QUERY_URL, data);
+      const response = await axios.post(QUERY_URL, {
+        ...data,
+        knowledgeBase: data.knowledgeBase.filter((item) => item.trim() != ""),
+      });
       const updatedData = response.data as QueryInput;
       clearData();
       setQueryInput(updatedData);
       localStorage.setItem("queryInput", JSON.stringify(updatedData));
     } catch (error) {
       console.error(error);
-      serverErrorToast();
+      toast({
+        variant: "destructive",
+        title: "Invalid inputs.",
+        description: "Invalid query formula or knowledge base.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     }
     setQueryInputPending(false);
   };
@@ -90,8 +98,12 @@ export function useReasoner() {
       localStorage.setItem("queryInput", JSON.stringify(updatedData));
     } catch (error) {
       console.error(error);
-      // clearData();
-      serverErrorToast();
+      toast({
+        variant: "destructive",
+        title: "Invalid knowledge base.",
+        description: "At least one formula in your knowledge base is invalid.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     }
     setQueryInputPending(false);
   };

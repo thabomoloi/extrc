@@ -16,9 +16,22 @@ import { TexFormula } from "../latex/TexFormula";
 import { texFormula } from "@/lib/latex";
 
 const formSchema = z.object({
-  formula: z.string().min(1, {
-    message: "Formula is required.",
-  }),
+  formula: z
+    .string()
+    .min(1, {
+      message: "Formula is required.",
+    })
+    .refine((formula) => {
+      const symbol = "~>";
+      const index = formula.indexOf(symbol);
+
+      // Check if the symbol is found and is not at the start or end
+      if (index > 0 && index + symbol.length < formula.length) {
+        return true;
+      } else {
+        return false;
+      }
+    }, "Query formula needs to be defeasible implication, e.g. p~>f"),
 });
 
 interface FormulaCardProps {
