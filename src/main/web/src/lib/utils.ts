@@ -23,18 +23,6 @@ export function remainingRanks(baseRanks: Ranking[], removedRanks: Ranking[]) {
   const n = removedRanks.length;
   const m = baseRanks.length;
   const ranks: Ranking[] = [];
-  // for (let i = 0; i < n; i++) {
-  //   if (baseRanks[i].rankNumber == removedRanks[i].rankNumber) {
-  //     if (arrayEquals(baseRanks[i].formulas, removedRanks[i].formulas)) {
-  //       ranks.push(baseRanks[i]);
-  //     } else {
-  //       const formulas = baseRanks[i].formulas.filter(
-  //         (formula) => !removedRanks[i].formulas.includes(formula)
-  //       );
-  //       ranks.push({ ...baseRanks[i], formulas });
-  //     }
-  //   }
-  // }
   for (let i = n - 1; i < m; i++) {
     if (i < n) {
       if (baseRanks[i].rankNumber == removedRanks[i].rankNumber) {
