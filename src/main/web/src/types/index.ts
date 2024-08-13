@@ -16,6 +16,7 @@ export interface BaseRanking {
 
 export interface Entailment {
   queryFormula: string;
+  negation: string;
   knowledgeBase: string[];
   entailed: boolean;
   baseRanking: Ranking[];

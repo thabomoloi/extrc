@@ -66,7 +66,7 @@ public class LexicalReasonerImpl implements ReasonerService {
           int min = subsets.get(subsets.size() - 1).getFormulas().size();
           for (int k = subsets.size() - 1; k >= 0; k--) {
             if (subsets.get(k).getFormulas().size() == min && subsets.get(k).getRankNumber() == i) {
-              removedFormulas.addAll(subsets.get(i).getFormulas().difference(union));
+              removedFormulas.addAll(subsets.get(k).getFormulas().difference(union));
             }
           }
         }
