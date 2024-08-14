@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
           
       - name: Build and test
-        run: mvn clean install
+        run: mvn clean package
         
   deploy:
     name: Deploy to Fly
