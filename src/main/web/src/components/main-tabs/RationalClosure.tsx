@@ -9,8 +9,8 @@ import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
 import { TexFormula } from "../latex/TexFormula";
 import { RankingTable } from "./tables/RankingTable";
-import { texFormula, unionRanks } from "@/lib/latex";
-import { entailResult, kb } from "../latex/helpers";
+import { texFormula } from "@/lib/latex";
+import { kb } from "../latex/helpers";
 import { Entailment } from "@/types";
 import { RatEntailment } from "./entailment/RatEntailment";
 
