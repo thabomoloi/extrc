@@ -4,7 +4,7 @@
   <groupId>com.extrc</groupId>
   <artifactId>extrc</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT.jar</version>
+  <version>1.0-SNAPSHOT</version>
   <name>extrc</name>
   <url>http://maven.apache.org</url>
 
@@ -12,7 +12,9 @@
     <!-- https://maven.apache.org/general.html#encoding-warning -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- <java.version>22</java.version> -->
-    <maven.compiler.release>18</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <frontend.app.dir>${project.basedir}/src/main/web</frontend.app.dir>
     <main.class>com.extrc.App</main.class>
     <node.version>v20.16.0</node.version>
