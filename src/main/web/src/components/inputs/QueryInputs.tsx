@@ -19,7 +19,7 @@ function QueryInputs({
   updateFormula,
 }: QueryInputProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-[45%,_55%] md:grid-cols-[40%,_60%] gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {queryInput && (
         <FormulaCard
           isLoading={isLoading}
