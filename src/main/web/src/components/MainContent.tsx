@@ -6,6 +6,7 @@ import { RationalClosure } from "./main-tabs/RationalClosure";
 import { LexicographicClosure } from "./main-tabs/LexicographicClosure";
 import { QueryInputs } from "./inputs/QueryInputs";
 import BarLoader from "react-spinners/BarLoader";
+
 export function MainContent() {
   const reasoner = useReasoner();
 
@@ -18,7 +19,7 @@ export function MainContent() {
           loading={reasoner.queryInputPending || reasoner.resultsPending}
         />
       </div>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 w-full">
         <QueryInputs
           isLoading={reasoner.queryInputPending}
           queryInput={reasoner.queryInput}
