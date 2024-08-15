@@ -6,14 +6,13 @@ import org.tweetyproject.logics.pl.syntax.Proposition;
 
 import com.extrc.models.DefeasibleImplication;
 import com.extrc.models.KnowledgeBase;
-import com.extrc.models.QueryInput;
 
 import io.javalin.http.Context;
 
-public class QueryInputServiceImpl implements QueryInputService {
-  private final String SESSION_KEY = "queryInput";
+public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
+  private final String SESSION_KEY = "knowledgeBase";
 
-  private QueryInput getDefault() {
+  private KnowledgeBase getDefault() {
     Proposition p = new Proposition("p");
     Proposition b = new Proposition("b");
     Proposition f = new Proposition("f");
@@ -24,21 +23,22 @@ public class QueryInputServiceImpl implements QueryInputService {
     kb.add(new DefeasibleImplication(b, f));
     kb.add(new DefeasibleImplication(b, w));
     kb.add(new DefeasibleImplication(p, new Negation(f)));
-    return new QueryInput(new DefeasibleImplication(p, w), kb);
+    return kb;
   }
 
   @Override
-  public QueryInput getQueryInput(Context ctx) {
-    QueryInput queryInput = ctx.sessionAttribute(SESSION_KEY);
-    if (queryInput == null) {
-      queryInput = getDefault();
+  public KnowledgeBase getKnowledgeBase(Context ctx) {
+    KnowledgeBase kb = ctx.sessionAttribute(SESSION_KEY);
+    if (kb == null) {
+      kb = getDefault();
     }
-    saveQueryInput(ctx, queryInput);
-    return queryInput;
+    saveKnowledgeBase(ctx, kb);
+    return kb;
   }
 
   @Override
-  public void saveQueryInput(Context ctx, QueryInput queryInput) {
-    ctx.sessionAttribute(SESSION_KEY, queryInput);
+  public void saveKnowledgeBase(Context ctx, KnowledgeBase kb) {
+    ctx.sessionAttribute(SESSION_KEY, kb);
   }
+
 }

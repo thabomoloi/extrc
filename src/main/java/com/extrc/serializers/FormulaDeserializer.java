@@ -20,7 +20,7 @@ public class FormulaDeserializer extends JsonDeserializer<PlFormula> {
       DefeasibleParser parser = new DefeasibleParser();
       return parser.parseFormula(formulaString);
     } catch (IOException | ParserException e) {
-      throw new IOException("Failed to deserialize PlFormula", e);
+      throw new IOException("The formula \"" + formulaString + "\" is invalid.");
     }
   }
 

@@ -1,29 +1,36 @@
 package com.extrc.controllers;
 
+import java.io.IOException;
+
+import org.tweetyproject.commons.ParserException;
+import org.tweetyproject.logics.pl.syntax.PlFormula;
+
 import com.extrc.models.BaseRank;
+import com.extrc.models.ErrorResponse;
 import com.extrc.services.ReasonerFactory;
 import com.extrc.services.ReasonerService;
+import com.extrc.utils.DefeasibleParser;
 
-import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
-import io.javalin.http.UnprocessableContentResponse;
 
 public class ReasonerController {
 
   public static void getEntailment(Context ctx) {
     String reasonerType = ctx.pathParam("reasoner");
+    String formula = ctx.pathParam("queryFormula");
+
     try {
-      BaseRank baseRank = ctx.bodyValidator(BaseRank.class)
-          .check(v -> v.getQueryInput() != null, "Query input is required")
-          .check(v -> v.getRanking() != null, "Ranking is required").get();
+      DefeasibleParser parser = new DefeasibleParser();
+      PlFormula queryFormula = parser.parseFormula(formula);
+      BaseRank baseRank = ctx.bodyAsClass(BaseRank.class);
       BaseRank baseRankCopy = new BaseRank(baseRank);
       ReasonerService reasoner = ReasonerFactory.createReasoner(reasonerType);
-      ctx.json(reasoner.getEntailment(baseRankCopy));
+      ctx.json(reasoner.getEntailment(baseRankCopy, queryFormula));
+
     } catch (IllegalArgumentException e) {
-      throw new BadRequestResponse(e.getMessage());
-    } catch (Exception e) {
-      // Handle deserialization error
-      throw new UnprocessableContentResponse("Failed to deserialize BaseRank: " + e.getMessage());
+      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "Invalid reasoner: " + reasonerType));
+    } catch (IOException | ParserException e) {
+      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "Invalid query formula: " + formula));
     }
   }
 
