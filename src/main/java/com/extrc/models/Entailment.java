@@ -9,23 +9,20 @@ public class Entailment {
   private final PlFormula queryFormula;
   private final Ranking baseRanking;
   private final Ranking removedRanking;
-  private final Ranking subsets;
   private final boolean entailed;
   private final double timeTaken;
   private final PlFormula negation;
 
   public Entailment() {
-    this(new KnowledgeBase(), null, new Ranking(), new Ranking(), new Ranking(), false, 0.0);
-
+    this(new KnowledgeBase(), null, new Ranking(), new Ranking(), false, 0.0);
   }
 
   public Entailment(KnowledgeBase knowledgeBase, PlFormula queryFormula, Ranking baseRanking,
-      Ranking removedRanking, Ranking subsets, boolean entailed, double timeTaken) {
+      Ranking removedRanking, boolean entailed, double timeTaken) {
     this.knowledgeBase = knowledgeBase;
     this.queryFormula = queryFormula;
     this.baseRanking = baseRanking;
     this.removedRanking = removedRanking;
-    this.subsets = subsets;
     this.entailed = entailed;
     this.timeTaken = timeTaken;
     this.negation = queryFormula == null ? null : new Negation(((Implication) queryFormula).getFirstFormula());
@@ -49,10 +46,6 @@ public class Entailment {
 
   public Ranking getRemovedRanking() {
     return removedRanking;
-  }
-
-  public Ranking getSubsets() {
-    return subsets;
   }
 
   public boolean getEntailed() {

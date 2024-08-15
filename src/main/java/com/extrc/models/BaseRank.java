@@ -1,24 +1,24 @@
 package com.extrc.models;
 
 public class BaseRank {
-  private final QueryInput queryInput;
+  private final KnowledgeBase knowledgeBase;
   private final Ranking ranking;
   private final Ranking sequence;
   private final double timeTaken;
 
   public BaseRank() {
-    this(new QueryInput(), new Ranking(), new Ranking(), 0);
+    this(new KnowledgeBase(), new Ranking(), new Ranking(), 0);
   }
 
-  public BaseRank(QueryInput queryInput, Ranking sequence, Ranking ranking, double timeTaken) {
+  public BaseRank(KnowledgeBase knowledgeBase, Ranking sequence, Ranking ranking, double timeTaken) {
     this.sequence = sequence;
     this.ranking = ranking;
     this.timeTaken = timeTaken;
-    this.queryInput = queryInput;
+    this.knowledgeBase = knowledgeBase;
   }
 
   public BaseRank(BaseRank baseRank) {
-    this(baseRank.getQueryInput(), baseRank.getSequence(), baseRank.getRanking(), baseRank.getTimeTaken());
+    this(baseRank.getKnowledgeBase(), baseRank.getSequence(), baseRank.getRanking(), baseRank.getTimeTaken());
   }
 
   public Ranking getRanking() {
@@ -33,7 +33,7 @@ public class BaseRank {
     return timeTaken;
   }
 
-  public QueryInput getQueryInput() {
-    return new QueryInput(queryInput);
+  public KnowledgeBase getKnowledgeBase() {
+    return new KnowledgeBase(knowledgeBase);
   }
 }

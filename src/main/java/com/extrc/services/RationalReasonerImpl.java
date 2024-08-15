@@ -21,13 +21,12 @@ public class RationalReasonerImpl implements ReasonerService {
   }
 
   @Override
-  public Entailment getEntailment(BaseRank baseRank) {
+  public Entailment getEntailment(BaseRank baseRank, PlFormula queryFormula) {
     long startTime = System.nanoTime();
 
     // Get inputs
-    PlFormula queryFormula = baseRank.getQueryInput().getQueryFormula();
     PlFormula negation = new Negation(((Implication) queryFormula).getFirstFormula());
-    KnowledgeBase knowledgeBase = baseRank.getQueryInput().getKnowledgeBase();
+    KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
     Ranking baseRanking = baseRank.getRanking();
     Ranking removedRanking = new Ranking();
 
@@ -45,7 +44,7 @@ public class RationalReasonerImpl implements ReasonerService {
 
     boolean entailed = !union.isEmpty() && reasoner.query(union, queryFormula);
     long endTime = System.nanoTime();
-    return new Entailment(knowledgeBase, queryFormula, baseRanking, removedRanking, new Ranking(), entailed,
+    return new Entailment(knowledgeBase, queryFormula, baseRanking, removedRanking, entailed,
         (endTime - startTime) / 1_000_000_000.0);
   }
 

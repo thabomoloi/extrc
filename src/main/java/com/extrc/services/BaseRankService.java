@@ -1,8 +1,8 @@
 package com.extrc.services;
 
 import com.extrc.models.BaseRank;
-import com.extrc.models.QueryInput;
+import com.extrc.models.KnowledgeBase;
 
 public interface BaseRankService {
-  public BaseRank constructBaseRank(QueryInput queryInput);
+  public BaseRank constructBaseRank(KnowledgeBase knowledgeBase);
 }

@@ -1,11 +1,12 @@
 package com.extrc.services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
 import org.tweetyproject.logics.pl.sat.Sat4jSolver;
 import org.tweetyproject.logics.pl.sat.SatSolver;
+import org.tweetyproject.logics.pl.syntax.Conjunction;
+import org.tweetyproject.logics.pl.syntax.Disjunction;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
@@ -25,16 +26,14 @@ public class LexicalReasonerImpl implements ReasonerService {
   }
 
   @Override
-  public Entailment getEntailment(BaseRank baseRank) {
+  public Entailment getEntailment(BaseRank baseRank, PlFormula queryFormula) {
     long startTime = System.nanoTime();
 
     // Get inputs
-    PlFormula queryFormula = baseRank.getQueryInput().getQueryFormula();
     PlFormula negation = new Negation(((Implication) queryFormula).getFirstFormula());
-    KnowledgeBase knowledgeBase = baseRank.getQueryInput().getKnowledgeBase();
+    KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
     Ranking baseRanking = baseRank.getRanking();
     Ranking removedRanking = new Ranking();
-    Ranking subsets = new Ranking();
 
     KnowledgeBase union = new KnowledgeBase();
     baseRanking.forEach(rank -> {
@@ -48,28 +47,15 @@ public class LexicalReasonerImpl implements ReasonerService {
       KnowledgeBase removedFormulas = new KnowledgeBase();
       int m = baseRanking.get(i).getFormulas().size() - 1;
 
-      List<KnowledgeBase> rankSubsets;
+      PlFormula weakenedFormulas;
       if (m != 0) {
         do {
-          rankSubsets = refineRank(baseRanking.get(i), m);
-          int j = i;
-          rankSubsets.forEach(subset -> {
-            subsets.addRank(j, subset);
-            if (!reasoner.query(union.union(subset), negation)) {
-              union.addAll(subset);
-            }
-          });
+          weakenedFormulas = weakenRank(baseRanking.get(i), m);
+          if (!reasoner.query(union.union(new KnowledgeBase(Arrays.asList(weakenedFormulas))), negation)) {
+            union.add(weakenedFormulas);
+          }
           m--;
         } while (reasoner.query(union, negation) && m > 0);
-
-        if (!rankSubsets.isEmpty()) {
-          int min = subsets.get(subsets.size() - 1).getFormulas().size();
-          for (int k = subsets.size() - 1; k >= 0; k--) {
-            if (subsets.get(k).getFormulas().size() == min && subsets.get(k).getRankNumber() == i) {
-              removedFormulas.addAll(subsets.get(k).getFormulas().difference(union));
-            }
-          }
-        }
       } else {
         removedFormulas.addAll(baseRanking.get(i).getFormulas());
       }
@@ -79,35 +65,26 @@ public class LexicalReasonerImpl implements ReasonerService {
 
     boolean entailed = !union.isEmpty() && reasoner.query(union, queryFormula);
     long endTime = System.nanoTime();
-    return new Entailment(knowledgeBase, queryFormula, baseRanking, removedRanking, subsets, entailed,
+    return new Entailment(knowledgeBase, queryFormula, baseRanking, removedRanking, entailed,
         (endTime - startTime) / 1_000_000_000.0);
   }
 
-  /**
-   * Finds subsets of a specific size in which rank formulas are removed.
-   * 
-   * @param rank Rank to refine.
-   * @param size Size of the subset.
-   * @return The list of subsets representing possible ranks.
-   */
-  private List<KnowledgeBase> refineRank(Rank rank, int size) {
+  private Disjunction weakenRank(Rank rank, int size) {
     int n = rank.getFormulas().size();
     Object[] rankArray = rank.getFormulas().toArray();
-
-    List<KnowledgeBase> subsets = new ArrayList<>();
-
+    Disjunction weakenedRank = new Disjunction();
     for (int bitmask = 0; bitmask < (1 << n); bitmask++) {
       if (Integer.bitCount(bitmask) == size) {
-        KnowledgeBase subset = new KnowledgeBase();
+        Conjunction conjunction = new Conjunction();
         for (int i = 0; i < n; i++) {
           if ((bitmask & (1 << i)) != 0) {
-            subset.add((PlFormula) rankArray[i]);
+            conjunction.add((PlFormula) rankArray[i]);
           }
         }
-        subsets.add(subset);
+        weakenedRank.add(conjunction);
       }
     }
-    return subsets;
+    return weakenedRank;
   }
 
 }
