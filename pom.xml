@@ -38,16 +38,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jline</groupId>
-      <artifactId>jline</artifactId>
-      <version>3.26.3</version>
-    </dependency>
-    <dependency>
-      <groupId>de.vandermeer</groupId>
-      <artifactId>asciitable</artifactId>
-      <version>0.3.2</version>
-    </dependency>
-    <dependency>
       <groupId>io.javalin</groupId>
       <artifactId>javalin</artifactId>
       <version>6.1.6</version>
@@ -61,12 +51,6 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.17.0</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.json/json -->
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20240303</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
