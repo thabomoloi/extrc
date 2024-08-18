@@ -1,6 +1,5 @@
 package com.extrc.controllers;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.extrc.models.ErrorResponse;
@@ -16,16 +15,18 @@ public class KnowledgeBaseController {
   private final static KnowledgeBaseService kbService = new KnowledgeBaseServiceImpl();
 
   public static void getKnowledgeBase(Context ctx) {
-    ctx.json(kbService.getKnowledgeBase(ctx));
+    ctx.status(200);
+    ctx.json(kbService.getKnowledgeBase());
   }
 
   public static void createKb(Context ctx) {
     try {
       KnowledgeBase kb = ctx.bodyAsClass(KnowledgeBase.class);
-      kbService.saveKnowledgeBase(ctx, kb);
+      ctx.status(200);
       ctx.json(kb);
     } catch (Exception e) {
-      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
+      ctx.status(400);
+      ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
     }
   }
 
@@ -36,13 +37,15 @@ public class KnowledgeBaseController {
         UploadedFile file = files.get(0);
         DefeasibleParser parser = new DefeasibleParser();
         KnowledgeBase kb = parser.parseInputStream(file.content());
-        kbService.saveKnowledgeBase(ctx, kb);
+        ctx.status(200);
         ctx.json(kb);
       } else {
-        ctx.status(400).json(new ErrorResponse(400, "Bad Request", "No file uploaded"));
+        ctx.status(400);
+        ctx.json(new ErrorResponse(400, "Bad Request", "No file uploaded"));
       }
-    } catch (IOException e) {
-      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
+    } catch (Exception e) {
+      ctx.status(400);
+      ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid."));
     }
   }
 }

@@ -1,8 +1,5 @@
 package com.extrc.controllers;
 
-import java.io.IOException;
-
-import org.tweetyproject.commons.ParserException;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.models.BaseRank;
@@ -25,12 +22,15 @@ public class ReasonerController {
       BaseRank baseRank = ctx.bodyAsClass(BaseRank.class);
       BaseRank baseRankCopy = new BaseRank(baseRank);
       ReasonerService reasoner = ReasonerFactory.createReasoner(reasonerType);
+      ctx.status(200);
       ctx.json(reasoner.getEntailment(baseRankCopy, queryFormula));
 
     } catch (IllegalArgumentException e) {
-      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "Invalid reasoner: " + reasonerType));
-    } catch (IOException | ParserException e) {
-      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "Invalid query formula: " + formula));
+      ctx.status(400);
+      ctx.json(new ErrorResponse(400, "Bad Request", "Invalid reasoner: " + reasonerType));
+    } catch (Exception e) {
+      ctx.status(400);
+      ctx.json(new ErrorResponse(400, "Bad Request", "Invalid query formula: " + formula));
     }
   }
 
