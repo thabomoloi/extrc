@@ -13,9 +13,11 @@ public class BaseRankController {
   public static void getBaseRank(Context ctx) {
     try {
       KnowledgeBase kb = ctx.bodyAsClass(KnowledgeBase.class);
+      ctx.status(200);
       ctx.json(baseRankService.constructBaseRank(kb));
     } catch (Exception e) {
-      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid"));
+      ctx.status(400);
+      ctx.json(new ErrorResponse(400, "Bad Request", "The knowledge base is invalid"));
     }
   }
 }

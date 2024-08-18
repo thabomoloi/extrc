@@ -7,10 +7,7 @@ import org.tweetyproject.logics.pl.syntax.Proposition;
 import com.extrc.models.DefeasibleImplication;
 import com.extrc.models.KnowledgeBase;
 
-import io.javalin.http.Context;
-
 public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
-  private final String SESSION_KEY = "knowledgeBase";
 
   private KnowledgeBase getDefault() {
     Proposition p = new Proposition("p");
@@ -27,18 +24,8 @@ public class KnowledgeBaseServiceImpl implements KnowledgeBaseService {
   }
 
   @Override
-  public KnowledgeBase getKnowledgeBase(Context ctx) {
-    KnowledgeBase kb = ctx.sessionAttribute(SESSION_KEY);
-    if (kb == null) {
-      kb = getDefault();
-    }
-    saveKnowledgeBase(ctx, kb);
-    return kb;
-  }
-
-  @Override
-  public void saveKnowledgeBase(Context ctx, KnowledgeBase kb) {
-    ctx.sessionAttribute(SESSION_KEY, kb);
+  public KnowledgeBase getKnowledgeBase() {
+    return getDefault();
   }
 
 }

@@ -2,7 +2,6 @@ package com.extrc.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Arrays;
@@ -30,7 +29,7 @@ public class ReasonerServiceTest {
   }
 
   @Test
-  public void testRationalPenguinsKb() throws IOException {
+  public void testRationalPenguinsKb() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("kb1.txt");
     KnowledgeBase kb = parser.parseInputStream(inputStream);
     BaseRank baseRank = baseRankService.constructBaseRank(kb);
@@ -47,7 +46,7 @@ public class ReasonerServiceTest {
   }
 
   @Test
-  public void testLexicalPenguinsKb() throws IOException {
+  public void testLexicalPenguinsKb() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("kb1.txt");
     KnowledgeBase kb = parser.parseInputStream(inputStream);
     BaseRank baseRank = baseRankService.constructBaseRank(kb);

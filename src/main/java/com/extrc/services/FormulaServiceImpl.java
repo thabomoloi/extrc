@@ -5,11 +5,7 @@ import org.tweetyproject.logics.pl.syntax.Proposition;
 
 import com.extrc.models.DefeasibleImplication;
 
-import io.javalin.http.Context;
-
 public class FormulaServiceImpl implements FormulaService {
-
-  private final String SESSION_KEY = "queryFormula";
 
   private PlFormula getDefault() {
     Proposition p = new Proposition("p");
@@ -18,17 +14,7 @@ public class FormulaServiceImpl implements FormulaService {
   }
 
   @Override
-  public PlFormula getQueryFormula(Context ctx) {
-    PlFormula queryFormula = ctx.sessionAttribute(SESSION_KEY);
-    if (queryFormula == null) {
-      queryFormula = getDefault();
-    }
-    return queryFormula;
+  public PlFormula getQueryFormula() {
+    return getDefault();
   }
-
-  @Override
-  public void saveQueryFormula(Context ctx, PlFormula queryFormula) {
-    ctx.sessionAttribute(SESSION_KEY, queryFormula);
-  }
-
 }

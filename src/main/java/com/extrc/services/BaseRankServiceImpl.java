@@ -62,9 +62,11 @@ public class BaseRankServiceImpl implements BaseRankService {
   private KnowledgeBase getExceptionals(KnowledgeBase defeasible, KnowledgeBase classical) {
     KnowledgeBase exceptionals = new KnowledgeBase();
     KnowledgeBase union = defeasible.union(classical);
-    defeasible.antecedents().forEach(antecedent -> {
+    defeasible.antecedents().parallelStream().forEach(antecedent -> {
       if (reasoner.query(union, new Negation(antecedent))) {
-        exceptionals.add(antecedent);
+        synchronized (exceptionals) {
+          exceptionals.add(antecedent);
+        }
       }
     });
     return exceptionals;
@@ -72,11 +74,15 @@ public class BaseRankServiceImpl implements BaseRankService {
 
   private void constructRank(Rank rank, KnowledgeBase previous, KnowledgeBase current,
       KnowledgeBase exceptionals) {
-    previous.forEach(formula -> {
+    previous.parallelStream().forEach(formula -> {
       if (exceptionals.contains(((Implication) formula).getFormulas().getFirst())) {
-        current.add(formula);
+        synchronized (current) {
+          current.add(formula);
+        }
       } else {
-        rank.getFormulas().add(formula);
+        synchronized (rank.getFormulas()) {
+          rank.getFormulas().add(formula);
+        }
       }
     });
   }

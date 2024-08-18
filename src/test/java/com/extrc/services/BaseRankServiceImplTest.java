@@ -1,6 +1,5 @@
 package com.extrc.services;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
@@ -33,7 +32,7 @@ public class BaseRankServiceImplTest {
   }
 
   @Test
-  public void testWithPenguinsKnowledgeBase() throws IOException {
+  public void testWithPenguinsKnowledgeBase() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("kb1.txt");
     KnowledgeBase kb = parser.parseInputStream(inputStream);
     var baseRank = baseRankService.constructBaseRank(kb);
@@ -51,15 +50,27 @@ public class BaseRankServiceImplTest {
   }
 
   @Test
-  public void testRanks10() throws IOException {
+  public void testRanks10() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("ranks10.txt");
     KnowledgeBase kb = parser.parseInputStream(inputStream);
     var baseRank = baseRankService.constructBaseRank(kb);
 
     assertNotNull(baseRank);
-    // 10 finite ranks plus 1 infinite rank
+    // Plus 1 empty infinite rank
     assertEquals(11, baseRank.getSequence().size());
     assertEquals(11, baseRank.getRanking().size());
   }
 
+  // @Test
+  // public void testRanks50() throws Exception {
+  // InputStream inputStream =
+  // getClass().getClassLoader().getResourceAsStream("ranks50.txt");
+  // KnowledgeBase kb = parser.parseInputStream(inputStream);
+  // var baseRank = baseRankService.constructBaseRank(kb);
+
+  // assertNotNull(baseRank);
+  // // Plus 1 empty infinite rank
+  // assertEquals(51, baseRank.getSequence().size());
+  // assertEquals(51, baseRank.getRanking().size());
+  // }
 }

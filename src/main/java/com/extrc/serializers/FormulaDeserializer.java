@@ -2,7 +2,6 @@ package com.extrc.serializers;
 
 import java.io.IOException;
 
-import org.tweetyproject.commons.ParserException;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.utils.DefeasibleParser;
@@ -19,7 +18,7 @@ public class FormulaDeserializer extends JsonDeserializer<PlFormula> {
     try {
       DefeasibleParser parser = new DefeasibleParser();
       return parser.parseFormula(formulaString);
-    } catch (IOException | ParserException e) {
+    } catch (Exception e) {
       throw new IOException("The formula \"" + formulaString + "\" is invalid.");
     }
   }

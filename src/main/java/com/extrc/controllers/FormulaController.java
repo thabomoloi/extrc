@@ -1,10 +1,8 @@
 package com.extrc.controllers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.tweetyproject.commons.ParserException;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 import com.extrc.models.DefeasibleImplication;
@@ -20,7 +18,8 @@ public class FormulaController {
 
   public static void getQueryFormula(Context ctx) {
     Map<String, PlFormula> response = new HashMap<>();
-    response.put("queryFormula", formulaService.getQueryFormula(ctx));
+    response.put("queryFormula", formulaService.getQueryFormula());
+    ctx.status(200);
     ctx.json(response);
   }
 
@@ -30,16 +29,20 @@ public class FormulaController {
 
     try {
       PlFormula queryFormula = parser.parseFormula(formula);
+
       if (queryFormula instanceof DefeasibleImplication) {
-        formulaService.saveQueryFormula(ctx, queryFormula);
         Map<String, PlFormula> response = new HashMap<>();
-        response.put("queryFormula", formulaService.getQueryFormula(ctx));
+        response.put("queryFormula", queryFormula);
+        ctx.status(200);
         ctx.json(response);
+
       } else {
+        ctx.status(400);
         ctx.json(new ErrorResponse(400, "Bad Request", "Formula is not defeasible implication."));
       }
-    } catch (IOException | ParserException e) {
-      ctx.status(400).json(new ErrorResponse(400, "Bad Request", "Invalid formula: " + formula + "."));
+    } catch (Exception e) {
+      ctx.status(400);
+      ctx.json(new ErrorResponse(400, "Bad Request", "Invalid formula: " + formula + "."));
     }
   }
 }
