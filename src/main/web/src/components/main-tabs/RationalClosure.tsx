@@ -11,12 +11,12 @@ import { TexFormula } from "../latex/TexFormula";
 import { RankingTable } from "./tables/RankingTable";
 import { texFormula } from "@/lib/latex";
 import { kb } from "../latex/helpers";
-import { Entailment } from "@/types";
 import { RatEntailment } from "./entailment/RatEntailment";
+import { RationalEntailmentModel } from "@/lib/models";
 
 interface RationalClosureProps {
   isLoading: boolean;
-  rationalEntailment: Entailment | null;
+  rationalEntailment: RationalEntailmentModel | null;
 }
 
 function RationalClosure({

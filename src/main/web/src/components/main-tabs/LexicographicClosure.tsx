@@ -6,15 +6,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
-import { Entailment } from "@/types";
 import { NoResults } from "./NoResults";
 import { RankingTable } from "./tables/RankingTable";
 import { QueryInputContainer } from "./common/query-input";
 import { LexEntailment } from "./entailment/LexEntailment";
+import { LexicalEntailmentModel } from "@/lib/models";
 
 interface LexicographicClosureProps {
   isLoading: boolean;
-  lexicalEntailment: Entailment | null;
+  lexicalEntailment: LexicalEntailmentModel | null;
 }
 
 function LexicographicClosure({

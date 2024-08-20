@@ -1,12 +1,12 @@
 import { TexFormula } from "@/components/latex/TexFormula";
 import { texFormula, unionRanks } from "@/lib/latex";
 import { arrayEquals, remainingRanks } from "@/lib/utils";
-import { Entailment, Ranking } from "@/types";
 import { RankingTable } from "../tables/RankingTable";
 import { entailResult } from "@/components/latex/helpers";
+import { LexicalEntailmentModel, Ranking } from "@/lib/models";
 
 interface LexEntailmentProps {
-  entailment: Entailment;
+  entailment: LexicalEntailmentModel;
   className?: string;
 }
 
@@ -14,7 +14,7 @@ interface RankSubsetCheckProps {
   value: Ranking;
   index: number;
   array: Ranking[];
-  entailment: Entailment;
+  entailment: LexicalEntailmentModel;
   remainingRanking: Ranking[];
 }
 
@@ -75,7 +75,7 @@ function RankSubsetCheck({
 interface RankRemovalProps {
   value: Ranking;
   index: number;
-  entailment: Entailment;
+  entailment: LexicalEntailmentModel;
   remainingRanking: Ranking[];
 }
 
@@ -127,7 +127,7 @@ function RankRemoval({
 }
 
 interface RankTableSectionProps {
-  entailment: Entailment;
+  entailment: LexicalEntailmentModel;
   remainingRanking: Ranking[];
 }
 
@@ -149,7 +149,7 @@ function RankTableSection({
 }
 
 interface EntailmentCheckProps {
-  entailment: Entailment;
+  entailment: LexicalEntailmentModel;
 }
 
 function EntailmentCheck({ entailment }: EntailmentCheckProps) {
@@ -200,8 +200,9 @@ function LexEntailment({ entailment, className }: LexEntailmentProps) {
       </p>
       <ul className="ml-8 list-disc">
         <li className="-mt-2 ">
-          Let <TexFormula>{"\\mathcal{P}\\left(R_i\\right)"}</TexFormula> be a
-          power set of the lowest finite rank <TexFormula>{"R_i"}</TexFormula>.
+          Weaken the lowest finite rank{" "}
+          <TexFormula>{"\\mathcal{P}\\left(R_i\\right)"}</TexFormula> be a power
+          set of the lowest finite rank <TexFormula>{"R_i"}</TexFormula>.
           Consider all subsets of <TexFormula>{"R_i"}</TexFormula> in{" "}
           <TexFormula>
             {"{\\mathcal{P}(R_i)\\setminus\\left\\{\\emptyset, R_i\\right\\}}"}

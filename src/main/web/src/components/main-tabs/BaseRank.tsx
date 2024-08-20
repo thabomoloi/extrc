@@ -6,16 +6,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
-import { BaseRanking } from "@/types";
 import { NoResults } from "./NoResults";
 import { kb } from "../latex/helpers";
 import { TexFormula } from "../latex/TexFormula";
 import { RankingTable, SequenceTable } from "./tables/RankingTable";
 import { QueryInputContainer } from "./common/query-input";
+import { BaseRankModel } from "@/lib/models";
 
 interface BaseRankProps {
   isLoading: boolean;
-  baseRank: BaseRanking | null;
+  baseRank: BaseRankModel | null;
 }
 
 function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
@@ -31,8 +31,8 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
         {!isLoading && baseRank && (
           <div>
             <QueryInputContainer
-              knowledgeBase={baseRank.queryInput.knowledgeBase}
-              queryFormula={baseRank.queryInput.queryFormula}
+              knowledgeBase={baseRank.knowledgeBase}
+              queryFormula={""}
               queryFormulaHidden
             />
             <div className="my-6 space-y-3">

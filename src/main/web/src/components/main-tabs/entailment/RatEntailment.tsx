@@ -1,12 +1,12 @@
 import { TexFormula } from "@/components/latex/TexFormula";
 import { texFormula, unionRanks } from "@/lib/latex";
 import { remainingRanks } from "@/lib/utils";
-import { Entailment, Ranking } from "@/types";
 import { RankingTable } from "../tables/RankingTable";
 import { entailResult } from "@/components/latex/helpers";
+import { Ranking, RationalEntailmentModel } from "@/lib/models";
 
 interface RatEntailmentProps {
-  entailment: Entailment;
+  entailment: RationalEntailmentModel;
   className?: string;
 }
 
@@ -14,7 +14,7 @@ interface RankSubsetCheckProps {
   value: Ranking;
   index: number;
   array: Ranking[];
-  entailment: Entailment;
+  entailment: RationalEntailmentModel;
   remainingRanking: Ranking[];
 }
 
@@ -49,7 +49,7 @@ function RankSubsetCheck({
 interface RankRemovalProps {
   value: Ranking;
   index: number;
-  entailment: Entailment;
+  entailment: RationalEntailmentModel;
   remainingRanking: Ranking[];
 }
 
@@ -90,7 +90,7 @@ function RankRemoval({
 }
 
 interface RankTableSectionProps {
-  entailment: Entailment;
+  entailment: RationalEntailmentModel;
   remainingRanking: Ranking[];
 }
 
@@ -112,7 +112,7 @@ function RankTableSection({
 }
 
 interface EntailmentCheckProps {
-  entailment: Entailment;
+  entailment: RationalEntailmentModel;
 }
 
 function EntailmentCheck({ entailment }: EntailmentCheckProps) {
