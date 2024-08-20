@@ -16,16 +16,16 @@ export function MainContent() {
         <BarLoader
           cssOverride={{ width: "100vw" }}
           color="#0ea5e9"
-          loading={reasoner.queryInputPending || reasoner.resultsPending}
+          loading={reasoner.inputPending || reasoner.resultPending}
         />
       </div>
       <div className="flex flex-col gap-6 w-full">
         <QueryInputs
-          isLoading={reasoner.queryInputPending}
+          isLoading={reasoner.inputPending}
           queryInput={reasoner.queryInput}
-          submitKnowledgeBase={reasoner.submitKnowledgeBase}
+          submitKnowledgeBase={reasoner.updateKnowledgeBase}
           uploadKnowledgeBase={reasoner.uploadKnowledgeBase}
-          submitQuery={reasoner.submitQuery}
+          submitQuery={reasoner.fetchQueryResult}
           updateFormula={reasoner.updateFormula}
         />
         <Tabs defaultValue="summary">
@@ -38,30 +38,38 @@ export function MainContent() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="summary">
-            <Summary
-              isLoading={reasoner.resultsPending}
-              baseRank={reasoner.baseRank}
-              lexicalEntailment={reasoner.lexicalEntailment}
-              rationalEntailment={reasoner.rationalEntailment}
-            />
+            {reasoner.queryResult && (
+              <Summary
+                isLoading={reasoner.resultPending}
+                baseRank={reasoner.queryResult.baseRank}
+                lexicalEntailment={reasoner.queryResult.lexicalEntailment}
+                rationalEntailment={reasoner.queryResult.rationalEntailment}
+              />
+            )}
           </TabsContent>
           <TabsContent value="baseRank">
-            <BaseRank
-              isLoading={reasoner.resultsPending}
-              baseRank={reasoner.baseRank}
-            />
+            {reasoner.queryResult && (
+              <BaseRank
+                isLoading={reasoner.resultPending}
+                baseRank={reasoner.queryResult.baseRank}
+              />
+            )}
           </TabsContent>
           <TabsContent value="rationaClosure">
-            <RationalClosure
-              isLoading={reasoner.resultsPending}
-              rationalEntailment={reasoner.rationalEntailment}
-            />
+            {reasoner.queryResult && (
+              <RationalClosure
+                isLoading={reasoner.resultPending}
+                rationalEntailment={reasoner.queryResult.rationalEntailment}
+              />
+            )}
           </TabsContent>
           <TabsContent value="lexicographicClosure">
-            <LexicographicClosure
-              isLoading={reasoner.resultsPending}
-              lexicalEntailment={reasoner.lexicalEntailment}
-            />
+            {reasoner.queryResult && (
+              <LexicographicClosure
+                isLoading={reasoner.resultPending}
+                lexicalEntailment={reasoner.queryResult.lexicalEntailment}
+              />
+            )}
           </TabsContent>
         </Tabs>
       </div>

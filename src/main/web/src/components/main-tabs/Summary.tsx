@@ -35,8 +35,8 @@ function Summary({
         {!isLoading && baseRank && rationalEntailment && lexicalEntailment && (
           <div className="space-y-6">
             <QueryInputContainer
-              knowledgeBase={baseRank.queryInput.knowledgeBase}
-              queryFormula={baseRank.queryInput.queryFormula}
+              knowledgeBase={rationalEntailment.knowledgeBase}
+              queryFormula={rationalEntailment.queryFormula}
             />
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">

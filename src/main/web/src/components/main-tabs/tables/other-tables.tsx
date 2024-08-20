@@ -1,7 +1,7 @@
 import { TexFormula } from "@/components/latex/TexFormula";
 import { DataTable } from "@/components/ui/data-table";
 import { texFormula } from "@/lib/latex";
-import { BaseRanking, Entailment } from "@/types";
+import { BaseRankModel, EntailmentModel } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 
 interface AlgorithmResult {
@@ -59,15 +59,15 @@ const timesColumns: ColumnDef<TimesResult>[] = [
 ];
 
 interface EntailmentTableProps {
-  rationalEntailment: Entailment;
-  lexicalEntailment: Entailment;
+  rationalEntailment: EntailmentModel;
+  lexicalEntailment: EntailmentModel;
 }
 
 function EntailmentTable({
   rationalEntailment,
   lexicalEntailment,
 }: EntailmentTableProps) {
-  const getResult = ({ entailed, queryFormula }: Entailment) => {
+  const getResult = ({ entailed, queryFormula }: EntailmentModel) => {
     return entailed
       ? texFormula("\\mathcal{K} \\vapprox " + queryFormula)
       : texFormula("\\mathcal{K} \\nvapprox " + queryFormula);
@@ -90,9 +90,9 @@ function EntailmentTable({
 }
 
 interface TimesTableProps {
-  baseRank: BaseRanking;
-  rationalEntailment: Entailment;
-  lexicalEntailment: Entailment;
+  baseRank: BaseRankModel;
+  rationalEntailment: EntailmentModel;
+  lexicalEntailment: EntailmentModel;
 }
 
 function TimesTable({

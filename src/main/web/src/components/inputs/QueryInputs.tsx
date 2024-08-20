@@ -1,6 +1,6 @@
-import { QueryInput } from "@/types";
 import { KbCard } from "./KbCard";
 import { FormulaCard } from "./FormulaCard";
+import { QueryInput } from "@/lib/storage";
 
 interface QueryInputProps {
   isLoading: boolean;

@@ -20,6 +20,7 @@ export function arrayEquals(array1: unknown[], array2: unknown[]) {
 }
 
 export function remainingRanks(baseRanks: Ranking[], removedRanks: Ranking[]) {
+  if (removedRanks.length == 0) return baseRanks;
   const n = removedRanks.length;
   const m = baseRanks.length;
   const ranks: Ranking[] = [];
