@@ -1,31 +1,23 @@
 package com.extrc.models;
 
-import org.tweetyproject.logics.pl.syntax.Implication;
-import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
-public class Entailment {
-  private final KnowledgeBase knowledgeBase;
-  private final PlFormula queryFormula;
-  private final Ranking baseRanking;
-  private final Ranking removedRanking;
-  private final boolean entailed;
-  private final double timeTaken;
-  private final PlFormula negation;
+// Base class for Entailment
+public abstract class Entailment {
+  protected final KnowledgeBase knowledgeBase;
+  protected final PlFormula queryFormula;
+  protected final Ranking baseRanking;
+  protected final Ranking removedRanking;
+  protected final boolean entailed;
+  protected final double timeTaken;
 
-  public Entailment() {
-    this(new KnowledgeBase(), null, new Ranking(), new Ranking(), false, 0.0);
-  }
-
-  public Entailment(KnowledgeBase knowledgeBase, PlFormula queryFormula, Ranking baseRanking,
-      Ranking removedRanking, boolean entailed, double timeTaken) {
-    this.knowledgeBase = knowledgeBase;
-    this.queryFormula = queryFormula;
-    this.baseRanking = baseRanking;
-    this.removedRanking = removedRanking;
-    this.entailed = entailed;
-    this.timeTaken = timeTaken;
-    this.negation = queryFormula == null ? null : new Negation(((Implication) queryFormula).getFirstFormula());
+  protected Entailment(EntailmentBuilder<?> builder) {
+    this.knowledgeBase = builder.knowledgeBase;
+    this.queryFormula = builder.queryFormula;
+    this.baseRanking = builder.baseRanking;
+    this.removedRanking = builder.removedRanking;
+    this.entailed = builder.entailed;
+    this.timeTaken = builder.timeTaken;
   }
 
   public KnowledgeBase getKnowledgeBase() {
@@ -36,9 +28,7 @@ public class Entailment {
     return queryFormula;
   }
 
-  public PlFormula getNegation() {
-    return negation;
-  }
+  public abstract PlFormula getNegation();
 
   public Ranking getBaseRanking() {
     return baseRanking;
@@ -56,4 +46,47 @@ public class Entailment {
     return timeTaken;
   }
 
+  // Builder for Entailment
+  public static abstract class EntailmentBuilder<T extends EntailmentBuilder<T>> {
+    private KnowledgeBase knowledgeBase;
+    private PlFormula queryFormula;
+    private Ranking baseRanking;
+    private Ranking removedRanking;
+    private boolean entailed;
+    private double timeTaken;
+
+    public T withKnowledgeBase(KnowledgeBase knowledgeBase) {
+      this.knowledgeBase = knowledgeBase;
+      return self();
+    }
+
+    public T withQueryFormula(PlFormula queryFormula) {
+      this.queryFormula = queryFormula;
+      return self();
+    }
+
+    public T withBaseRanking(Ranking baseRanking) {
+      this.baseRanking = baseRanking;
+      return self();
+    }
+
+    public T withRemovedRanking(Ranking removedRanking) {
+      this.removedRanking = removedRanking;
+      return self();
+    }
+
+    public T withEntailed(boolean entailed) {
+      this.entailed = entailed;
+      return self();
+    }
+
+    public T withTimeTaken(double timeTaken) {
+      this.timeTaken = timeTaken;
+      return self();
+    }
+
+    protected abstract T self();
+
+    public abstract Entailment build();
+  }
 }
