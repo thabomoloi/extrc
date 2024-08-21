@@ -46,24 +46,19 @@ public class LexicalReasonerImpl implements ReasonerService {
       union.removeAll(baseRanking.get(i).getFormulas());
 
       int m = baseRanking.get(i).getFormulas().size() - 1;
-
-      if (m != 0) {
-        do {
-          KnowledgeBase weakenedRank = new KnowledgeBase(Arrays.asList(weakenRank(baseRanking.get(i), m)));
-          weakenedRanking.add(new Rank(i, weakenedRank));
-
-          if (!reasoner.query(union.union(weakenedRank), negation)) {
-            union.addAll(weakenedRank);
-          }
-          m--;
-        } while (reasoner.query(union, negation) && m > 0);
-      }
+      KnowledgeBase weakenedRank;
+      do {
+        weakenedRank = new KnowledgeBase(Arrays.asList(weakenRank(baseRanking.get(i), m)));
+        m--;
+      } while (reasoner.query(union.union(weakenedRank), negation) && m > 0);
+      weakenedRanking.add(new Rank(i, weakenedRank));
+      union.addAll(weakenedRank);
       i++;
     }
 
     // Add remaining formulas that are not weakened
     for (int k = i, n = baseRanking.size(); k < n; k++) {
-      weakenedRanking.add(baseRanking.get(i));
+      weakenedRanking.add(baseRanking.get(k));
     }
 
     boolean entailed = !union.isEmpty() && reasoner.query(union, queryFormula);
