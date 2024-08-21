@@ -118,10 +118,12 @@ function KbForm({
           />
         )}
         <div className="grid grid-cols-2 gap-4">
-          <Button type="button" variant="secondary" onClick={onCancel}>
+          <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit">Update</Button>
+          <Button type="submit" variant="secondary">
+            Update
+          </Button>
         </div>
       </form>
     </Form>

@@ -182,6 +182,12 @@ function RatEntailment({ entailment, className }: RatEntailmentProps) {
             No finite ranks to remove.
           </p>
         )}
+        {entailment.removedRanking.length == 0 && (
+          <p className="text-sm text-muted-foreground">
+            The ranks do not entail{" "}
+            <TexFormula>{texFormula(entailment.negation)}</TexFormula>.
+          </p>
+        )}
       </div>
       <RankTableSection
         // entailment={entailment}

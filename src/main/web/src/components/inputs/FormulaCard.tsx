@@ -122,13 +122,17 @@ export function FormulaCard({
                 <div className="grid grid-cols-2 gap-4">
                   <Button
                     type="button"
-                    variant="secondary"
+                    variant="outline"
                     onClick={handleCancel}
                     disabled={isLoading}
                   >
                     Cancel
                   </Button>
-                  <Button disabled={isLoading} type="submit">
+                  <Button
+                    disabled={isLoading}
+                    type="submit"
+                    variant="secondary"
+                  >
                     Update
                   </Button>
                 </div>
