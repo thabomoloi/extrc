@@ -17,6 +17,7 @@ function App() {
             <Route path="/" element={<MainContent />} />
             <Route path="/syntax" element={<Syntax />} />
             <Route path="/knowledge-base" element={<KbData />} />
+            <Route path="*" element={<MainContent />} />
           </Routes>
         </div>
         <Footer className="w-full" />
