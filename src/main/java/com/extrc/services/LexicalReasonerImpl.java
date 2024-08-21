@@ -34,7 +34,6 @@ public class LexicalReasonerImpl implements ReasonerService {
     PlFormula negation = new Negation(((Implication) queryFormula).getFirstFormula());
     KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
     Ranking baseRanking = baseRank.getRanking();
-    Ranking removedRanking = new Ranking();
     Ranking weakenedRanking = new Ranking();
 
     KnowledgeBase union = new KnowledgeBase();
@@ -46,24 +45,25 @@ public class LexicalReasonerImpl implements ReasonerService {
     while (!union.isEmpty() && reasoner.query(union, negation) && i < baseRanking.size() - 1) {
       union.removeAll(baseRanking.get(i).getFormulas());
 
-      KnowledgeBase removedFormulas = new KnowledgeBase();
       int m = baseRanking.get(i).getFormulas().size() - 1;
 
       if (m != 0) {
         do {
           KnowledgeBase weakenedRank = new KnowledgeBase(Arrays.asList(weakenRank(baseRanking.get(i), m)));
+          weakenedRanking.add(new Rank(i, weakenedRank));
+
           if (!reasoner.query(union.union(weakenedRank), negation)) {
             union.addAll(weakenedRank);
-            weakenedRanking.add(new Rank(i, weakenedRank));
           }
           m--;
         } while (reasoner.query(union, negation) && m > 0);
       }
-      if (m == 0) {
-        removedFormulas.addAll(baseRanking.get(i).getFormulas());
-        removedRanking.addRank(i, removedFormulas);
-      }
       i++;
+    }
+
+    // Add remaining formulas that are not weakened
+    for (int k = i, n = baseRanking.size(); k < n; k++) {
+      weakenedRanking.add(baseRanking.get(i));
     }
 
     boolean entailed = !union.isEmpty() && reasoner.query(union, queryFormula);
@@ -73,7 +73,6 @@ public class LexicalReasonerImpl implements ReasonerService {
         .withKnowledgeBase(knowledgeBase)
         .withQueryFormula(queryFormula)
         .withBaseRanking(baseRanking)
-        .withRemovedRanking(removedRanking)
         .withWeakenedRanking(weakenedRanking)
         .withEntailed(entailed)
         .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
