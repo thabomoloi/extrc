@@ -5,18 +5,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BaseRanking, Entailment } from "@/types";
 import { NoResults } from "./NoResults";
 import { ResultSkeleton } from "./ResultSkeleton";
 import { EntailmentTable, TimesTable } from "./tables/other-tables";
 import { RankingTable } from "./tables/RankingTable";
 import { QueryInputContainer } from "./common/query-input";
+import {
+  BaseRankModel,
+  LexicalEntailmentModel,
+  RationalEntailmentModel,
+} from "@/lib/models";
 
 interface SummaryProps {
   isLoading: boolean;
-  baseRank: BaseRanking | null;
-  rationalEntailment: Entailment | null;
-  lexicalEntailment: Entailment | null;
+  baseRank: BaseRankModel | null;
+  rationalEntailment: RationalEntailmentModel | null;
+  lexicalEntailment: LexicalEntailmentModel | null;
 }
 
 function Summary({
@@ -55,16 +59,16 @@ function Summary({
             </div>
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">
-                Removed Ranks
+                Final Ranks
               </h4>
               <h5 className="text-sm text-muted-foreground mt-2 font-medium">
                 Rational Closure
               </h5>
-              <RankingTable ranking={rationalEntailment.removedRanking} />
+              <RankingTable ranking={rationalEntailment.remainingRanks} />
               <h5 className="text-sm text-muted-foreground mt-2 font-medium">
                 Lexicographic Closure
               </h5>
-              <RankingTable ranking={lexicalEntailment.removedRanking} />
+              <RankingTable ranking={lexicalEntailment.weakenedRanking} />
             </div>
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">

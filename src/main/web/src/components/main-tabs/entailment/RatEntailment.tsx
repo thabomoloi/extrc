@@ -27,12 +27,12 @@ function RankSubsetCheck({
 }: RankSubsetCheckProps) {
   return (
     <div className="space-y-4">
-      {index === 2 && index < array.length - 1 && (
+      {index === 1 && index < array.length - 1 && (
         <div>
           <TexFormula>{"\\vdots"}</TexFormula>
         </div>
       )}
-      {(index < 2 || index === array.length - 1) && (
+      {(index === 0 || index === array.length - 1) && (
         <div>
           <RankRemoval
             value={value}
@@ -75,7 +75,7 @@ function RankRemoval({
       </p>
       {index === entailment.removedRanking.length - 1 &&
         remainingRanking.length > 1 && (
-          <div className="my-4">
+          <div className="my-8">
             <TexFormula>{`R_{\\infty}\\cup \\left(\\bigcup_{j={${
               remainingRanking[0].rankNumber
             }}}^{j<${
@@ -90,23 +90,23 @@ function RankRemoval({
 }
 
 interface RankTableSectionProps {
-  entailment: RationalEntailmentModel;
+  // entailment: RationalEntailmentModel;
   remainingRanking: Ranking[];
 }
 
 function RankTableSection({
-  entailment,
+  // entailment,
   remainingRanking,
 }: RankTableSectionProps) {
   return (
     <div>
-      <p className="font-medium">Removed ranks</p>
+      {/* <p className="font-medium">Removed ranks</p>
       <RankingTable
         ranking={entailment.removedRanking}
         caption="Ranks removed by Lexicographic Closure"
-      />
-      <p className="font-medium">Remaining ranks</p>
-      <RankingTable ranking={remainingRanking} caption="Remaining ranks" />
+      /> */}
+      <p className="font-medium">Final ranks</p>
+      <RankingTable ranking={remainingRanking} caption="Final ranks" />
     </div>
   );
 }
@@ -119,7 +119,7 @@ function EntailmentCheck({ entailment }: EntailmentCheckProps) {
   return (
     <div className="space-y-4">
       <p>
-        Now we check if the remaining ranks{" "}
+        Now we check if the final ranks{" "}
         <TexFormula>
           {`R_\\infty${unionRanks({
             start: entailment.removedRanking.length,
@@ -174,10 +174,17 @@ function RatEntailment({ entailment, className }: RatEntailmentProps) {
             remainingRanking={remainingRanking}
           />
         ))}
-        {remainingRanking.length === 1 && <p>All finite ranks are removed.</p>}
+        {entailment.baseRanking.length > 1 && remainingRanking.length === 1 && (
+          <p>All finite ranks are removed.</p>
+        )}
+        {entailment.baseRanking.length == 1 && (
+          <p className="text-sm text-muted-foreground">
+            No finite ranks to remove.
+          </p>
+        )}
       </div>
       <RankTableSection
-        entailment={entailment}
+        // entailment={entailment}
         remainingRanking={remainingRanking}
       />
       <EntailmentCheck entailment={entailment} />

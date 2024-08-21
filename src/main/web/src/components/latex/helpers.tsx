@@ -1,6 +1,6 @@
 import { texFormula } from "@/lib/latex";
 import { TexFormula } from "./TexFormula";
-import { Entailment } from "@/types";
+import { EntailmentModel } from "@/lib/models";
 
 function kb({
   name = "\\mathcal{K}",
@@ -25,7 +25,7 @@ function kb({
   );
 }
 
-function entailResult({ entailed, queryFormula }: Entailment) {
+function entailResult({ entailed, queryFormula }: EntailmentModel) {
   return (
     <TexFormula>
       {entailed

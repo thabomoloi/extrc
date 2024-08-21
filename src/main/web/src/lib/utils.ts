@@ -1,6 +1,6 @@
-import { Ranking } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Ranking } from "./models";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
