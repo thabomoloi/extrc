@@ -14,6 +14,7 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
 import com.extrc.models.BaseRank;
 import com.extrc.models.Entailment;
 import com.extrc.models.KnowledgeBase;
+import com.extrc.models.LexicalEntailment;
 import com.extrc.models.Rank;
 import com.extrc.models.Ranking;
 
@@ -34,6 +35,7 @@ public class LexicalReasonerImpl implements ReasonerService {
     KnowledgeBase knowledgeBase = baseRank.getKnowledgeBase();
     Ranking baseRanking = baseRank.getRanking();
     Ranking removedRanking = new Ranking();
+    Ranking weakenedRanking = new Ranking();
 
     KnowledgeBase union = new KnowledgeBase();
     baseRanking.forEach(rank -> {
@@ -47,26 +49,35 @@ public class LexicalReasonerImpl implements ReasonerService {
       KnowledgeBase removedFormulas = new KnowledgeBase();
       int m = baseRanking.get(i).getFormulas().size() - 1;
 
-      PlFormula weakenedFormulas;
       if (m != 0) {
         do {
-          weakenedFormulas = weakenRank(baseRanking.get(i), m);
-          if (!reasoner.query(union.union(new KnowledgeBase(Arrays.asList(weakenedFormulas))), negation)) {
-            union.add(weakenedFormulas);
+          KnowledgeBase weakenedRank = new KnowledgeBase(Arrays.asList(weakenRank(baseRanking.get(i), m)));
+          if (!reasoner.query(union.union(weakenedRank), negation)) {
+            union.addAll(weakenedRank);
+            weakenedRanking.add(new Rank(i, weakenedRank));
           }
           m--;
         } while (reasoner.query(union, negation) && m > 0);
-      } else {
-        removedFormulas.addAll(baseRanking.get(i).getFormulas());
       }
-      removedRanking.addRank(i, removedFormulas);
+      if (m == 0) {
+        removedFormulas.addAll(baseRanking.get(i).getFormulas());
+        removedRanking.addRank(i, removedFormulas);
+      }
       i++;
     }
 
     boolean entailed = !union.isEmpty() && reasoner.query(union, queryFormula);
     long endTime = System.nanoTime();
-    return new Entailment(knowledgeBase, queryFormula, baseRanking, removedRanking, entailed,
-        (endTime - startTime) / 1_000_000_000.0);
+
+    return new LexicalEntailment.LexicalEntailmentBuilder()
+        .withKnowledgeBase(knowledgeBase)
+        .withQueryFormula(queryFormula)
+        .withBaseRanking(baseRanking)
+        .withRemovedRanking(removedRanking)
+        .withWeakenedRanking(weakenedRanking)
+        .withEntailed(entailed)
+        .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
+        .build();
   }
 
   private Disjunction weakenRank(Rank rank, int size) {

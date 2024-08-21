@@ -11,6 +11,7 @@ import com.extrc.models.BaseRank;
 import com.extrc.models.Entailment;
 import com.extrc.models.KnowledgeBase;
 import com.extrc.models.Ranking;
+import com.extrc.models.RationalEntailment;
 
 public class RationalReasonerImpl implements ReasonerService {
   private final SatReasoner reasoner;
@@ -44,8 +45,15 @@ public class RationalReasonerImpl implements ReasonerService {
 
     boolean entailed = !union.isEmpty() && reasoner.query(union, queryFormula);
     long endTime = System.nanoTime();
-    return new Entailment(knowledgeBase, queryFormula, baseRanking, removedRanking, entailed,
-        (endTime - startTime) / 1_000_000_000.0);
+
+    return new RationalEntailment.RationalEntailmentBuilder()
+        .withKnowledgeBase(knowledgeBase)
+        .withQueryFormula(queryFormula)
+        .withBaseRanking(baseRanking)
+        .withRemovedRanking(removedRanking)
+        .withEntailed(entailed)
+        .withTimeTaken((endTime - startTime) / 1_000_000_000.0)
+        .build();
   }
 
 }
