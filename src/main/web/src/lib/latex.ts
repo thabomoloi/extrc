@@ -2,14 +2,14 @@ import { Ranking } from "./models";
 
 function texFormula(formula: string): string {
   return formula
-    .replaceAll("~>", " \\vsim ")
-    .replaceAll("=>", " \\to ")
-    .replaceAll("->", " \\to ")
     .replaceAll("!", " \\neg ")
     .replaceAll("&&", " \\land ")
     .replaceAll("||", " \\lor ")
     .replaceAll("<=>", " \\leftrightarrow ")
-    .replaceAll("<->", " \\leftrightarrow ");
+    .replaceAll("<->", " \\leftrightarrow ")
+    .replaceAll("=>", " \\to ")
+    .replaceAll("->", " \\to ")
+    .replaceAll("~>", " \\vsim ");
 }
 
 function unionRanks({ ranks, start }: { start: number; ranks: Ranking[] }) {

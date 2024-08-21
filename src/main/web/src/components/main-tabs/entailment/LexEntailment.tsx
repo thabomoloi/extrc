@@ -187,7 +187,15 @@ function LexEntailment({ entailment, className }: LexEntailmentProps) {
           />
         ))}
         {entailment.baseRanking.length == 1 && (
-          <p className="text-muted-foreground text-sm">No ranks to refine.</p>
+          <p className="text-muted-foreground text-sm">
+            No finite ranks to refine.
+          </p>
+        )}
+        {entailment.weakenedRanking.length == 0 && (
+          <p className="text-muted-foreground text-sm">
+            The ranks do not entail{" "}
+            <TexFormula>{texFormula(entailment.negation)}</TexFormula>.
+          </p>
         )}
       </div>
       <RankTableSection entailment={entailment} />
