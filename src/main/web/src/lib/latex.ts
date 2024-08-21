@@ -1,4 +1,4 @@
-import { Ranking } from "@/types";
+import { Ranking } from "./models";
 
 function texFormula(formula: string): string {
   return formula

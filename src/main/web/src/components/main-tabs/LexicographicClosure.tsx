@@ -9,8 +9,8 @@ import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
 import { RankingTable } from "./tables/RankingTable";
 import { QueryInputContainer } from "./common/query-input";
-import { LexEntailment } from "./entailment/LexEntailment";
 import { LexicalEntailmentModel } from "@/lib/models";
+import { LexEntailment } from "./entailment/LexEntailment";
 
 interface LexicographicClosureProps {
   isLoading: boolean;

@@ -57,9 +57,9 @@ public class LexicalReasonerImpl implements ReasonerService {
     }
 
     // Add remaining formulas that are not weakened
-    for (int k = i, n = baseRanking.size(); k < n; k++) {
-      weakenedRanking.add(baseRanking.get(k));
-    }
+    // for (int k = i, n = baseRanking.size(); k < n; k++) {
+    // weakenedRanking.add(baseRanking.get(k));
+    // }
 
     boolean entailed = !union.isEmpty() && reasoner.query(union, queryFormula);
     long endTime = System.nanoTime();

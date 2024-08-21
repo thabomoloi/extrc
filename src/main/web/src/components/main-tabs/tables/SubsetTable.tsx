@@ -3,7 +3,7 @@ import { TexFormula } from "@/components/latex/TexFormula";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { texFormula, unionRanks } from "@/lib/latex";
-import { Ranking } from "@/types";
+import { Ranking } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 

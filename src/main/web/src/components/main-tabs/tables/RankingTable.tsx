@@ -2,7 +2,7 @@ import { kb } from "@/components/latex/helpers";
 import { TexFormula } from "@/components/latex/TexFormula";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
-import { Ranking } from "@/types";
+import { Ranking } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
