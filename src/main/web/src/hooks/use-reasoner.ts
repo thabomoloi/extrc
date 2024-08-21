@@ -1,7 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import * as api from "@/lib/data";
 import { ErrorModel } from "@/lib/models";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   QueryInput,
   QueryResult,
@@ -43,9 +43,9 @@ function useReasoner() {
 
   const fetchQueryInput = useCallback(async () => {
     setInputPending(true);
-    const queryFormula = await api.fetchQueryFormula();
-    const knowledgeBase = await api.fetchKnowledgeBase();
     try {
+      const queryFormula = await api.fetchQueryFormula();
+      const knowledgeBase = await api.fetchKnowledgeBase();
       const data: QueryInput = { queryFormula, knowledgeBase };
       setQueryInput(data);
       saveQueryInput(data);
@@ -141,6 +141,12 @@ function useReasoner() {
     },
     [toastError]
   );
+
+  useEffect(() => {
+    if (getQueryInput() == null) {
+      fetchQueryInput();
+    }
+  }, [fetchQueryInput]);
 
   return {
     queryInput,
