@@ -38,38 +38,38 @@ export function MainContent() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="summary">
-            {reasoner.queryResult && (
-              <Summary
-                isLoading={reasoner.resultPending}
-                baseRank={reasoner.queryResult.baseRank}
-                lexicalEntailment={reasoner.queryResult.lexicalEntailment}
-                rationalEntailment={reasoner.queryResult.rationalEntailment}
-              />
-            )}
+            <Summary
+              isLoading={reasoner.resultPending}
+              baseRank={reasoner.queryResult?.baseRank || null}
+              lexicalEntailment={
+                reasoner.queryResult?.lexicalEntailment || null
+              }
+              rationalEntailment={
+                reasoner.queryResult?.rationalEntailment || null
+              }
+            />
           </TabsContent>
           <TabsContent value="baseRank">
-            {reasoner.queryResult && (
-              <BaseRank
-                isLoading={reasoner.resultPending}
-                baseRank={reasoner.queryResult.baseRank}
-              />
-            )}
+            <BaseRank
+              isLoading={reasoner.resultPending}
+              baseRank={reasoner.queryResult?.baseRank || null}
+            />
           </TabsContent>
           <TabsContent value="rationaClosure">
-            {reasoner.queryResult && (
-              <RationalClosure
-                isLoading={reasoner.resultPending}
-                rationalEntailment={reasoner.queryResult.rationalEntailment}
-              />
-            )}
+            <RationalClosure
+              isLoading={reasoner.resultPending}
+              rationalEntailment={
+                reasoner.queryResult?.rationalEntailment || null
+              }
+            />
           </TabsContent>
           <TabsContent value="lexicographicClosure">
-            {reasoner.queryResult && (
-              <LexicographicClosure
-                isLoading={reasoner.resultPending}
-                lexicalEntailment={reasoner.queryResult.lexicalEntailment}
-              />
-            )}
+            <LexicographicClosure
+              isLoading={reasoner.resultPending}
+              lexicalEntailment={
+                reasoner.queryResult?.lexicalEntailment || null
+              }
+            />
           </TabsContent>
         </Tabs>
       </div>
