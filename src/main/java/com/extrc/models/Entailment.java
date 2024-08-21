@@ -7,7 +7,6 @@ public abstract class Entailment {
   protected final KnowledgeBase knowledgeBase;
   protected final PlFormula queryFormula;
   protected final Ranking baseRanking;
-  protected final Ranking removedRanking;
   protected final boolean entailed;
   protected final double timeTaken;
 
@@ -15,7 +14,6 @@ public abstract class Entailment {
     this.knowledgeBase = builder.knowledgeBase;
     this.queryFormula = builder.queryFormula;
     this.baseRanking = builder.baseRanking;
-    this.removedRanking = builder.removedRanking;
     this.entailed = builder.entailed;
     this.timeTaken = builder.timeTaken;
   }
@@ -34,10 +32,6 @@ public abstract class Entailment {
     return baseRanking;
   }
 
-  public Ranking getRemovedRanking() {
-    return removedRanking;
-  }
-
   public boolean getEntailed() {
     return entailed;
   }
@@ -51,7 +45,6 @@ public abstract class Entailment {
     private KnowledgeBase knowledgeBase;
     private PlFormula queryFormula;
     private Ranking baseRanking;
-    private Ranking removedRanking;
     private boolean entailed;
     private double timeTaken;
 
@@ -67,11 +60,6 @@ public abstract class Entailment {
 
     public T withBaseRanking(Ranking baseRanking) {
       this.baseRanking = baseRanking;
-      return self();
-    }
-
-    public T withRemovedRanking(Ranking removedRanking) {
-      this.removedRanking = removedRanking;
       return self();
     }
 
