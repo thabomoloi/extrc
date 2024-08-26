@@ -68,7 +68,7 @@ function Summary({
               <h5 className="text-sm text-muted-foreground mt-2 font-medium">
                 Lexicographic Closure
               </h5>
-              <RankingTable ranking={lexicalEntailment.weakenedRanking} />
+              <RankingTable ranking={lexicalEntailment.remainingRanks} />
             </div>
             <div>
               <h4 className="scroll-m-20 font-medium tracking-tight">

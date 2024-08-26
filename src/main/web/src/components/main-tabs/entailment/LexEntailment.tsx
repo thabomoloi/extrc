@@ -66,7 +66,7 @@ function RankRemoval({
           value.rankNumber
         }}}^{j<${
           entailment.baseRanking.length - 1
-        }} \\overrightarrow{R_j} \\right)\\models ${texFormula(
+        }} {R_j} \\right)\\models ${texFormula(
           entailment.negation
         )}`}</TexFormula>
       </div>
@@ -80,7 +80,7 @@ function RankRemoval({
               remainingRanking[0].rankNumber
             }}}^{j<${
               entailment.baseRanking.length - 1
-            }} \\overrightarrow{R_j} \\right)\\not\\models ${texFormula(
+            }} {R_j} \\right)\\not\\models ${texFormula(
               entailment.negation
             )}`}</TexFormula>
           </div>
@@ -116,7 +116,8 @@ function EntailmentCheck({ entailment }: EntailmentCheckProps) {
         Now we check if the final ranks{" "}
         <TexFormula>
           {`R_\\infty${unionRanks({
-            start: entailment.weakenedRanking.length,
+            start:
+              entailment.baseRanking.length - entailment.remainingRanks.length,
             ranks: entailment.baseRanking,
           })}`}
         </TexFormula>{" "}
@@ -130,7 +131,8 @@ function EntailmentCheck({ entailment }: EntailmentCheckProps) {
         If follows that{" "}
         <TexFormula>
           {`R_\\infty${unionRanks({
-            start: entailment.weakenedRanking.length,
+            start:
+              entailment.baseRanking.length - entailment.remainingRanks.length,
             ranks: entailment.baseRanking,
           })} ${entailment.entailed ? "\\models" : "\\not\\models"}${texFormula(
             entailment.queryFormula.replaceAll("~>", "=>")
