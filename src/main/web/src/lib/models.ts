@@ -17,11 +17,10 @@ type EntailmentModelBase = {
   entailed: boolean;
   baseRanking: Ranking[];
   timeTaken: number;
-};
-
-type RationalEntailment = EntailmentModelBase & {
   removedRanking: Ranking[];
 };
+
+type RationalEntailment = EntailmentModelBase;
 
 type LexicalEntailment = EntailmentModelBase & {
   weakenedRanking: Ranking[];
@@ -114,6 +113,7 @@ abstract class EntailmentModel {
   private _entailed: boolean;
   private _baseRanking: Ranking[];
   private _timeTaken: number;
+  private _removedRanking: Ranking[];
 
   constructor({
     queryFormula,
@@ -122,6 +122,7 @@ abstract class EntailmentModel {
     entailed,
     baseRanking,
     timeTaken,
+    removedRanking,
   }: EntailmentModelBase) {
     this._queryFormula = queryFormula;
     this._negation = negation;
@@ -129,6 +130,7 @@ abstract class EntailmentModel {
     this._entailed = entailed;
     this._baseRanking = baseRanking;
     this._timeTaken = timeTaken;
+    this._removedRanking = removedRanking;
   }
 
   public get queryFormula(): string {
@@ -151,6 +153,10 @@ abstract class EntailmentModel {
     return this._baseRanking;
   }
 
+  public get removedRanking(): Ranking[] {
+    return this._removedRanking;
+  }
+
   public get timeTaken(): number {
     return this._timeTaken;
   }
@@ -163,6 +169,7 @@ abstract class EntailmentModel {
       entailed: this._entailed,
       baseRanking: this._baseRanking,
       timeTaken: this._timeTaken,
+      removedRanking: this._removedRanking,
     };
   }
 }
@@ -171,15 +178,8 @@ abstract class EntailmentModel {
  * A specific type of entailment model based on rationality principles.
  */
 class RationalEntailmentModel extends EntailmentModel {
-  private _removedRanking: Ranking[];
-
   constructor(obj: RationalEntailment) {
     super(obj);
-    this._removedRanking = obj.removedRanking;
-  }
-
-  public get removedRanking(): Ranking[] {
-    return this._removedRanking;
   }
 
   public get remainingRanks(): Ranking[] {
@@ -193,11 +193,7 @@ class RationalEntailmentModel extends EntailmentModel {
   }
 
   public toObject(): RationalEntailment {
-    const baseObj = super.toObject();
-    return {
-      ...baseObj,
-      removedRanking: this._removedRanking,
-    };
+    return super.toObject();
   }
 
   public static create(obj: RationalEntailment): RationalEntailmentModel {
@@ -222,14 +218,17 @@ class LexicalEntailmentModel extends EntailmentModel {
 
   public get remainingRanks(): Ranking[] {
     const ranks: Ranking[] = [];
-    const n = this.weakenedRanking.length;
+    const k = this.weakenedRanking.length;
+    const n = this.removedRanking.length;
     const m = this.baseRanking.length;
-    for (let i = 0; i < m; i++) {
-      if (i < n) {
-        ranks.push(this.weakenedRanking[i]);
-      } else {
-        ranks.push(this.baseRanking[i]);
-      }
+
+    // Add Latest refined rank
+    if (k != 0 && this.weakenedRanking[k - 1].rankNumber == n) {
+      ranks.push(this.weakenedRanking[k - 1]);
+    }
+
+    for (let i = n + ranks.length; i < m; i++) {
+      ranks.push(this.baseRanking[i]);
     }
     return ranks;
   }

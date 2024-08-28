@@ -55,34 +55,58 @@ interface RankRemovalProps {
 
 function RankRemoval({
   value,
-  index,
-  entailment,
-  remainingRanking,
+  entailment: {
+    weakenedRanking,
+    removedRanking,
+    remainingRanks,
+    negation,
+    baseRanking,
+  },
 }: RankRemovalProps) {
   return (
     <div className="my-4">
       <div>
-        <TexFormula>{`R_{\\infty}\\cup \\left(\\bigcup_{j={${
-          value.rankNumber
-        }}}^{j<${
-          entailment.baseRanking.length - 1
-        }} {R_j} \\right)\\models ${texFormula(
-          entailment.negation
-        )}`}</TexFormula>
+        <p>
+          <TexFormula>{`R_{\\infty}\\cup \\left(\\bigcup_{j={${
+            value.rankNumber
+          }}}^{j<${baseRanking.length - 1}} {R_j} \\right)\\models ${texFormula(
+            negation
+          )}`}</TexFormula>
+        </p>
+        <p>
+          Refine rank <TexFormula>{`R_{${value.rankNumber}}`}</TexFormula>
+        </p>
       </div>
-      <p>
-        Refine rank <TexFormula>{`R_{${value.rankNumber}}`}</TexFormula>
-      </p>
-      {index === entailment.weakenedRanking.length - 1 &&
-        remainingRanking.length > 1 && (
+
+      {value.rankNumber < removedRanking.length - 1 && (
+        <div className="my-4">
+          <p>
+            {" "}
+            <TexFormula>{`\\forall R_{${
+              value.rankNumber
+            }},\\;R_{\\infty}\\cup \\left(\\bigcup_{j={${
+              value.rankNumber
+            }}}^{j<${
+              baseRanking.length - 1
+            }} {R_j} \\right)\\models ${texFormula(negation)}`}</TexFormula>
+          </p>
+          <p>
+            Remove rank <TexFormula>{`R_{${value.rankNumber}}`}</TexFormula>
+          </p>
+        </div>
+      )}
+      {weakenedRanking.length > 0 &&
+        value.rankNumber ===
+          weakenedRanking[weakenedRanking.length - 1].rankNumber &&
+        remainingRanks.length > 1 && (
           <div className="my-8">
             <TexFormula>{`R_{\\infty}\\cup \\left(\\bigcup_{j={${
-              remainingRanking[0].rankNumber
+              remainingRanks[0].rankNumber
             }}}^{j<${
-              entailment.baseRanking.length - 1
+              baseRanking.length - 1
             }} {R_j} \\right)\\not\\models ${texFormula(
-              entailment.negation
-            )}`}</TexFormula>
+              negation
+            )}`}</TexFormula>{" "}
           </div>
         )}
     </div>
@@ -159,24 +183,6 @@ function LexEntailment({ entailment, className }: LexEntailmentProps) {
         Refine the lowest rank finite <TexFormula>{"R_i"}</TexFormula>. If they
         don't we stop the process of refining ranks.
       </p>
-      <ul className="ml-8 list-disc">
-        <li>
-          To refine a rank <TexFormula>{"R_i"}</TexFormula>, we start by looking
-          at a list of sets <TexFormula>{"S_{i,k}"}</TexFormula>, which contain
-          subsets of <TexFormula>{"R_i"}</TexFormula> of size{" "}
-          <TexFormula>{"k"}</TexFormula>. For each subset, we join the
-          statements using the <TexFormula>{"\\land"}</TexFormula> connective,
-          and then join the resulting statements using the{" "}
-          <TexFormula>{"\\lor"}</TexFormula> connective.
-        </li>
-        <li>
-          We start from <TexFormula>{"k = |R_i| - 1"}</TexFormula> and decrease
-          to <TexFormula>{"k = 1"}</TexFormula>. We stop when the refined ranks
-          do not entail{" "}
-          <TexFormula>{texFormula(entailment.negation)}</TexFormula>; otherwise,
-          we continue refining ranks until all finite ranks have been refined.
-        </li>
-      </ul>
       <div className="text-center">
         {entailment.weakenedRanking.map((value, index, array) => (
           <RankSubsetCheck
