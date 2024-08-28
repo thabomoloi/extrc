@@ -1,5 +1,7 @@
 package com.extrc.models;
 
+import org.tweetyproject.logics.pl.syntax.Implication;
+import org.tweetyproject.logics.pl.syntax.Negation;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
 
 // Base class for Entailment
@@ -9,6 +11,7 @@ public abstract class Entailment {
   protected final Ranking baseRanking;
   protected final boolean entailed;
   protected final double timeTaken;
+  protected final Ranking removedRanking;
 
   protected Entailment(EntailmentBuilder<?> builder) {
     this.knowledgeBase = builder.knowledgeBase;
@@ -16,6 +19,7 @@ public abstract class Entailment {
     this.baseRanking = builder.baseRanking;
     this.entailed = builder.entailed;
     this.timeTaken = builder.timeTaken;
+    this.removedRanking = builder.removedRanking;
   }
 
   public KnowledgeBase getKnowledgeBase() {
@@ -26,7 +30,13 @@ public abstract class Entailment {
     return queryFormula;
   }
 
-  public abstract PlFormula getNegation();
+  public PlFormula getNegation() {
+    return queryFormula == null ? null : new Negation(((Implication) queryFormula).getFirstFormula());
+  }
+
+  public Ranking getRemovedRanking() {
+    return removedRanking;
+  }
 
   public Ranking getBaseRanking() {
     return baseRanking;
@@ -47,6 +57,12 @@ public abstract class Entailment {
     private Ranking baseRanking;
     private boolean entailed;
     private double timeTaken;
+    private Ranking removedRanking;
+
+    public T withRemovedRanking(Ranking removedRanking) {
+      this.removedRanking = removedRanking;
+      return self();
+    }
 
     public T withKnowledgeBase(KnowledgeBase knowledgeBase) {
       this.knowledgeBase = knowledgeBase;
