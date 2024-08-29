@@ -39,6 +39,10 @@ export const getQueryResult: () => QueryResult | null = () => {
   return null;
 };
 
+export const deleteQueryInput: () => void = () => {
+  localStorage.removeItem("queryInput");
+};
+
 export const saveQueryResult: (data: QueryResult) => void = (data) => {
   localStorage.setItem(
     "queryResult",
@@ -48,4 +52,13 @@ export const saveQueryResult: (data: QueryResult) => void = (data) => {
       lexicalEntailment: data.lexicalEntailment.toObject(),
     })
   );
+};
+
+export const deleteQueryResult: () => void = () => {
+  localStorage.removeItem("queryResult");
+};
+
+export const deleteAllData: () => void = () => {
+  deleteQueryInput();
+  deleteQueryResult();
 };

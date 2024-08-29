@@ -59,6 +59,7 @@ export function FormulaCard({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     updateFormula(values.formula);
+    form.reset({ formula: queryFormula });
     setEditing(false);
   };
 
