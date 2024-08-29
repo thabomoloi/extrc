@@ -1,6 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
 import * as api from "@/lib/data";
-import { ErrorModel } from "@/lib/models";
 import { useCallback, useEffect, useState } from "react";
 import {
   QueryInput,
@@ -9,6 +8,8 @@ import {
   saveQueryInput,
   getQueryResult,
   saveQueryResult,
+  deleteAllData,
+  deleteQueryResult,
 } from "@/lib/storage";
 
 function useReasoner() {
@@ -22,18 +23,18 @@ function useReasoner() {
   const clearData = () => {
     setQueryInput(null);
     setQueryResult(null);
-    localStorage.removeItem("queryInput");
-    localStorage.removeItem("queryResult");
+    deleteAllData();
+  };
+
+  const clearQueryResult = () => {
+    setQueryResult(null);
+    deleteQueryResult();
   };
 
   const toastError = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (error: any) => {
       toast({
-        title:
-          error instanceof ErrorModel
-            ? error.description
-            : "Something went wrong!",
         description: error.message,
         variant: "destructive",
       });
@@ -87,6 +88,7 @@ function useReasoner() {
     async (formula: string) => {
       try {
         const queryFormula = await api.createQueryFormula(formula);
+        clearQueryResult();
         if (typeof queryFormula === "string") {
           setQueryInput((prev) => {
             const updatedInput = {
@@ -108,6 +110,7 @@ function useReasoner() {
     async (formulas: string[]) => {
       try {
         const kb = await api.createKnowledgeBase(formulas);
+        clearQueryResult();
         setQueryInput((prev) => {
           const updatedInput = {
             knowledgeBase: kb,
@@ -127,6 +130,7 @@ function useReasoner() {
     async (formulas: FormData) => {
       try {
         const kb = await api.uploadKnowledgeBase(formulas);
+        clearQueryResult();
         setQueryInput((prev) => {
           const updatedInput = {
             knowledgeBase: kb,
@@ -146,7 +150,7 @@ function useReasoner() {
     if (getQueryInput() == null) {
       fetchQueryInput();
     }
-  }, [fetchQueryInput]);
+  }, [fetchQueryInput, queryInput]);
 
   return {
     queryInput,

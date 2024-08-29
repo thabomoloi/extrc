@@ -16,7 +16,7 @@ const ENTAILMENT_URL = (reasoner: string, queryFormula: string) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getError = (error: any) => {
   if (error instanceof AxiosError) {
-    if (error.response && error.status != undefined && error.status < 500) {
+    if (error.response && error.response.status < 500) {
       return ErrorModel.create(error.response.data);
     }
   }
