@@ -7,12 +7,10 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { TexFormula } from "../latex/TexFormula";
-import { RankingTable } from "./tables/RankingTable";
-import { texFormula } from "@/lib/latex";
-import { kb } from "../latex/helpers";
-import { RatEntailment } from "./entailment/RatEntailment";
+import { RankingTable } from "./tables/ranking-table";
 import { RationalEntailmentModel } from "@/lib/models";
+import { Explanation } from "./common/explanations";
+import { Kb, QueryFormula } from "./common/formulas";
 
 interface RationalClosureProps {
   isLoading: boolean;
@@ -34,11 +32,9 @@ function RationalClosure({
       <CardContent>
         {!isLoading && rationalEntailment && (
           <div>
-            {kb({ formulas: rationalEntailment.knowledgeBase, set: true })}
+            <Kb formulas={rationalEntailment.knowledgeBase} set />
             <div className="mb-6">
-              <TexFormula>
-                {texFormula("\\alpha = " + rationalEntailment.queryFormula)}
-              </TexFormula>
+              <QueryFormula formula={rationalEntailment.queryFormula} />
             </div>
             <div className="mb-6">
               <p className="mb-3">
@@ -51,7 +47,7 @@ function RationalClosure({
                 caption="Ranks constructed by the Base Rank algorithm"
               />
             </div>
-            <RatEntailment
+            <Explanation
               entailment={rationalEntailment}
               className="mb-6 space-y-4"
             />

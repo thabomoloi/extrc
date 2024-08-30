@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { RankingTable } from "./tables/RankingTable";
+import { RankingTable } from "./tables/ranking-table";
 import { QueryInputContainer } from "./common/query-input";
 import { LexicalEntailmentModel } from "@/lib/models";
-import { LexEntailment } from "./entailment/LexEntailment";
+import { Explanation } from "./common/explanations";
 
 interface LexicographicClosureProps {
   isLoading: boolean;
@@ -49,7 +49,7 @@ function LexicographicClosure({
                 caption="Ranks constructed by the Base Rank algorithm"
               />
             </div>
-            <LexEntailment
+            <Explanation
               entailment={lexicalEntailment}
               className="mb-6 space-y-4"
             />

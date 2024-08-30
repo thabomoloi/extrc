@@ -12,8 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { TexFormula } from "../latex/TexFormula";
-import { texFormula } from "@/lib/latex";
+import { Formula } from "../main-tabs/common/formulas";
 
 const formSchema = z.object({
   formula: z
@@ -77,13 +76,13 @@ export function FormulaCard({
       <Card>
         <CardHeader className="space-y-0 pb-4">
           <CardTitle className="font-semibold text-center">
-            Query Formula <TexFormula>{"(\\alpha)"}</TexFormula>
+            Query Formula <Formula formula="(\alpha)" />
           </CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
           {!editing && (
             <div className="w-full flex flex-col gap-4 items-center">
-              <TexFormula>{texFormula(queryFormula)}</TexFormula>
+              <Formula formula={queryFormula} />
               <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
                 <Button
                   variant="secondary"

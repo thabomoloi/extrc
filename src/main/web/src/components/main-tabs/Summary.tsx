@@ -8,7 +8,7 @@ import {
 import { NoResults } from "./NoResults";
 import { ResultSkeleton } from "./ResultSkeleton";
 import { EntailmentTable, TimesTable } from "./tables/other-tables";
-import { RankingTable } from "./tables/RankingTable";
+import { RankingTable } from "./tables/ranking-table";
 import { QueryInputContainer } from "./common/query-input";
 import {
   BaseRankModel,
