@@ -135,11 +135,11 @@ abstract class EntailmentModel {
   }: EntailmentModelBase) {
     this._queryFormula = queryFormula;
     this._negation = negation;
-    this._knowledgeBase = knowledgeBase;
+    this._knowledgeBase = knowledgeBase ?? [];
     this._entailed = entailed;
-    this._baseRanking = baseRanking;
+    this._baseRanking = baseRanking ?? [];
     this._timeTaken = timeTaken;
-    this._removedRanking = removedRanking;
+    this._removedRanking = removedRanking ?? [];
     this._type = type;
   }
 
