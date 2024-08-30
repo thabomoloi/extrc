@@ -1,4 +1,4 @@
-import { KnowledgeBase, QueryFormula } from "@/components/latex/formulas";
+import { Kb, QueryFormula } from "./formulas";
 
 interface QueryInputContainerProps {
   queryFormula: string;
@@ -13,7 +13,7 @@ function QueryInputContainer({
 }: QueryInputContainerProps) {
   return (
     <div className="space-y-4">
-      <KnowledgeBase formulas={knowledgeBase} set />
+      <Kb formulas={knowledgeBase} set />
       {!queryFormulaHidden && <QueryFormula formula={queryFormula} />}
     </div>
   );

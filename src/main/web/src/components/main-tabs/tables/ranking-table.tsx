@@ -1,10 +1,10 @@
-import { kb } from "@/components/latex/helpers";
-import { TexFormula } from "@/components/latex/TexFormula";
+import { TexFormula } from "@/components/main-tabs/common/TexFormula";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Ranking } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { Kb } from "../common/formulas";
 
 const MAX_VALUE = 2147483647;
 
@@ -20,7 +20,7 @@ const formulas = (label: string): ColumnDef<Ranking> => ({
   },
   cell: ({ row }) => {
     const formulas = row.getValue<string[]>("formulas");
-    return kb({ formulas });
+    return <Kb formulas={formulas} />;
   },
   meta: {
     headerClassName: "min-w-max w-full", // min-width, taking

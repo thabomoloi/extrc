@@ -7,51 +7,51 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { texFormula } from "@/lib/latex";
-import { TexFormula } from "./latex/TexFormula";
+import { Formula } from "./main-tabs/common/formulas";
+import { toTex } from "@/lib/formula";
 
 const symbols = [
   {
     name: "Negation",
     plainTextSymbol: "!",
-    mathSymbol: texFormula("!"),
+    mathSymbol: toTex("!"),
     plainTextExample: "!p",
-    mathExample: texFormula("!p"),
+    mathExample: toTex("!p"),
   },
   {
     name: "Conjunction",
     plainTextSymbol: "&&",
-    mathSymbol: texFormula("&&"),
+    mathSymbol: toTex("&&"),
     plainTextExample: "p && q",
-    mathExample: texFormula("p && q"),
+    mathExample: toTex("p && q"),
   },
   {
     name: "Disjunction",
     plainTextSymbol: "||",
-    mathSymbol: texFormula("||"),
+    mathSymbol: toTex("||"),
     plainTextExample: "p || q",
-    mathExample: texFormula("p || q"),
+    mathExample: toTex("p || q"),
   },
   {
     name: "Implication",
     plainTextSymbol: "=>",
-    mathSymbol: texFormula("=>"),
+    mathSymbol: toTex("=>"),
     plainTextExample: "p => q",
-    mathExample: texFormula("p => q"),
+    mathExample: toTex("p => q"),
   },
   {
     name: "Defeasible Implication",
     plainTextSymbol: "~>",
-    mathSymbol: texFormula("~>"),
+    mathSymbol: toTex("~>"),
     plainTextExample: "p ~> q",
-    mathExample: texFormula("p ~> q"),
+    mathExample: toTex("p ~> q"),
   },
   {
     name: "Equivalence",
     plainTextSymbol: "<=>",
-    mathSymbol: texFormula("<=>"),
+    mathSymbol: toTex("<=>"),
     plainTextExample: "p <=> q",
-    mathExample: texFormula("p <=> q"),
+    mathExample: toTex("p <=> q"),
   },
 ];
 
@@ -86,13 +86,13 @@ export function Syntax() {
               <code>{symbol.plainTextSymbol}</code>
             </TableCell>
             <TableCell className="text-center border">
-              <TexFormula>{symbol.mathSymbol}</TexFormula>
+              <Formula formula={symbol.mathSymbol} />
             </TableCell>
             <TableCell className="text-center border">
               <code>{symbol.plainTextExample}</code>
             </TableCell>
             <TableCell className="text-center border">
-              <TexFormula>{symbol.mathExample}</TexFormula>
+              <Formula formula={symbol.mathExample} />
             </TableCell>
           </TableRow>
         ))}

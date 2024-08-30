@@ -1,6 +1,6 @@
-import { TexFormula } from "@/components/latex/TexFormula";
+import { TexFormula } from "@/components/main-tabs/common/TexFormula";
 import { DataTable } from "@/components/ui/data-table";
-import { texFormula } from "@/lib/latex";
+import { toTex } from "@/lib/formula";
 import { BaseRankModel, EntailmentModel } from "@/lib/models";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -69,8 +69,8 @@ function EntailmentTable({
 }: EntailmentTableProps) {
   const getResult = ({ entailed, queryFormula }: EntailmentModel) => {
     return entailed
-      ? texFormula("\\mathcal{K} \\vapprox " + queryFormula)
-      : texFormula("\\mathcal{K} \\nvapprox " + queryFormula);
+      ? toTex("\\mathcal{K} \\vapprox " + queryFormula)
+      : toTex("\\mathcal{K} \\nvapprox " + queryFormula);
   };
   return (
     <DataTable

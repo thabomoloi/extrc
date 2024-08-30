@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TexFormula } from "../latex/TexFormula";
 import { KbForm } from "./kb-form";
-import { KnowledgeBase } from "../latex/formulas";
+import { Formula, Kb } from "../main-tabs/common/formulas";
 
 interface KbCardProps {
   isLoading: boolean;
@@ -36,13 +35,13 @@ function KbCard({
     <Card className="h-full">
       <CardHeader className="space-y-0 pb-4">
         <CardTitle className="text-center font-semibold">
-          Knowledge Base <TexFormula>{"(\\mathcal{K})"}</TexFormula>
+          Knowledge Base <Formula formula="(\mathcal{K})" />
         </CardTitle>
       </CardHeader>
       <CardContent>
         {!state.editing && (
           <div className="w-full flex flex-col gap-4 items-center">
-            <KnowledgeBase formulas={knowledgeBase} />
+            <Kb formulas={knowledgeBase} />
             <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
               <Button
                 variant="outline"

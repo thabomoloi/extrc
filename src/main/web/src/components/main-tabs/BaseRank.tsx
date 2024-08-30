@@ -7,11 +7,10 @@ import {
 } from "@/components/ui/card";
 import { ResultSkeleton } from "@/components/main-tabs/ResultSkeleton";
 import { NoResults } from "./NoResults";
-import { kb } from "../latex/helpers";
-import { TexFormula } from "../latex/TexFormula";
-import { RankingTable, SequenceTable } from "./tables/RankingTable";
+import { RankingTable, SequenceTable } from "./tables/ranking-table";
 import { QueryInputContainer } from "./common/query-input";
 import { BaseRankModel } from "@/lib/models";
+import { Formula, Kb } from "./common/formulas";
 
 interface BaseRankProps {
   isLoading: boolean;
@@ -19,6 +18,11 @@ interface BaseRankProps {
 }
 
 function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
+  const classical = baseRank
+    ? baseRank.ranking[baseRank.ranking.length - 1].formulas.filter(
+        (formula) => !formula.includes("~>")
+      )
+    : [];
   return (
     <Card className="w-full h-full">
       <CardHeader>
@@ -37,53 +41,34 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
             />
             <div className="my-6 space-y-3">
               <p>
-                Let <TexFormula>{"\\mathcal{K}_C"}</TexFormula> be the knowledge
-                base of all classical statements. Then,{" "}
+                Let <Formula formula="\mathcal{K}_C" /> be the knowledge base of
+                all classical statements. Then,{" "}
               </p>
               <div className="text-center">
-                {kb({
-                  name: "\\mathcal{K}_C",
-                  set: true,
-                  formulas:
-                    baseRank.ranking[baseRank.ranking.length - 1].formulas,
-                })}
+                <Kb name="\mathcal{K}_C" formulas={classical} set />
               </div>
               <div>
                 <p>
-                  The exceptionality sequence <TexFormula>{"*"}</TexFormula> for
-                  knowledge base <TexFormula>{"\\mathcal{K}"}</TexFormula> is
-                  given by:
+                  The exceptionality sequence <Formula formula="*" /> for
+                  knowledge base <Formula formula="\mathcal{K}" /> is given by:
                 </p>
                 <ul className="ml-8 list-disc ">
                   <li>
-                    <TexFormula>
-                      {
-                        "*_0^\\mathcal{K}=\\{\\alpha\\vsim\\beta\\in\\mathcal{K}\\}"
-                      }
-                    </TexFormula>{" "}
+                    <Formula formula="*_0^\mathcal{K}=\{\alpha\vsim\beta\in\mathcal{K}\}" />{" "}
                     and
                   </li>
                   <li>
-                    <TexFormula>
-                      {
-                        "*_{i+1}^\\mathcal{K}=\\{\\alpha\\vsim\\beta \\in *_{i}^\\mathcal{K} \\mid \\mathcal{K}_C\\cup \\overrightarrow{*_{i}^\\mathcal{K}}\\models\\neg\\alpha\\}"
-                      }
-                    </TexFormula>
+                    <Formula formula="*_{i+1}^\mathcal{K}=\{\alpha\vsim\beta \in *_{i}^\mathcal{K} \mid \mathcal{K}_C\cup *_{i}^\mathcal{K} \models\neg\alpha\}" />
                   </li>
                   <li>
-                    for <TexFormula>{"0\\leq i < n"}</TexFormula>, where{" "}
-                    <TexFormula>{"n"}</TexFormula> is the smallest integer such
-                    that{" "}
-                    <TexFormula>
-                      {"*_n^\\mathcal{K}=*_{n+1}^\\mathcal{K}"}
-                    </TexFormula>
-                    .
+                    for <Formula formula="0\leq i < n" />, where{" "}
+                    <Formula formula="n" /> is the smallest integer such that{" "}
+                    <Formula formula="*_n^\mathcal{K}=*_{n+1}^\mathcal{K}" />.
                   </li>
                   <li>
-                    Final element <TexFormula>{"*_n^\\mathcal{K}"}</TexFormula>{" "}
-                    is usually denoted as{" "}
-                    <TexFormula>{"*_\\infty^\\mathcal{K}"}</TexFormula>. (It is
-                    unique.)
+                    Final element <Formula formula="*_n^\mathcal{K}" /> is
+                    usually denoted as{" "}
+                    <Formula formula="*_\infty^\mathcal{K}" />. (It is unique.)
                   </li>
                 </ul>
                 <SequenceTable ranking={baseRank.sequence} />
@@ -91,25 +76,19 @@ function BaseRank({ isLoading, baseRank }: BaseRankProps): JSX.Element {
               <div>
                 <p>
                   The initial ranks for knowledge base{" "}
-                  <TexFormula>{"\\mathcal{K}"}</TexFormula> are defined by:
+                  <Formula formula="\mathcal{K}" /> are defined by:
                 </p>
                 <ul className="ml-8 list-disc ">
                   <li>
                     Finite rank:{" "}
-                    <TexFormula>
-                      {"R_i = *_i^\\mathcal{K}\\setminus *_{i+1}^\\mathcal{K}"}
-                    </TexFormula>{" "}
+                    <Formula formula="R_i = *_i^\mathcal{K}\setminus *_{i+1}^\mathcal{K}" />{" "}
                     <span className="ml-4">
-                      (for <TexFormula>{"0\\leq i < n"}</TexFormula>)
+                      (for <Formula formula="0\leq i < n" />)
                     </span>
                   </li>
                   <li>
                     Infinite rank:{" "}
-                    <TexFormula>
-                      {
-                        "R_\\infty = \\mathcal{K}_C \\cup *_\\infty^\\mathcal{K}"
-                      }
-                    </TexFormula>
+                    <Formula formula="R_\infty = \mathcal{K}_C \cup *_\infty^\mathcal{K}" />
                   </li>
                 </ul>
                 <RankingTable ranking={baseRank.ranking} />

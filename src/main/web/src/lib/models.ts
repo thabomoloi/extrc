@@ -18,6 +18,7 @@ type EntailmentModelBase = {
   baseRanking: Ranking[];
   timeTaken: number;
   removedRanking: Ranking[];
+  type: EntailmentType;
 };
 
 type RationalEntailment = EntailmentModelBase;
@@ -102,11 +103,18 @@ class BaseRankModel {
   }
 }
 
+enum EntailmentType {
+  RationlClosure,
+  LexicographicClosure,
+  NoTypeYet,
+}
+
 /**
  * An abstract class representing a model for entailment,
  * which determines whether a query is entailed by a knowledge base.
  */
 abstract class EntailmentModel {
+  private _type: EntailmentType = EntailmentType.NoTypeYet;
   private _queryFormula: string;
   private _negation: string;
   private _knowledgeBase: string[];
@@ -123,6 +131,7 @@ abstract class EntailmentModel {
     baseRanking,
     timeTaken,
     removedRanking,
+    type,
   }: EntailmentModelBase) {
     this._queryFormula = queryFormula;
     this._negation = negation;
@@ -131,6 +140,11 @@ abstract class EntailmentModel {
     this._baseRanking = baseRanking;
     this._timeTaken = timeTaken;
     this._removedRanking = removedRanking;
+    this._type = type;
+  }
+
+  public get type(): EntailmentType {
+    return this._type;
   }
 
   public get queryFormula(): string {
@@ -160,6 +174,7 @@ abstract class EntailmentModel {
   public get timeTaken(): number {
     return this._timeTaken;
   }
+  public abstract get remainingRanks(): Ranking[];
 
   public toObject(): EntailmentModelBase {
     return {
@@ -170,6 +185,7 @@ abstract class EntailmentModel {
       baseRanking: this._baseRanking,
       timeTaken: this._timeTaken,
       removedRanking: this._removedRanking,
+      type: this._type,
     };
   }
 }
@@ -179,7 +195,7 @@ abstract class EntailmentModel {
  */
 class RationalEntailmentModel extends EntailmentModel {
   constructor(obj: RationalEntailment) {
-    super(obj);
+    super({ ...obj, type: EntailmentType.RationlClosure });
   }
 
   public get remainingRanks(): Ranking[] {
@@ -208,7 +224,7 @@ class LexicalEntailmentModel extends EntailmentModel {
   private _weakenedRanking: Ranking[];
 
   constructor(obj: LexicalEntailment) {
-    super(obj);
+    super({ ...obj, type: EntailmentType.LexicographicClosure });
     this._weakenedRanking = obj.weakenedRanking;
   }
 
@@ -294,6 +310,7 @@ export {
   RationalEntailmentModel,
   LexicalEntailmentModel,
   ErrorModel,
+  EntailmentType,
 };
 export type {
   Ranking,
