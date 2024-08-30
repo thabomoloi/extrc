@@ -96,6 +96,7 @@ function RankCheck({
                         start={rankNumber}
                         end={baseRanking.length - 1}
                         formula={negation}
+                        entailed={false}
                       />
                     </p>
                   </>
