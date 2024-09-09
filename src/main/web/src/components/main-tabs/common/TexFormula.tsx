@@ -17,7 +17,7 @@ const defaultSettings: KatexOptions = {
     "\\vsim": "\\;{{\\Large\\shortmid}\\mkern-9mu\\sim}\\;",
     "\\vapprox": "\\;{{\\mid}\\mkern-8.75mu\\approx}\\;",
     "\\nvapprox": "\\;{\\not\\mkern-5mu{{\\mid}\\mkern-8.75mu\\approx}}\\;",
-    "*": "{\\Large\\varepsilon}\\mkern-2mu",
+    "*": "\\mathcal{E}",
   },
 };
 
