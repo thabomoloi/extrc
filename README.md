@@ -21,7 +21,7 @@ A defeasible reasoning tool implementing Rational Closure and Lexicographic Clos
 * Java 21+
 
 ## Compilation & Usage
-There's a binary under `app/` folder which can be run without need for compilation. However, it still requires Java 21+. To run the binary run java -jar `docs/extrc-1.0-SNAPSHOT.jar` and go to `http://localhost:8080/`.
+There's a binary under `app/` folder which can be run without need for compilation. However, it still requires Java 21+. To run the binary run java -jar `app/extrc-1.0-SNAPSHOT.jar` and go to `http://localhost:8080/`.
 ### Compilation
 ```bash
 mvn clean package
